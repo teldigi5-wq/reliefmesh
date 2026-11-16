@@ -2,13 +2,16 @@ import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests/e2e",
-  // Raised from 30s: this spec visits several routes (dashboard,
-  // incidents/new, the incident detail page, etc.) for the first time in
-  // sequence, and each first visit on a freshly started dev server pays a
-  // one-time Next.js compile cost (observed 5-7s for routes with ~1000+
-  // modules) on top of the remote-DB latency below. Those add up across one
-  // long test.
-  timeout: 60_000,
+  // Raised from 30s, then from 60s: this spec visits several routes
+  // (dashboard, incidents/new, the incident detail page, etc.) for the
+  // first time in sequence, each first visit paying a one-time Next.js
+  // dev-mode compile cost (observed 5-7s for routes with ~1000+ modules) on
+  // top of the remote-DB latency below. The full lifecycle test also logs in
+  // and out 5 times, and login()/logout() each now wait for the destination
+  // page to actually render (not just for the URL to change) to avoid racing
+  // the next action against a still-in-flight hard navigation — that's
+  // correctness, not just speed, but it does add up across one long test.
+  timeout: 90_000,
   // The dev DB is a remote (Supabase) Postgres instance, so individual
   // round-trips routinely take 2-5s on top of normal dev-mode compile
   // overhead. On top of that, the FIRST visit to any given route in a test
