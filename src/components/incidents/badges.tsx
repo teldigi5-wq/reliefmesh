@@ -34,6 +34,14 @@ const statusClasses: Record<IncidentStatus, string> = {
 export function StatusBadge({ status }: { status: IncidentStatus }) {
   return (
     <span
+      // Stable hook for e2e tests: the incident detail page also shows this
+      // same status word inside a "Verified by ..." label and an audit-trail
+      // string like "REPORTED → VERIFIED", so a plain text match against
+      // "VERIFIED" (or any other status) is ambiguous and breaks as soon as
+      // that history trail exists. data-testid lets tests target the badge
+      // itself regardless of what other text on the page happens to contain
+      // the same word.
+      data-testid="status-badge"
       className={clsx(
         "rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide ring-1 ring-inset ring-black/5 dark:ring-white/10",
         statusClasses[status]
