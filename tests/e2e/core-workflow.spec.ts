@@ -36,21 +36,37 @@ async function login(page: Page, email: string) {
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(PASSWORD);
   await page.getByRole("button", { name: /log in/i }).click();
-  // 20s, not the global 10s default: on a freshly started dev server this is
+  // 20s, not the global 15s default: on a freshly started dev server this is
   // the very first hit to /dashboard, and Next.js has to compile that route
   // from scratch (observed ~5-7s for ~1300 modules) on top of the login
   // POST's own latency against the remote DB. Every later navigation to
   // /dashboard in this run reuses the compiled route and is fast; this is a
   // one-time cold-start cost, not a sign anything is broken.
   await expect(page).toHaveURL(/\/dashboard/, { timeout: 20_000 });
+  // toHaveURL only checks the address bar, which can update while the
+  // document is still loading (window.location.href is a hard navigation).
+  // Every caller immediately does something else on this page — often
+  // another page.goto() — and that races the still-in-flight load, which
+  // can abort it outright ("net::ERR_ABORTED; maybe frame was detached?").
+  // Waiting for an actual rendered element makes login() only return once
+  // /dashboard has genuinely finished loading.
+  await expect(
+    page.getByRole("heading", { name: /operations dashboard/i })
+  ).toBeVisible({ timeout: 20_000 });
 }
 
 async function logout(page: Page) {
   await page.goto("/dashboard");
   await page.getByRole("button", { name: /log out/i }).click();
-  // Same cold-compile allowance as login() — /login may not have been
-  // compiled yet if this is the first time this run navigates to it.
-  await expect(page).toHaveURL(/\/($|login)/, { timeout: 20_000 });
+  // The logout route (src/app/api/auth/logout/route.ts) always redirects to
+  // /login specifically, so this can be a precise match rather than the
+  // looser "/ or /login" — and, as in login() above, wait for real content
+  // rather than just the URL so the page has actually finished loading
+  // before the next action runs.
+  await expect(page).toHaveURL(/\/login$/, { timeout: 20_000 });
+  await expect(page.getByRole("heading", { name: /welcome back/i })).toBeVisible({
+    timeout: 20_000,
+  });
 }
 
 test("full incident lifecycle: report → verify → assign → respond → resolve → close", async ({
