@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,7 +9,6 @@ import { Logo } from "@/components/ui/logo";
 import { inputClass, labelClass } from "@/components/ui/field-styles";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -37,7 +35,10 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/dashboard");
+    // Hard navigation rather than router.push(): sidesteps the Next.js
+    // dev-mode RSC-prefetch flakiness documented in incidents/new/page.tsx —
+    // critical here since every login depends on this redirect working.
+    window.location.href = "/dashboard";
   }
 
   return (

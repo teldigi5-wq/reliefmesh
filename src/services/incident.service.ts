@@ -102,17 +102,18 @@ export const incidentService = {
       note
     );
 
-    await auditLog(actor.id, `INCIDENT_${toStatus}`, "Incident", incidentId, {
+    // Audit logging and notifications are side effects of a transition that
+    // has already committed — they must never make the caller wait longer
+    // than the actual status change takes, and a failure in either must
+    // never surface as a failure of the transition itself. Fire both and
+    // let them resolve in the background; log instead of awaiting/throwing.
+    auditLog(actor.id, `INCIDENT_${toStatus}`, "Incident", incidentId, {
       fromStatus: current.status,
-    });
+    }).catch((err) => console.error("Failed to write audit log", err));
 
-    // Notification failures should never break the status update itself —
-    // the transition already committed. Log and move on.
-    try {
-      await notificationService.forOwnStatusChange(incidentId, toStatus);
-    } catch (notifyErr) {
-      console.error("Failed to send status-change notification", notifyErr);
-    }
+    notificationService
+      .forOwnStatusChange(incidentId, toStatus)
+      .catch((err) => console.error("Failed to send status-change notification", err));
 
     return updated;
   },
@@ -139,15 +140,15 @@ export const incidentService = {
       actor.id
     );
 
-    await auditLog(actor.id, "INCIDENT_RESPONDER_ASSIGNED", "Incident", incidentId, {
+    // Same reasoning as transitionStatus: these are fire-and-forget side
+    // effects of an assignment that already committed.
+    auditLog(actor.id, "INCIDENT_RESPONDER_ASSIGNED", "Incident", incidentId, {
       volunteerId,
-    });
+    }).catch((err) => console.error("Failed to write audit log", err));
 
-    try {
-      await notificationService.forAssignment(incidentId, volunteer.userId);
-    } catch (notifyErr) {
-      console.error("Failed to send assignment notification", notifyErr);
-    }
+    notificationService
+      .forAssignment(incidentId, volunteer.userId)
+      .catch((err) => console.error("Failed to send assignment notification", err));
 
     return result;
   },

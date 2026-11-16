@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 type IncidentOption = { id: string; title: string; status: string };
@@ -17,7 +16,6 @@ export function AllocateRow({
   unit: string;
   incidents: IncidentOption[];
 }) {
-  const router = useRouter();
   const [incidentId, setIncidentId] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [isBusy, setIsBusy] = useState(false);
@@ -41,7 +39,8 @@ export function AllocateRow({
       setError(data.error ?? "Allocation failed");
       return;
     }
-    router.refresh();
+    // Hard reload rather than router.refresh() — see action-panel.tsx.
+    window.location.reload();
   }
 
   if (available <= 0) {
