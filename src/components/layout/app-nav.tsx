@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Role } from "@prisma/client";
+import { NotificationBell } from "@/components/layout/notification-bell";
 
 export function AppNav({ role }: { role: Role }) {
   const links: { href: string; label: string }[] = [
@@ -24,7 +25,10 @@ export function AppNav({ role }: { role: Role }) {
             {link.label}
           </Link>
         ))}
-        <span className="ml-auto text-xs text-slate-400">{role}</span>
+        <span className="ml-auto flex items-center gap-4">
+          <NotificationBell />
+          <span className="text-xs text-slate-400">{role}</span>
+        </span>
       </div>
     </nav>
   );

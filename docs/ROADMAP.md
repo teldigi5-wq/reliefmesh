@@ -29,15 +29,27 @@ has no filter/search UI (data layer supports it, UI doesn't expose it yet);
 `/api/volunteers` GET only returns the full roster (fine for a small demo
 dataset, would want pagination for anything larger).
 
-## Day 3 — resources, citizen portal, Guardian UI, notifications
+## Day 3 — resources, Guardian UI, notifications, charts — done
 
-- [ ] Resource registration/quantity/allocation UI
-- [ ] Citizen portal: submit report, view own reports & statuses
-- [ ] Guardian monitoring page (shows simulated SOS events + location history on the map)
-- [ ] In-app notifications (new critical incident, verification, assignment, status change)
-- [ ] Dashboard charts: incidents by category/severity/time, response performance
-- [ ] Mobile responsiveness pass across all pages
-- [ ] Wire all modules together into the four required end-to-end workflows
+- [x] Resource registration/quantity/allocation (`/resources`) — allocation is
+      transactional (quantity-in-use + allocation row commit together;
+      over-allocating is rejected with a 409, not silently clamped)
+- [x] Citizen portal — already covered by Day 1/2 (`/incidents`, `/incidents/new`,
+      own-reports filtering); no separate build needed
+- [x] Guardian monitoring page (`/guardian`) — simulated SOS events on a map +
+      device table, explicitly labelled SIMULATED throughout
+- [x] In-app notifications — status changes, verification, assignment, and a
+      fan-out to every operator/admin when a CRITICAL incident is verified;
+      nav bell with unread count, polls every 30s
+- [x] Dashboard charts (Recharts) — by category, by severity, 14-day trend,
+      and average VERIFIED→RESOLVED resolution time computed from the audit
+      trail (not from current status alone)
+- [x] 4 more tests (resource validation)
+
+Carried into Day 4 (hardening): no Playwright e2e yet, no dedicated mobile
+pass (Tailwind responsive classes are used throughout but not checked on an
+actual small screen), PWA manifest still has no icons, notification bell
+polls rather than pushing (fine at hackathon scale, said so in the code).
 
 ## Day 4 — hardening and demo readiness
 

@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { transitionStatusSchema, assignVolunteerSchema } from "@/lib/validation/volunteer";
 import { createIncidentSchema } from "@/lib/validation/incident";
+import { createResourceSchema, allocateResourceSchema } from "@/lib/validation/resource";
 
 describe("volunteer/incident validation schemas", () => {
   it("rejects an unknown status on a transition request", () => {
@@ -33,5 +34,34 @@ describe("volunteer/incident validation schemas", () => {
       longitude: 79.86,
     });
     expect(result.success).toBe(false);
+  });
+
+  it("rejects a resource with a negative quantity", () => {
+    const result = createResourceSchema.safeParse({
+      name: "Drinking water",
+      category: "FOOD_AND_WATER",
+      quantityTotal: -5,
+      unit: "liters",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("defaults a resource's unit to 'units' when omitted", () => {
+    const result = createResourceSchema.safeParse({
+      name: "Rescue boats",
+      category: "RESCUE_EQUIPMENT",
+      quantityTotal: 3,
+    });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.unit).toBe("units");
+  });
+
+  it("requires a positive quantity to allocate a resource", () => {
+    expect(
+      allocateResourceSchema.safeParse({ incidentId: "inc_1", quantity: 0 }).success
+    ).toBe(false);
+    expect(
+      allocateResourceSchema.safeParse({ incidentId: "inc_1", quantity: 5 }).success
+    ).toBe(true);
   });
 });

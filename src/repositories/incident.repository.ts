@@ -132,4 +132,58 @@ export const incidentRepository = {
       _count: { _all: true },
     });
   },
+
+  countByCategory() {
+    return prisma.incident.groupBy({
+      by: ["category"],
+      _count: { _all: true },
+    });
+  },
+
+  // Raw createdAt timestamps for the last N days — aggregated into a daily
+  // series in the service/UI layer rather than in SQL, to keep this simple
+  // and portable.
+  findRecentForTimeSeries(days: number) {
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+    return prisma.incident.findMany({
+      where: { createdAt: { gte: since } },
+      select: { createdAt: true },
+    });
+  },
+
+  // Average hours between an incident being verified and being resolved,
+  // computed from the IncidentUpdate audit trail (so it reflects reality,
+  // not just current status).
+  async averageResolutionHours(): Promise<number | null> {
+    const resolvedUpdates = await prisma.incidentUpdate.findMany({
+      where: { toStatus: "RESOLVED" },
+      select: { incidentId: true, createdAt: true },
+    });
+    if (resolvedUpdates.length === 0) return null;
+
+    const verifiedUpdates = await prisma.incidentUpdate.findMany({
+      where: {
+        toStatus: "VERIFIED",
+        incidentId: { in: resolvedUpdates.map((u) => u.incidentId) },
+      },
+      select: { incidentId: true, createdAt: true },
+    });
+    const verifiedByIncident = new Map(
+      verifiedUpdates.map((u) => [u.incidentId, u.createdAt])
+    );
+
+    const durationsHours = resolvedUpdates
+      .map((resolved) => {
+        const verifiedAt = verifiedByIncident.get(resolved.incidentId);
+        if (!verifiedAt) return null;
+        return (
+          (resolved.createdAt.getTime() - verifiedAt.getTime()) / 3_600_000
+        );
+      })
+      .filter((v): v is number => v !== null && v >= 0);
+
+    if (durationsHours.length === 0) return null;
+    return durationsHours.reduce((a, b) => a + b, 0) / durationsHours.length;
+  },
 };

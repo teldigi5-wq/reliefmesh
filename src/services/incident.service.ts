@@ -1,5 +1,6 @@
 import { incidentRepository } from "@/repositories/incident.repository";
 import { volunteerRepository } from "@/repositories/volunteer.repository";
+import { notificationService } from "@/services/notification.service";
 import { hasPermission } from "@/lib/permissions";
 import type { Role, IncidentStatus } from "@prisma/client";
 import type { CreateIncidentInput } from "@/lib/validation/incident";
@@ -93,7 +94,22 @@ export const incidentService = {
       );
     }
 
-    return incidentRepository.updateStatus(incidentId, toStatus, actor.id, note);
+    const updated = await incidentRepository.updateStatus(
+      incidentId,
+      toStatus,
+      actor.id,
+      note
+    );
+
+    // Notification failures should never break the status update itself —
+    // the transition already committed. Log and move on.
+    try {
+      await notificationService.forOwnStatusChange(incidentId, toStatus);
+    } catch (notifyErr) {
+      console.error("Failed to send status-change notification", notifyErr);
+    }
+
+    return updated;
   },
 
   async assignResponder(incidentId: string, volunteerId: string, actor: Actor) {
@@ -112,14 +128,30 @@ export const incidentService = {
     const volunteer = await volunteerRepository.findById(volunteerId);
     if (!volunteer) throw new Error("Volunteer not found");
 
-    return incidentRepository.assignVolunteer(incidentId, volunteerId, actor.id);
+    const result = await incidentRepository.assignVolunteer(
+      incidentId,
+      volunteerId,
+      actor.id
+    );
+
+    try {
+      await notificationService.forAssignment(incidentId, volunteer.userId);
+    } catch (notifyErr) {
+      console.error("Failed to send assignment notification", notifyErr);
+    }
+
+    return result;
   },
 
   async dashboardCounts() {
-    const [byStatus, bySeverity] = await Promise.all([
-      incidentRepository.countByStatus(),
-      incidentRepository.countBySeverity(),
-    ]);
-    return { byStatus, bySeverity };
+    const [byStatus, bySeverity, byCategory, recent, avgResolutionHours] =
+      await Promise.all([
+        incidentRepository.countByStatus(),
+        incidentRepository.countBySeverity(),
+        incidentRepository.countByCategory(),
+        incidentRepository.findRecentForTimeSeries(14),
+        incidentRepository.averageResolutionHours(),
+      ]);
+    return { byStatus, bySeverity, byCategory, recent, avgResolutionHours };
   },
 };

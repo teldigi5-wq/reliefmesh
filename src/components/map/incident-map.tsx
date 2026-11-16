@@ -30,10 +30,10 @@ const SEVERITY_RADIUS: Record<Severity, number> = {
 };
 
 export function IncidentMap({ incidents }: { incidents: MapIncident[] }) {
-  const center: [number, number] =
-    incidents.length > 0
-      ? [incidents[0].latitude, incidents[0].longitude]
-      : [6.9271, 79.8612]; // generic fallback — not tied to any real event
+  const first = incidents[0];
+  const center: [number, number] = first
+    ? [first.latitude, first.longitude]
+    : [6.9271, 79.8612]; // generic fallback — not tied to any real event
 
   return (
     <MapContainer

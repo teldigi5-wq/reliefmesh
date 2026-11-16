@@ -150,16 +150,15 @@ Double-check `git status` before your first commit — `.env` must **not**
 appear in the list of files to be committed (if it does, your `.gitignore`
 isn't being picked up; stop and fix that first).
 
-## What's deliberately not done yet (Day 2–3 per the schedule)
+## What's deliberately not done yet (Day 4 hardening)
 
-- Interactive map (Leaflet) — schema and API support incident lat/lng already
-- Volunteer/responder assignment UI — repository + service layer exists for
-  incidents; volunteer UI is next
-- Resource allocation UI
-- Notifications (in-app)
-- Analytics charts (Recharts) on the dashboard
-- Playwright end-to-end test suite
-- PWA icons (manifest.json has no icons yet — add them under `public/` and
-  reference them in `manifest.json` before relying on "Add to Home Screen")
+- Playwright end-to-end test suite (unit tests exist; e2e for the four core
+  workflows is the Day 4 item)
+- Dedicated mobile responsiveness pass (Tailwind responsive classes are used
+  throughout, but nothing has been checked on an actual small screen yet)
+- PWA icons (`public/manifest.json` has no icons yet — add them before
+  relying on "Add to Home Screen")
+- Notification delivery is poll-based (every 30s), not push — fine at this
+  scale, noted in `src/components/layout/notification-bell.tsx`
 
 See `docs/ROADMAP.md` for the day-by-day plan this maps to.
