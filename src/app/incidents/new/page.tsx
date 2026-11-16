@@ -87,7 +87,7 @@ export default function NewIncidentPage() {
   }
 
   return (
-    <main className="app-backdrop min-h-screen px-6 py-10">
+    <main className="app-backdrop min-h-screen px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-xl">
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
           Report an emergency
@@ -112,7 +112,7 @@ export default function NewIncidentPage() {
               />
             </label>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <label className="block text-sm">
                 <span className={labelClass}>Category</span>
                 <select name="category" required className={inputClass}>
@@ -154,7 +154,7 @@ export default function NewIncidentPage() {
                   {locating ? "Locating..." : "Use my current location"}
                 </button>
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-4">
+              <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Field
                   label="Latitude"
                   name="latitude"

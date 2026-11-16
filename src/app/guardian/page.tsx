@@ -17,7 +17,7 @@ export default async function GuardianPage() {
       return (
         <>
           <AppNav role={session.role} />
-          <main className="mx-auto max-w-4xl px-6 py-10">
+          <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
             <h1 className="text-2xl font-semibold">Guardian</h1>
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
               Your role doesn&apos;t have access to device/location monitoring.
@@ -43,7 +43,7 @@ export default async function GuardianPage() {
   return (
     <>
       <AppNav role={session.role} />
-      <main className="app-backdrop min-h-[calc(100vh-57px)] mx-auto max-w-5xl px-6 py-10">
+      <main className="app-backdrop min-h-[calc(100vh-57px)] mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-10">
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
           Guardian device monitoring
         </h1>
