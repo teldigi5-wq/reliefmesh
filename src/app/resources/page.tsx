@@ -28,7 +28,7 @@ export default async function ResourcesPage() {
   return (
     <>
       <AppNav role={session.role} />
-      <main className="app-backdrop min-h-[calc(100vh-57px)] mx-auto max-w-4xl px-6 py-10">
+      <main className="app-backdrop min-h-[calc(100vh-57px)] mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
           Resources
         </h1>
