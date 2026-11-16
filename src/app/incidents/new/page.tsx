@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { inputClass, labelClass } from "@/components/ui/field-styles";
@@ -20,7 +19,6 @@ const CATEGORIES = [
 const SEVERITIES = ["LOW", "MEDIUM", "HIGH", "CRITICAL"] as const;
 
 export default function NewIncidentPage() {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
@@ -78,7 +76,14 @@ export default function NewIncidentPage() {
     }
 
     const incident = await res.json();
-    router.push(`/incidents/${incident.id}`);
+    // A hard navigation rather than router.push(): this is a one-time
+    // redirect straight after creating the record, so there's nothing to
+    // preserve client-side, and it sidesteps a real Next.js dev-mode
+    // flakiness where the RSC-payload prefetch for the destination
+    // occasionally fails ("Failed to fetch") and its automatic fallback to
+    // a full navigation doesn't always land before the next interaction —
+    // same reasoning as the logout redirect elsewhere in this app.
+    window.location.href = `/incidents/${incident.id}`;
   }
 
   return (
