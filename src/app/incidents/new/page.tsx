@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { inputClass, labelClass } from "@/components/ui/field-styles";
@@ -20,7 +19,6 @@ const CATEGORIES = [
 const SEVERITIES = ["LOW", "MEDIUM", "HIGH", "CRITICAL"] as const;
 
 export default function NewIncidentPage() {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
@@ -78,11 +76,18 @@ export default function NewIncidentPage() {
     }
 
     const incident = await res.json();
-    router.push(`/incidents/${incident.id}`);
+    // A hard navigation rather than router.push(): this is a one-time
+    // redirect straight after creating the record, so there's nothing to
+    // preserve client-side, and it sidesteps a real Next.js dev-mode
+    // flakiness where the RSC-payload prefetch for the destination
+    // occasionally fails ("Failed to fetch") and its automatic fallback to
+    // a full navigation doesn't always land before the next interaction —
+    // same reasoning as the logout redirect elsewhere in this app.
+    window.location.href = `/incidents/${incident.id}`;
   }
 
   return (
-    <main className="app-backdrop min-h-screen px-6 py-10">
+    <main className="app-backdrop min-h-screen px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-xl">
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
           Report an emergency
@@ -107,7 +112,7 @@ export default function NewIncidentPage() {
               />
             </label>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <label className="block text-sm">
                 <span className={labelClass}>Category</span>
                 <select name="category" required className={inputClass}>
@@ -149,7 +154,7 @@ export default function NewIncidentPage() {
                   {locating ? "Locating..." : "Use my current location"}
                 </button>
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-4">
+              <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <Field
                   label="Latitude"
                   name="latitude"

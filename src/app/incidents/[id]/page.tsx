@@ -37,9 +37,9 @@ export default async function IncidentDetailPage({
   return (
     <>
       <AppNav role={session.role} />
-      <main className="app-backdrop min-h-[calc(100vh-57px)] mx-auto max-w-3xl px-6 py-10">
+      <main className="app-backdrop min-h-[calc(100vh-57px)] mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
         <Card className="p-6">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
                 {incident.title}
@@ -49,7 +49,7 @@ export default async function IncidentDetailPage({
                 {new Date(incident.createdAt).toLocaleString()}
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex shrink-0 gap-2">
               <SeverityBadge severity={incident.severity} />
               <StatusBadge status={incident.status} />
             </div>
@@ -59,7 +59,7 @@ export default async function IncidentDetailPage({
             {incident.description}
           </p>
 
-          <dl className="mt-4 grid grid-cols-2 gap-4 rounded-lg bg-slate-50/80 p-4 text-sm dark:bg-slate-800/40">
+          <dl className="mt-4 grid grid-cols-1 gap-4 rounded-lg bg-slate-50/80 p-4 text-sm dark:bg-slate-800/40 sm:grid-cols-2">
             <div>
               <dt className="text-slate-500">Category</dt>
               <dd className="font-medium">{incident.category.replace(/_/g, " ")}</dd>

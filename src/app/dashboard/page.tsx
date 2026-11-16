@@ -67,13 +67,13 @@ export default async function DashboardPage() {
   return (
     <>
       <AppNav role={session.role} />
-      <main className="app-backdrop min-h-[calc(100vh-57px)] mx-auto max-w-6xl px-6 py-10">
-        <div className="flex items-center justify-between">
+      <main className="app-backdrop min-h-[calc(100vh-57px)] mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
               Operations dashboard
             </h1>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-sm text-slate-600 dark:text-slate-400 break-all sm:break-normal">
               Signed in as {session.email} · Role: {session.role}
             </p>
           </div>

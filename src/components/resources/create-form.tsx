@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { inputClass } from "@/components/ui/field-styles";
 
@@ -14,7 +13,6 @@ const CATEGORIES = [
 ] as const;
 
 export function ResourceCreateForm() {
-  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,8 +41,8 @@ export function ResourceCreateForm() {
       return;
     }
 
-    (e.target as HTMLFormElement).reset();
-    router.refresh();
+    // Hard reload rather than router.refresh() — see action-panel.tsx.
+    window.location.reload();
   }
 
   return (
