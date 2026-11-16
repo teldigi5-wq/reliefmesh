@@ -1,0 +1,359 @@
+// ReliefMesh database schema
+// Run `npm run prisma:migrate` after setting DATABASE_URL in .env
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum Role {
+  ADMIN
+  OPERATOR
+  RESPONDER
+  CITIZEN
+  ORGANISATION
+}
+
+enum IncidentCategory {
+  FLOOD
+  LANDSLIDE
+  FIRE
+  MEDICAL_EMERGENCY
+  ROAD_ACCIDENT
+  MISSING_PERSON
+  INFRASTRUCTURE_DAMAGE
+  OTHER
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum IncidentStatus {
+  REPORTED
+  UNDER_REVIEW
+  VERIFIED
+  ASSIGNED
+  RESPONDING
+  RESOLVED
+  CLOSED
+}
+
+enum AssignmentStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum ResourceCategory {
+  MEDICAL_SUPPLIES
+  FOOD_AND_WATER
+  VEHICLES
+  RESCUE_EQUIPMENT
+  TEMPORARY_SHELTER
+}
+
+enum NotificationType {
+  NEW_CRITICAL_INCIDENT
+  INCIDENT_VERIFIED
+  RESPONDER_ASSIGNED
+  STATUS_CHANGED
+  EMERGENCY_UPDATE
+}
+
+enum DeviceStatus {
+  REGISTERED
+  ACTIVE
+  OFFLINE
+  DECOMMISSIONED
+}
+
+// ---------------------------------------------------------------------------
+// Core identity
+// ---------------------------------------------------------------------------
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  fullName     String
+  phone        String?
+  role         Role     @default(CITIZEN)
+  organisationId String?
+  organisation Organisation? @relation(fields: [organisationId], references: [id])
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  reportedIncidents   Incident[]          @relation("ReportedBy")
+  verifiedIncidents   Incident[]          @relation("VerifiedBy")
+  volunteerProfile    Volunteer?
+  assignments         ResponderAssignment[]
+  notifications       Notification[]
+  auditLogs           AuditLog[]
+
+  @@index([role])
+  @@index([organisationId])
+}
+
+model Organisation {
+  id          String   @id @default(cuid())
+  name        String
+  type        String // e.g. NGO, Local Authority, Government Agency
+  contactEmail String?
+  contactPhone String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users     User[]
+  resources Resource[]
+  shelters  Shelter[]
+}
+
+// ---------------------------------------------------------------------------
+// Incident management
+// ---------------------------------------------------------------------------
+
+model Incident {
+  id          String           @id @default(cuid())
+  title       String
+  description String
+  category    IncidentCategory
+  severity    Severity
+  status      IncidentStatus   @default(REPORTED)
+  latitude    Float
+  longitude   Float
+  address     String?
+
+  reportedById String
+  reportedBy   User   @relation("ReportedBy", fields: [reportedById], references: [id])
+
+  verifiedById String?
+  verifiedBy   User?   @relation("VerifiedBy", fields: [verifiedById], references: [id])
+  verifiedAt   DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  updates           IncidentUpdate[]
+  assignments        ResponderAssignment[]
+  resourceAllocations ResourceAllocation[]
+  sosEvents          SOSEvent[]
+
+  @@index([status])
+  @@index([severity])
+  @@index([category])
+  @@index([createdAt])
+}
+
+model IncidentUpdate {
+  id         String   @id @default(cuid())
+  incidentId String
+  incident   Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+  fromStatus IncidentStatus?
+  toStatus   IncidentStatus
+  note       String?
+
+  createdById String
+  createdAt   DateTime @default(now())
+
+  @@index([incidentId])
+}
+
+// ---------------------------------------------------------------------------
+// Volunteers and responders
+// ---------------------------------------------------------------------------
+
+model Volunteer {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  skills      String[] // e.g. ["first-aid", "swiftwater-rescue", "logistics"]
+  isAvailable Boolean  @default(true)
+  lastKnownLat Float?
+  lastKnownLng Float?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  assignments ResponderAssignment[]
+
+  @@index([isAvailable])
+}
+
+model ResponderAssignment {
+  id          String           @id @default(cuid())
+  incidentId  String
+  incident    Incident         @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+  volunteerId String
+  volunteer   Volunteer        @relation(fields: [volunteerId], references: [id])
+
+  assignedById String
+  assignedBy   User            @relation(fields: [assignedById], references: [id])
+
+  status      AssignmentStatus @default(PENDING)
+  assignedAt  DateTime         @default(now())
+  completedAt DateTime?
+
+  @@index([incidentId])
+  @@index([volunteerId])
+  @@index([status])
+}
+
+// ---------------------------------------------------------------------------
+// Resources
+// ---------------------------------------------------------------------------
+
+model Resource {
+  id             String           @id @default(cuid())
+  name           String
+  category       ResourceCategory
+  quantityTotal  Int
+  quantityInUse  Int              @default(0)
+  unit           String           @default("units")
+  latitude       Float?
+  longitude      Float?
+
+  organisationId String?
+  organisation   Organisation?    @relation(fields: [organisationId], references: [id])
+
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  allocations    ResourceAllocation[]
+
+  @@index([category])
+}
+
+model ResourceAllocation {
+  id          String   @id @default(cuid())
+  resourceId  String
+  resource    Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  incidentId  String
+  incident    Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+
+  quantity    Int
+  allocatedById String
+  allocatedAt DateTime @default(now())
+  releasedAt  DateTime?
+
+  @@index([resourceId])
+  @@index([incidentId])
+}
+
+model Shelter {
+  id             String        @id @default(cuid())
+  name           String
+  capacity       Int
+  currentOccupancy Int         @default(0)
+  latitude       Float
+  longitude      Float
+  organisationId String?
+  organisation   Organisation? @relation(fields: [organisationId], references: [id])
+
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Guardian / future SOS device integration
+// All data here is clearly simulated/test until real hardware exists.
+// ---------------------------------------------------------------------------
+
+model GuardianDevice {
+  id           String       @id @default(cuid())
+  deviceSerial String       @unique
+  label        String?
+  status       DeviceStatus @default(REGISTERED)
+  batteryPct   Int?
+  lastSeenAt   DateTime?
+  registeredAt DateTime     @default(now())
+
+  sosEvents       SOSEvent[]
+  locationUpdates LocationUpdate[]
+
+  @@index([status])
+}
+
+model SOSEvent {
+  id          String   @id @default(cuid())
+  deviceId    String
+  device      GuardianDevice @relation(fields: [deviceId], references: [id])
+
+  incidentId  String?
+  incident    Incident? @relation(fields: [incidentId], references: [id])
+
+  latitude    Float
+  longitude   Float
+  isSimulated Boolean  @default(true) // must stay true until real hardware exists
+  triggeredAt DateTime @default(now())
+  closedAt    DateTime?
+
+  @@index([deviceId])
+  @@index([incidentId])
+}
+
+model LocationUpdate {
+  id         String   @id @default(cuid())
+  deviceId   String
+  device     GuardianDevice @relation(fields: [deviceId], references: [id])
+
+  latitude   Float
+  longitude  Float
+  recordedAt DateTime @default(now())
+
+  @@index([deviceId, recordedAt])
+}
+
+// ---------------------------------------------------------------------------
+// Notifications & audit
+// ---------------------------------------------------------------------------
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type      NotificationType
+  title     String
+  message   String
+  isRead    Boolean          @default(false)
+  relatedIncidentId String?
+
+  createdAt DateTime         @default(now())
+
+  @@index([userId, isRead])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+
+  action    String   // e.g. "INCIDENT_VERIFIED", "USER_LOGIN", "RESOURCE_ALLOCATED"
+  entityType String
+  entityId   String?
+  metadata   Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}

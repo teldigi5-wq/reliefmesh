@@ -1,0 +1,10 @@
+{
+  "name": "ReliefMesh",
+  "short_name": "ReliefMesh",
+  "description": "Disaster-response and emergency coordination platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "icons": []
+}
