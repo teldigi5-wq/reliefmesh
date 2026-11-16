@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { IncidentStatus, Role } from "@prisma/client";
@@ -23,7 +22,6 @@ export function ActionPanel({
   role: Role;
   availableVolunteers: VolunteerOption[];
 }) {
-  const router = useRouter();
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedVolunteer, setSelectedVolunteer] = useState("");
@@ -42,7 +40,13 @@ export function ActionPanel({
       setError(data.error ?? "Action failed");
       return;
     }
-    router.refresh();
+    // A hard reload rather than router.refresh(): the status update has
+    // already committed server-side at this point, but refresh() relies on
+    // the same RSC-payload fetch that occasionally fails silently in Next's
+    // dev mode (see incidents/new/page.tsx) — leaving the action looking
+    // like it did nothing even though it succeeded. A full reload always
+    // picks up the new state.
+    window.location.reload();
   }
 
   async function assign() {
@@ -63,7 +67,7 @@ export function ActionPanel({
       setError(data.error ?? "Assignment failed");
       return;
     }
-    router.refresh();
+    window.location.reload();
   }
 
   const isOperatorOrAdmin = role === "OPERATOR" || role === "ADMIN";

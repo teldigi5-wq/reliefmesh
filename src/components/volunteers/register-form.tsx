@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { inputClass, labelClass } from "@/components/ui/field-styles";
 
@@ -12,7 +11,6 @@ export function VolunteerRegisterForm({
   initialSkills: string[];
   initialAvailable: boolean;
 }) {
-  const router = useRouter();
   const [skills, setSkills] = useState(initialSkills.join(", "));
   const [isAvailable, setIsAvailable] = useState(initialAvailable);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -45,8 +43,13 @@ export function VolunteerRegisterForm({
       return;
     }
 
+    // No router.refresh() here: everything this form shows (skills,
+    // availability, the "Saved." confirmation) is already reflected in
+    // local state, so there's nothing stale to pull from the server, and
+    // refresh() relies on the same RSC-payload fetch that's occasionally
+    // flaky in Next's dev mode (see action-panel.tsx) — it would also wipe
+    // the "Saved." message the instant it (hopefully) completed.
     setSaved(true);
-    router.refresh();
   }
 
   return (

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 type Notification = {
@@ -14,7 +13,6 @@ type Notification = {
 };
 
 export function NotificationBell() {
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -58,7 +56,8 @@ export function NotificationBell() {
     }
     setOpen(false);
     if (n.relatedIncidentId) {
-      router.push(`/incidents/${n.relatedIncidentId}`);
+      // Hard navigation rather than router.push() — see action-panel.tsx.
+      window.location.href = `/incidents/${n.relatedIncidentId}`;
     }
   }
 

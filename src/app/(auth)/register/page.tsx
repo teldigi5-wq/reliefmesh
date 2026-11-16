@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -10,7 +9,6 @@ import { Logo } from "@/components/ui/logo";
 import { inputClass, labelClass } from "@/components/ui/field-styles";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -39,7 +37,8 @@ export default function RegisterPage() {
       return;
     }
 
-    router.push("/dashboard");
+    // Hard navigation rather than router.push() — see login/page.tsx.
+    window.location.href = "/dashboard";
   }
 
   return (
