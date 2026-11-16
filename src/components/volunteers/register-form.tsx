@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { inputClass, labelClass } from "@/components/ui/field-styles";
 
 export function VolunteerRegisterForm({
   initialSkills,
@@ -51,22 +52,21 @@ export function VolunteerRegisterForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <label className="block text-sm">
-        <span className="mb-1 block font-medium">
-          Skills (comma-separated)
-        </span>
+        <span className={labelClass}>Skills (comma-separated)</span>
         <input
           value={skills}
           onChange={(e) => setSkills(e.target.value)}
           placeholder="first-aid, swiftwater-rescue, logistics"
-          className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+          className={inputClass}
         />
       </label>
 
-      <label className="flex items-center gap-2 text-sm">
+      <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
         <input
           type="checkbox"
           checked={isAvailable}
           onChange={(e) => setIsAvailable(e.target.checked)}
+          className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500/30 dark:border-slate-700"
         />
         Available to be assigned right now
       </label>

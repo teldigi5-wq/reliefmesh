@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db/prisma";
+import { checkRateLimit, clientIpFrom } from "@/lib/security/rate-limit";
+import { timingSafeEqualStrings } from "@/lib/security/timing-safe-equal";
+import { auditLog } from "@/lib/security/audit";
 
 /**
  * SIMULATED / TEST endpoint only.
@@ -22,10 +25,20 @@ const sosEventSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const providedSecret = req.headers.get("x-guardian-device-secret");
-  const expectedSecret = process.env.GUARDIAN_DEVICE_API_SECRET;
+  const ip = clientIpFrom(req);
+  const rateLimit = checkRateLimit(`guardian-sos:${ip}`, { max: 20, windowMs: 60_000 });
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
 
-  if (!expectedSecret || providedSecret !== expectedSecret) {
+  const providedSecret = req.headers.get("x-guardian-device-secret") ?? "";
+  const expectedSecret = process.env.GUARDIAN_DEVICE_API_SECRET ?? "";
+
+  // Constant-time comparison — a naive !== leaks how many leading characters
+  // matched via response timing, which matters for a bearer-secret endpoint
+  // like this one (no per-device credentials yet, see docs/GUARDIAN.md).
+  if (!expectedSecret || !timingSafeEqualStrings(providedSecret, expectedSecret)) {
+    await auditLog(null, "GUARDIAN_AUTH_FAILED", "GuardianDevice", undefined, { ip });
     return NextResponse.json({ error: "Unauthorized device" }, { status: 401 });
   }
 
@@ -53,6 +66,10 @@ export async function POST(req: NextRequest) {
       longitude,
       isSimulated: true, // hard-coded: this route never produces a real event
     },
+  });
+
+  await auditLog(null, "GUARDIAN_SOS_SIMULATED", "SOSEvent", sosEvent.id, {
+    deviceSerial,
   });
 
   return NextResponse.json(

@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth/session";
 import { incidentService } from "@/services/incident.service";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { AppNav } from "@/components/layout/app-nav";
+import { Card } from "@/components/ui/card";
 import {
   CategoryBarChart,
   SeverityBarChart,
@@ -66,22 +67,24 @@ export default async function DashboardPage() {
   return (
     <>
       <AppNav role={session.role} />
-      <main className="mx-auto max-w-6xl px-6 py-10">
+      <main className="app-backdrop min-h-[calc(100vh-57px)] mx-auto max-w-6xl px-6 py-10">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold">Operations dashboard</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+              Operations dashboard
+            </h1>
             <p className="text-sm text-slate-600 dark:text-slate-400">
               Signed in as {session.email} · Role: {session.role}
             </p>
           </div>
           <form action="/api/auth/logout" method="post">
-            <button className="rounded-md border border-slate-300 px-4 py-2 text-sm font-medium hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800">
+            <button className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-800">
               Log out
             </button>
           </form>
         </div>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="mt-8 grid animate-fade-in-up gap-4 sm:grid-cols-2 lg:grid-cols-5">
           <StatCard label="Total incidents" value={totalIncidents} />
           <StatCard label="Active emergencies" value={activeIncidents} />
           <StatCard label="Critical" value={criticalIncidents} tone="critical" />
@@ -102,8 +105,10 @@ export default async function DashboardPage() {
         )}
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <div className="rounded-lg border border-slate-200 p-5 dark:border-slate-800">
-            <h2 className="font-semibold">Incidents by category</h2>
+          <Card>
+            <h2 className="font-semibold text-slate-900 dark:text-slate-100">
+              Incidents by category
+            </h2>
             <div className="mt-2">
               {categoryData.length > 0 ? (
                 <CategoryBarChart data={categoryData} />
@@ -111,21 +116,25 @@ export default async function DashboardPage() {
                 <p className="py-10 text-center text-sm text-slate-500">No data yet.</p>
               )}
             </div>
-          </div>
+          </Card>
 
-          <div className="rounded-lg border border-slate-200 p-5 dark:border-slate-800">
-            <h2 className="font-semibold">Incidents by severity</h2>
+          <Card>
+            <h2 className="font-semibold text-slate-900 dark:text-slate-100">
+              Incidents by severity
+            </h2>
             <div className="mt-2">
               <SeverityBarChart data={severityData} />
             </div>
-          </div>
+          </Card>
 
-          <div className="rounded-lg border border-slate-200 p-5 dark:border-slate-800 lg:col-span-2">
-            <h2 className="font-semibold">Incidents over the last 14 days</h2>
+          <Card className="lg:col-span-2">
+            <h2 className="font-semibold text-slate-900 dark:text-slate-100">
+              Incidents over the last 14 days
+            </h2>
             <div className="mt-2">
               <IncidentsOverTimeChart data={timeSeriesData} />
             </div>
-          </div>
+          </Card>
         </div>
 
         <p className="mt-6 text-sm text-slate-500">

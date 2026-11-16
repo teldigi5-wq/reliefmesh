@@ -3,8 +3,19 @@ import { prisma } from "@/lib/db/prisma";
 import { hashPassword } from "@/lib/auth/password";
 import { createSession } from "@/lib/auth/session";
 import { registerSchema } from "@/lib/validation/auth";
+import { checkRateLimit, clientIpFrom } from "@/lib/security/rate-limit";
+import { auditLog } from "@/lib/security/audit";
 
 export async function POST(req: NextRequest) {
+  const ip = clientIpFrom(req);
+  const rateLimit = checkRateLimit(`register:${ip}`, { max: 5, windowMs: 60_000 });
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Too many registration attempts. Try again shortly." },
+      { status: 429 }
+    );
+  }
+
   const body = await req.json().catch(() => null);
   const parsed = registerSchema.safeParse(body);
 
@@ -38,6 +49,7 @@ export async function POST(req: NextRequest) {
   });
 
   await createSession({ userId: user.id, role: user.role, email: user.email });
+  await auditLog(user.id, "USER_REGISTERED", "User", user.id);
 
   return NextResponse.json(
     { id: user.id, email: user.email, role: user.role },

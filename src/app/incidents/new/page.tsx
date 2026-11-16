@@ -3,6 +3,8 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { inputClass, labelClass } from "@/components/ui/field-styles";
 
 const CATEGORIES = [
   "FLOOD",
@@ -80,105 +82,103 @@ export default function NewIncidentPage() {
   }
 
   return (
-    <main className="mx-auto max-w-xl px-6 py-10">
-      <h1 className="text-2xl font-semibold">Report an emergency</h1>
-      <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-        Give as much detail as you safely can. An operator will review and
-        verify this report.
-      </p>
+    <main className="app-backdrop min-h-screen px-6 py-10">
+      <div className="mx-auto max-w-xl">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+          Report an emergency
+        </h1>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+          Give as much detail as you safely can. An operator will review and
+          verify this report.
+        </p>
 
-      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-        <Field label="Title" name="title" required placeholder="Brief summary" />
+        <Card className="mt-6 p-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Field label="Title" name="title" required placeholder="Brief summary" />
 
-        <label className="block text-sm">
-          <span className="mb-1 block font-medium">Description</span>
-          <textarea
-            name="description"
-            required
-            minLength={10}
-            rows={4}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-slate-700 dark:bg-slate-900"
-          />
-        </label>
+            <label className="block text-sm">
+              <span className={labelClass}>Description</span>
+              <textarea
+                name="description"
+                required
+                minLength={10}
+                rows={4}
+                className={inputClass}
+              />
+            </label>
 
-        <div className="grid grid-cols-2 gap-4">
-          <label className="block text-sm">
-            <span className="mb-1 block font-medium">Category</span>
-            <select
-              name="category"
-              required
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
-            >
-              {CATEGORIES.map((c) => (
-                <option key={c} value={c}>
-                  {c.replace(/_/g, " ")}
-                </option>
-              ))}
-            </select>
-          </label>
+            <div className="grid grid-cols-2 gap-4">
+              <label className="block text-sm">
+                <span className={labelClass}>Category</span>
+                <select name="category" required className={inputClass}>
+                  {CATEGORIES.map((c) => (
+                    <option key={c} value={c}>
+                      {c.replace(/_/g, " ")}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-          <label className="block text-sm">
-            <span className="mb-1 block font-medium">Severity</span>
-            <select
-              name="severity"
-              required
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
-            >
-              {SEVERITIES.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+              <label className="block text-sm">
+                <span className={labelClass}>Severity</span>
+                <select name="severity" required className={inputClass}>
+                  {SEVERITIES.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
 
-        <Field
-          label="Address (optional)"
-          name="address"
-          placeholder="Nearest landmark or address"
-        />
-
-        <div className="rounded-md border border-slate-200 p-4 dark:border-slate-800">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Location</span>
-            <button
-              type="button"
-              onClick={useMyLocation}
-              disabled={locating}
-              className="text-sm text-brand-600 hover:underline disabled:opacity-50"
-            >
-              {locating ? "Locating..." : "Use my current location"}
-            </button>
-          </div>
-          <div className="mt-3 grid grid-cols-2 gap-4">
             <Field
-              label="Latitude"
-              name="latitude"
-              type="number"
-              step="any"
-              required
-              defaultValue={coords?.lat}
-              key={coords?.lat}
+              label="Address (optional)"
+              name="address"
+              placeholder="Nearest landmark or address"
             />
-            <Field
-              label="Longitude"
-              name="longitude"
-              type="number"
-              step="any"
-              required
-              defaultValue={coords?.lng}
-              key={coords?.lng}
-            />
-          </div>
-        </div>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+            <div className="rounded-lg border border-slate-200 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-800/40">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">Location</span>
+                <button
+                  type="button"
+                  onClick={useMyLocation}
+                  disabled={locating}
+                  className="text-sm font-medium text-brand-600 hover:text-brand-700 hover:underline disabled:opacity-50"
+                >
+                  {locating ? "Locating..." : "Use my current location"}
+                </button>
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-4">
+                <Field
+                  label="Latitude"
+                  name="latitude"
+                  type="number"
+                  step="any"
+                  required
+                  defaultValue={coords?.lat}
+                  key={coords?.lat}
+                />
+                <Field
+                  label="Longitude"
+                  name="longitude"
+                  type="number"
+                  step="any"
+                  required
+                  defaultValue={coords?.lng}
+                  key={coords?.lng}
+                />
+              </div>
+            </div>
 
-        <Button type="submit" disabled={isSubmitting} className="w-full">
-          {isSubmitting ? "Submitting..." : "Submit report"}
-        </Button>
-      </form>
+            {error && <p className="text-sm text-red-600">{error}</p>}
+
+            <Button type="submit" disabled={isSubmitting} className="w-full">
+              {isSubmitting ? "Submitting..." : "Submit report"}
+            </Button>
+          </form>
+        </Card>
+      </div>
     </main>
   );
 }
@@ -190,12 +190,8 @@ function Field({
 }: { label: string; name: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <label className="block text-sm">
-      <span className="mb-1 block font-medium">{label}</span>
-      <input
-        name={name}
-        className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-slate-700 dark:bg-slate-900"
-        {...props}
-      />
+      <span className={labelClass}>{label}</span>
+      <input name={name} className={inputClass} {...props} />
     </label>
   );
 }

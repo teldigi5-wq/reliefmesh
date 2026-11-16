@@ -12,7 +12,7 @@ export function SeverityBadge({ severity }: { severity: Severity }) {
   return (
     <span
       className={clsx(
-        "rounded-full px-2.5 py-0.5 text-xs font-medium",
+        "rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide ring-1 ring-inset ring-black/5 dark:ring-white/10",
         severityClasses[severity]
       )}
     >
@@ -35,7 +35,7 @@ export function StatusBadge({ status }: { status: IncidentStatus }) {
   return (
     <span
       className={clsx(
-        "rounded-full px-2.5 py-0.5 text-xs font-medium",
+        "rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide ring-1 ring-inset ring-black/5 dark:ring-white/10",
         statusClasses[status]
       )}
     >

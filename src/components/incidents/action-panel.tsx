@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import type { IncidentStatus, Role } from "@prisma/client";
 
 type VolunteerOption = {
@@ -69,8 +70,8 @@ export function ActionPanel({
   const isResponder = role === "RESPONDER";
 
   return (
-    <div className="rounded-lg border border-slate-200 p-5 dark:border-slate-800">
-      <h2 className="font-semibold">Actions</h2>
+    <Card>
+      <h2 className="font-semibold text-slate-900 dark:text-slate-100">Actions</h2>
 
       {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
 
@@ -109,11 +110,13 @@ export function ActionPanel({
 
       {isOperatorOrAdmin && status === "VERIFIED" && (
         <div className="mt-4 border-t border-slate-200 pt-4 dark:border-slate-800">
-          <p className="text-sm font-medium">Assign a responder</p>
+          <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+            Assign a responder
+          </p>
           {availableVolunteers.length === 0 ? (
             <p className="mt-1 text-sm text-slate-500">
               No available volunteers right now — register volunteers on the{" "}
-              <a href="/volunteers" className="text-brand-600">
+              <a href="/volunteers" className="font-medium text-brand-600 hover:text-brand-700">
                 Volunteers
               </a>{" "}
               page first.
@@ -123,7 +126,7 @@ export function ActionPanel({
               <select
                 value={selectedVolunteer}
                 onChange={(e) => setSelectedVolunteer(e.target.value)}
-                className="flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+                className="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-700 dark:bg-slate-900"
               >
                 <option value="">Select a responder...</option>
                 {availableVolunteers.map((v) => (
@@ -145,6 +148,6 @@ export function ActionPanel({
           This incident is closed. No further actions are available.
         </p>
       )}
-    </div>
+    </Card>
   );
 }

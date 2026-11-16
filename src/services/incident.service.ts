@@ -1,6 +1,7 @@
 import { incidentRepository } from "@/repositories/incident.repository";
 import { volunteerRepository } from "@/repositories/volunteer.repository";
 import { notificationService } from "@/services/notification.service";
+import { auditLog } from "@/lib/security/audit";
 import { hasPermission } from "@/lib/permissions";
 import type { Role, IncidentStatus } from "@prisma/client";
 import type { CreateIncidentInput } from "@/lib/validation/incident";
@@ -101,6 +102,10 @@ export const incidentService = {
       note
     );
 
+    await auditLog(actor.id, `INCIDENT_${toStatus}`, "Incident", incidentId, {
+      fromStatus: current.status,
+    });
+
     // Notification failures should never break the status update itself —
     // the transition already committed. Log and move on.
     try {
@@ -133,6 +138,10 @@ export const incidentService = {
       volunteerId,
       actor.id
     );
+
+    await auditLog(actor.id, "INCIDENT_RESPONDER_ASSIGNED", "Incident", incidentId, {
+      volunteerId,
+    });
 
     try {
       await notificationService.forAssignment(incidentId, volunteer.userId);

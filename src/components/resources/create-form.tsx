@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { inputClass } from "@/components/ui/field-styles";
 
 const CATEGORIES = [
   "MEDICAL_SUPPLIES",
@@ -52,13 +53,9 @@ export function ResourceCreateForm() {
         name="name"
         required
         placeholder="Resource name"
-        className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900 sm:col-span-2"
+        className={`${inputClass} sm:col-span-2`}
       />
-      <select
-        name="category"
-        required
-        className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
-      >
+      <select name="category" required className={inputClass}>
         {CATEGORIES.map((c) => (
           <option key={c} value={c}>
             {c.replace(/_/g, " ")}
@@ -71,13 +68,9 @@ export function ResourceCreateForm() {
         min={0}
         required
         placeholder="Quantity"
-        className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
+        className={inputClass}
       />
-      <input
-        name="unit"
-        placeholder="Unit (e.g. liters)"
-        className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-900"
-      />
+      <input name="unit" placeholder="Unit (e.g. liters)" className={inputClass} />
       <div className="sm:col-span-5">
         {error && <p className="mb-2 text-sm text-red-600">{error}</p>}
         <Button type="submit" disabled={isSubmitting}>

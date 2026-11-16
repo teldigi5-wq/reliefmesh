@@ -53,15 +53,62 @@ polls rather than pushing (fine at hackathon scale, said so in the code).
 
 ## Day 4 — hardening and demo readiness
 
-- [ ] Fix bugs found in integration testing
-- [ ] Playwright end-to-end tests for the four core workflows
-- [ ] Security review (rate limiting on auth endpoints, audit log coverage)
-- [ ] UI refinement pass
-- [ ] Fresh-install test: clone repo, follow README exactly, confirm it works
-- [ ] Verify `npm run build` succeeds
-- [ ] Finish README, architecture and database docs (this scaffold's docs are
-      the starting point, not the final version)
+- [x] Fixed real bugs caught by `npm run typecheck` before they shipped
+      (three `noUncheckedIndexedAccess` violations in the map components
+      and the dashboard — not hypothetical, these were caught during this
+      session's own testing)
+- [x] Playwright e2e tests (`tests/e2e/core-workflow.spec.ts`) — the full
+      report→verify→assign→respond→resolve→close lifecycle against real
+      seeded accounts and a real database, plus a cross-tenant access test
+      (citizen A cannot open citizen B's incident — confirms the
+      `PermissionError` → redirect behavior actually works, not just that
+      it compiles)
+- [x] Security review, concretely:
+  - Rate limiting on `/api/auth/login`, `/api/auth/register`, and both
+    Guardian device endpoints (`src/lib/security/rate-limit.ts` — in-memory,
+    documented as not distributed; fine for one server, swap the
+    implementation behind the same function signature for a real deployment)
+  - Constant-time comparison for the Guardian device secret
+    (`src/lib/security/timing-safe-equal.ts`) instead of `!==`, closing a
+    timing side-channel on a bearer-secret endpoint
+  - `AuditLog` rows now actually get written (`src/lib/security/audit.ts`)
+    on login success/failure, registration, incident verification/
+    assignment/status changes, and resource allocation — the table existed
+    in the schema since Day 1 but nothing wrote to it until now
+  - 8 new unit tests for both (`tests/security.test.ts`)
+- [x] PWA icons generated and wired into `manifest.json` and
+      `src/app/layout.tsx` (192px/512px PNG, a generic radar/ping mark —
+      not any real brand's logo)
+- [x] Follow-up security patch after review: a dummy bcrypt compare on
+      login's "no such user" path (closes a timing-based email-enumeration
+      gap the generic error message alone didn't), plus baseline security
+      headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-
+      Policy`, `Permissions-Policy`) in `next.config.js` — no CSP yet, see
+      the comment there for why
+- [x] Found and fixed a real gap while reviewing: **no ESLint config
+      existed anywhere in the repo** despite `eslint`/`eslint-config-next`
+      being installed. `npm run lint` and `npm run build` (which runs lint)
+      would have hit `next lint`'s interactive "no config found, set one up?"
+      prompt the first time anyone ran either — a dead end in a non-
+      interactive terminal. Added `.eslintrc.json` (`next/core-web-vitals`).
+- [x] Visual design pass — Inter font properly loaded (it was referenced in
+      Tailwind config but never actually loaded, so every page was quietly
+      rendering in the system font), a shared `Card`/`Button` design system,
+      elevated surfaces with soft shadows instead of flat borders, a real
+      nav bar (sticky, active-link state, role badge), and a proper landing/
+      login/register treatment. No text content, labels, placeholders, or
+      button names changed — the Playwright suite's selectors still match.
+- [ ] Fresh-install test: clone repo, follow README exactly on a machine
+      that's never seen this project, confirm it works start to finish
+- [x] Verified `npm run build` succeeds — all 23 routes compile and
+      typecheck cleanly in a real production build, not just `dev`
 - [ ] Confirm no secrets are committed (`git log -p -- .env` should be empty)
+- [ ] Demo script / talking points for presenting Thursday
+
+Still open, worth a conscious decision (not an oversight) before Thursday:
+a dedicated mobile-screen pass, and whether the poll-based notifications
+and single-process rate limiter are acceptable for however this actually
+gets demoed.
 
 ## Explicitly out of scope for this deadline
 

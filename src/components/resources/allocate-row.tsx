@@ -53,7 +53,7 @@ export function AllocateRow({
       <select
         value={incidentId}
         onChange={(e) => setIncidentId(e.target.value)}
-        className="rounded-md border border-slate-300 px-2 py-1 text-sm dark:border-slate-700 dark:bg-slate-900"
+        className="rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-700 dark:bg-slate-900"
       >
         <option value="">Select incident...</option>
         {incidents.map((i) => (
@@ -68,7 +68,7 @@ export function AllocateRow({
         max={available}
         value={quantity}
         onChange={(e) => setQuantity(Number(e.target.value))}
-        className="w-20 rounded-md border border-slate-300 px-2 py-1 text-sm dark:border-slate-700 dark:bg-slate-900"
+        className="w-20 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-700 dark:bg-slate-900"
       />
       <span className="text-xs text-slate-500">{unit}</span>
       <Button type="button" disabled={isBusy} onClick={allocate}>

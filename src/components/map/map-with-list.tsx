@@ -14,7 +14,7 @@ const IncidentMap = dynamic(
 
 function MapSkeleton() {
   return (
-    <div className="flex h-[600px] w-full items-center justify-center rounded-lg border border-slate-200 text-sm text-slate-400 dark:border-slate-800">
+    <div className="surface-card flex h-[600px] w-full items-center justify-center text-sm text-slate-400">
       Loading map...
     </div>
   );
@@ -23,9 +23,11 @@ function MapSkeleton() {
 export function MapWithList({ incidents }: { incidents: MapIncident[] }) {
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-      <IncidentMap incidents={incidents} />
+      <div className="surface-card overflow-hidden p-0">
+        <IncidentMap incidents={incidents} />
+      </div>
 
-      <div className="max-h-[600px] divide-y divide-slate-200 overflow-y-auto rounded-lg border border-slate-200 dark:divide-slate-800 dark:border-slate-800">
+      <div className="surface-card max-h-[600px] divide-y divide-slate-200/80 overflow-y-auto p-0 dark:divide-slate-800">
         {incidents.length === 0 && (
           <p className="p-4 text-sm text-slate-500">No incidents to show.</p>
         )}
@@ -33,9 +35,11 @@ export function MapWithList({ incidents }: { incidents: MapIncident[] }) {
           <Link
             key={incident.id}
             href={`/incidents/${incident.id}`}
-            className="block p-3 hover:bg-slate-50 dark:hover:bg-slate-900"
+            className="block p-3 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60"
           >
-            <p className="text-sm font-medium">{incident.title}</p>
+            <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+              {incident.title}
+            </p>
             <div className="mt-1 flex gap-2">
               <SeverityBadge severity={incident.severity} />
               <StatusBadge status={incident.status} />

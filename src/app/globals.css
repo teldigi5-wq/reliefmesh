@@ -8,4 +8,54 @@
 
 body {
   @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  font-feature-settings: "cv11", "ss01";
+}
+
+/* Soft radial wash behind every page — subtle, not a gradient wallpaper.
+   Teal + a touch of warm amber, matching the brand/accent palette. */
+.app-backdrop {
+  background-image: radial-gradient(
+      circle at 15% 0%,
+      rgba(30, 164, 140, 0.07),
+      transparent 55%
+    ),
+    radial-gradient(circle at 85% 20%, rgba(241, 125, 18, 0.05), transparent 50%);
+}
+
+.dark .app-backdrop {
+  background-image: radial-gradient(
+      circle at 15% 0%,
+      rgba(30, 164, 140, 0.14),
+      transparent 55%
+    ),
+    radial-gradient(circle at 85% 20%, rgba(241, 125, 18, 0.08), transparent 50%);
+}
+
+/* Elevated, premium-feeling card surface used across the app. */
+.surface-card {
+  @apply rounded-xl border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] dark:border-slate-800 dark:bg-slate-900 dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-12px_rgba(0,0,0,0.5)];
+}
+
+/* Gentle lift on hover for anything meant to feel tappable/clickable. */
+.hover-lift {
+  @apply transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hover-lift,
+  .animate-fade-in-up {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Thin custom scrollbar for notification/roster panels. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(203 213 225) transparent;
+}
+
+.dark * {
+  scrollbar-color: rgb(51 65 85) transparent;
 }

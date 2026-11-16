@@ -1,5 +1,6 @@
 import { resourceRepository } from "@/repositories/resource.repository";
 import { hasPermission, PermissionError } from "@/lib/permissions";
+import { auditLog } from "@/lib/security/audit";
 import type { Role } from "@prisma/client";
 import type { CreateResourceInput, AllocateResourceInput } from "@/lib/validation/resource";
 
@@ -21,11 +22,16 @@ export const resourceService = {
     if (!hasPermission(actor.role, "resource:allocate")) {
       throw new PermissionError("Not permitted to allocate resources");
     }
-    return resourceRepository.allocate(
+    const allocation = await resourceRepository.allocate(
       resourceId,
       input.incidentId,
       input.quantity,
       actor.id
     );
+    await auditLog(actor.id, "RESOURCE_ALLOCATED", "Resource", resourceId, {
+      incidentId: input.incidentId,
+      quantity: input.quantity,
+    });
+    return allocation;
   },
 };

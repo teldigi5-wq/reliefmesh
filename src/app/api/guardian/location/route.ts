@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db/prisma";
+import { checkRateLimit, clientIpFrom } from "@/lib/security/rate-limit";
+import { timingSafeEqualStrings } from "@/lib/security/timing-safe-equal";
 
 // SIMULATED / TEST endpoint — see src/app/api/guardian/sos/route.ts for context.
 // Appends a location-history row rather than overwriting the device's last
@@ -13,10 +15,19 @@ const locationUpdateSchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const providedSecret = req.headers.get("x-guardian-device-secret");
-  const expectedSecret = process.env.GUARDIAN_DEVICE_API_SECRET;
+  const ip = clientIpFrom(req);
+  const rateLimit = checkRateLimit(`guardian-location:${ip}`, {
+    max: 60,
+    windowMs: 60_000,
+  });
+  if (!rateLimit.allowed) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
 
-  if (!expectedSecret || providedSecret !== expectedSecret) {
+  const providedSecret = req.headers.get("x-guardian-device-secret") ?? "";
+  const expectedSecret = process.env.GUARDIAN_DEVICE_API_SECRET ?? "";
+
+  if (!expectedSecret || !timingSafeEqualStrings(providedSecret, expectedSecret)) {
     return NextResponse.json({ error: "Unauthorized device" }, { status: 401 });
   }
 

@@ -40,7 +40,7 @@ export function IncidentMap({ incidents }: { incidents: MapIncident[] }) {
       center={center}
       zoom={incidents.length > 0 ? 11 : 7}
       scrollWheelZoom
-      className="h-[600px] w-full rounded-lg border border-slate-200 dark:border-slate-800"
+      className="h-[600px] w-full"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

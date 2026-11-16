@@ -20,10 +20,12 @@ export default async function IncidentsPage() {
   return (
     <>
       <AppNav role={session.role} />
-      <main className="mx-auto max-w-5xl px-6 py-10">
+      <main className="app-backdrop min-h-[calc(100vh-57px)] mx-auto max-w-5xl px-6 py-10">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold">Incidents</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+              Incidents
+            </h1>
             <p className="text-sm text-slate-600 dark:text-slate-400">
               {hasPermission(session.role, "incident:view_all")
                 ? "All reported incidents."
@@ -33,20 +35,20 @@ export default async function IncidentsPage() {
           {canReport && (
             <Link
               href="/incidents/new"
-              className="rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white hover:bg-brand-700"
+              className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-brand-700 hover:shadow-md"
             >
               Report incident
             </Link>
           )}
         </div>
 
-        <div className="mt-6 divide-y divide-slate-200 rounded-lg border border-slate-200 dark:divide-slate-800 dark:border-slate-800">
+        <div className="surface-card mt-6 divide-y divide-slate-200/80 dark:divide-slate-800">
           {incidents.length === 0 && (
             <p className="p-6 text-sm text-slate-500">
               No incidents yet.{" "}
               {canReport && (
                 <>
-                  <Link href="/incidents/new" className="text-brand-600">
+                  <Link href="/incidents/new" className="font-medium text-brand-600 hover:text-brand-700">
                     Report one
                   </Link>
                   .
@@ -58,10 +60,12 @@ export default async function IncidentsPage() {
             <Link
               key={incident.id}
               href={`/incidents/${incident.id}`}
-              className="flex items-center justify-between gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-900"
+              className="flex items-center justify-between gap-4 p-4 transition-colors first:rounded-t-xl last:rounded-b-xl hover:bg-slate-50 dark:hover:bg-slate-800/60"
             >
               <div>
-                <p className="font-medium">{incident.title}</p>
+                <p className="font-medium text-slate-900 dark:text-slate-100">
+                  {incident.title}
+                </p>
                 <p className="text-xs text-slate-500">
                   {incident.category.replace(/_/g, " ")} ·{" "}
                   {new Date(incident.createdAt).toLocaleString()}

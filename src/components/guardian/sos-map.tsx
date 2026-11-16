@@ -23,7 +23,7 @@ export function SOSMap({ events }: { events: MapSOSEvent[] }) {
       center={center}
       zoom={events.length > 0 ? 11 : 7}
       scrollWheelZoom
-      className="h-[450px] w-full rounded-lg border border-slate-200 dark:border-slate-800"
+      className="surface-card h-[450px] w-full overflow-hidden"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

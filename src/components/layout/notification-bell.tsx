@@ -66,23 +66,26 @@ export function NotificationBell() {
     <div ref={containerRef} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="relative rounded-md px-2 py-1 text-sm text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+        className="relative rounded-md px-2.5 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
         aria-label="Notifications"
       >
         Notifications
         {unreadCount > 0 && (
-          <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-xs font-medium text-white">
+          <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-xs font-medium text-white shadow-sm">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-80 rounded-lg border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900">
-          <div className="flex items-center justify-between border-b border-slate-200 p-3 dark:border-slate-800">
-            <span className="text-sm font-medium">Notifications</span>
+        <div className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl shadow-slate-900/10 dark:border-slate-700 dark:bg-slate-900">
+          <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/60 p-3 dark:border-slate-800 dark:bg-slate-800/40">
+            <span className="text-sm font-semibold">Notifications</span>
             {unreadCount > 0 && (
-              <button onClick={markAllRead} className="text-xs text-brand-600">
+              <button
+                onClick={markAllRead}
+                className="text-xs font-medium text-brand-600 hover:text-brand-700"
+              >
                 Mark all read
               </button>
             )}
@@ -95,7 +98,7 @@ export function NotificationBell() {
               <button
                 key={n.id}
                 onClick={() => openNotification(n)}
-                className={`block w-full border-b border-slate-100 p-3 text-left text-sm last:border-0 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800 ${
+                className={`block w-full border-b border-slate-100 p-3 text-left text-sm last:border-0 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800 ${
                   n.isRead ? "opacity-60" : ""
                 }`}
               >
@@ -108,8 +111,8 @@ export function NotificationBell() {
             ))}
           </div>
           {notifications.some((n) => n.relatedIncidentId) && (
-            <div className="border-t border-slate-200 p-2 text-center dark:border-slate-800">
-              <Link href="/incidents" className="text-xs text-brand-600">
+            <div className="border-t border-slate-200 bg-slate-50/60 p-2 text-center dark:border-slate-800 dark:bg-slate-800/40">
+              <Link href="/incidents" className="text-xs font-medium text-brand-600 hover:text-brand-700">
                 View all incidents
               </Link>
             </div>

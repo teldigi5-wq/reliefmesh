@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from "recharts";
 
-const COLORS = ["#2563eb", "#7c3aed", "#ea580c", "#16a34a", "#ca8a04", "#dc2626", "#0891b2", "#64748b"];
+const COLORS = ["#1ea48c", "#f17d12", "#7c3aed", "#16a34a", "#0891b2", "#ca8a04", "#dc2626", "#64748b"];
 
 export function CategoryBarChart({
   data,
@@ -77,7 +77,7 @@ export function IncidentsOverTimeChart({
         <XAxis dataKey="date" tick={{ fontSize: 11 }} />
         <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
         <Tooltip />
-        <Line type="monotone" dataKey="count" stroke="#2563eb" strokeWidth={2} dot={false} />
+        <Line type="monotone" dataKey="count" stroke="#1ea48c" strokeWidth={2} dot={false} />
       </LineChart>
     </ResponsiveContainer>
   );

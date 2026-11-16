@@ -4,6 +4,10 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Logo } from "@/components/ui/logo";
+import { inputClass, labelClass } from "@/components/ui/field-styles";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -37,44 +41,58 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6">
-      <h1 className="text-2xl font-semibold">Log in</h1>
+    <main className="app-backdrop relative flex min-h-screen flex-col items-center justify-center px-6">
+      <div className="absolute right-6 top-6">
+        <ThemeToggle />
+      </div>
+      <Link href="/" className="mb-8">
+        <Logo badgeSize="h-9 w-9" wordmarkClassName="text-lg font-semibold tracking-tight" />
+      </Link>
 
-      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-        <label className="block text-sm">
-          <span className="mb-1 block font-medium">Email</span>
-          <input
-            name="email"
-            type="email"
-            required
-            autoComplete="email"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-slate-700 dark:bg-slate-900"
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1 block font-medium">Password</span>
-          <input
-            name="password"
-            type="password"
-            required
-            autoComplete="current-password"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-slate-700 dark:bg-slate-900"
-          />
-        </label>
+      <Card className="w-full max-w-md p-8">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-50">
+          Welcome back
+        </h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          Log in to coordinate or report an incident.
+        </p>
 
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          <label className="block text-sm">
+            <span className={labelClass}>Email</span>
+            <input
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              className={inputClass}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className={labelClass}>Password</span>
+            <input
+              name="password"
+              type="password"
+              required
+              autoComplete="current-password"
+              className={inputClass}
+            />
+          </label>
 
-        <Button type="submit" disabled={isSubmitting} className="w-full">
-          {isSubmitting ? "Logging in..." : "Log in"}
-        </Button>
-      </form>
+          {error && <p className="text-sm text-red-600">{error}</p>}
 
-      <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">
-        No account yet?{" "}
-        <Link href="/register" className="font-medium text-brand-600">
-          Register
-        </Link>
-      </p>
+          <Button type="submit" disabled={isSubmitting} className="w-full">
+            {isSubmitting ? "Logging in..." : "Log in"}
+          </Button>
+        </form>
+
+        <p className="mt-5 text-center text-sm text-slate-600 dark:text-slate-400">
+          No account yet?{" "}
+          <Link href="/register" className="font-medium text-brand-600 hover:text-brand-700">
+            Register
+          </Link>
+        </p>
+      </Card>
     </main>
   );
 }

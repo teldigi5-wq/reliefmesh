@@ -8,7 +8,7 @@ const SOSMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-[450px] w-full items-center justify-center rounded-lg border border-slate-200 text-sm text-slate-400 dark:border-slate-800">
+      <div className="surface-card flex h-[450px] w-full items-center justify-center text-sm text-slate-400">
         Loading map...
       </div>
     ),

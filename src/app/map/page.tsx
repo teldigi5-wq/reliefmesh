@@ -26,8 +26,10 @@ export default async function MapPage() {
   return (
     <>
       <AppNav role={session.role} />
-      <main className="mx-auto max-w-6xl px-6 py-10">
-        <h1 className="text-2xl font-semibold">Incident map</h1>
+      <main className="app-backdrop min-h-[calc(100vh-57px)] mx-auto max-w-6xl px-6 py-10">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+          Incident map
+        </h1>
         <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
           Marker size and color reflect severity. Click a marker, or an item
           in the list, to open the incident.

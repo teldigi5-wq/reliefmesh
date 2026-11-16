@@ -6,6 +6,7 @@ import { AppNav } from "@/components/layout/app-nav";
 import { hasPermission } from "@/lib/permissions";
 import { ResourceCreateForm } from "@/components/resources/create-form";
 import { AllocateRow } from "@/components/resources/allocate-row";
+import { Card } from "@/components/ui/card";
 
 export default async function ResourcesPage() {
   const session = await getSession();
@@ -27,20 +28,24 @@ export default async function ResourcesPage() {
   return (
     <>
       <AppNav role={session.role} />
-      <main className="mx-auto max-w-4xl px-6 py-10">
-        <h1 className="text-2xl font-semibold">Resources</h1>
+      <main className="app-backdrop min-h-[calc(100vh-57px)] mx-auto max-w-4xl px-6 py-10">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+          Resources
+        </h1>
         <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
           Medical supplies, food/water, vehicles, rescue equipment and
-          shelters — tracked with quantity on hand and what's allocated.
+          shelters — tracked with quantity on hand and what&apos;s allocated.
         </p>
 
         {canManage && (
-          <section className="mt-6 rounded-lg border border-slate-200 p-5 dark:border-slate-800">
-            <h2 className="font-semibold">Add a resource</h2>
+          <Card className="mt-6">
+            <h2 className="font-semibold text-slate-900 dark:text-slate-100">
+              Add a resource
+            </h2>
             <div className="mt-3">
               <ResourceCreateForm />
             </div>
-          </section>
+          </Card>
         )}
 
         <section className="mt-8 space-y-4">
@@ -50,16 +55,18 @@ export default async function ResourcesPage() {
           {resources.map((resource) => {
             const available = resource.quantityTotal - resource.quantityInUse;
             return (
-              <div
-                key={resource.id}
-                className="rounded-lg border border-slate-200 p-4 dark:border-slate-800"
-              >
+              <Card key={resource.id} className="hover-lift p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">{resource.name}</p>
+                    <p className="font-medium text-slate-900 dark:text-slate-100">
+                      {resource.name}
+                    </p>
                     <p className="text-sm text-slate-500">
                       {resource.category.replace(/_/g, " ")} ·{" "}
-                      {available} / {resource.quantityTotal} {resource.unit} available
+                      <span className="font-medium text-slate-700 dark:text-slate-300">
+                        {available} / {resource.quantityTotal} {resource.unit}
+                      </span>{" "}
+                      available
                     </p>
                   </div>
                 </div>
@@ -73,7 +80,7 @@ export default async function ResourcesPage() {
                     />
                   </div>
                 )}
-              </div>
+              </Card>
             );
           })}
         </section>
