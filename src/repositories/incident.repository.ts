@@ -2,6 +2,19 @@ import { prisma } from "@/lib/db/prisma";
 import type { IncidentStatus } from "@prisma/client";
 import type { CreateIncidentInput } from "@/lib/validation/incident";
 
+const detailInclude = {
+  reportedBy: { select: { id: true, fullName: true, email: true } },
+  verifiedBy: { select: { id: true, fullName: true, email: true } },
+  updates: { orderBy: { createdAt: "asc" as const } },
+  assignments: {
+    include: {
+      volunteer: {
+        include: { user: { select: { id: true, fullName: true, email: true } } },
+      },
+    },
+  },
+};
+
 export const incidentRepository = {
   create(data: CreateIncidentInput, reportedById: string) {
     return prisma.incident.create({
@@ -12,7 +25,7 @@ export const incidentRepository = {
   findById(id: string) {
     return prisma.incident.findUnique({
       where: { id },
-      include: { reportedBy: true, verifiedBy: true, updates: true },
+      include: detailInclude,
     });
   },
 
@@ -20,6 +33,21 @@ export const incidentRepository = {
     return prisma.incident.findMany({
       where: filters,
       orderBy: { createdAt: "desc" },
+      include: {
+        assignments: { select: { volunteerId: true, status: true } },
+      },
+    });
+  },
+
+  // Incidents a given volunteer (by userId) has been assigned to — used so
+  // responders can see incidents even though they didn't report them.
+  findAssignedToUser(userId: string) {
+    return prisma.incident.findMany({
+      where: { assignments: { some: { volunteer: { userId } } } },
+      orderBy: { createdAt: "desc" },
+      include: {
+        assignments: { select: { volunteerId: true, status: true } },
+      },
     });
   },
 
@@ -50,7 +78,44 @@ export const incidentRepository = {
             ? { verifiedById: createdById, verifiedAt: new Date() }
             : {}),
         },
+        include: detailInclude,
       });
+    });
+  },
+
+  // Creates the assignment and moves the incident to ASSIGNED in one
+  // transaction, with an audit row, so the two can never disagree.
+  assignVolunteer(
+    incidentId: string,
+    volunteerId: string,
+    assignedById: string
+  ) {
+    return prisma.$transaction(async (tx) => {
+      const current = await tx.incident.findUniqueOrThrow({
+        where: { id: incidentId },
+      });
+
+      const assignment = await tx.responderAssignment.create({
+        data: { incidentId, volunteerId, assignedById, status: "PENDING" },
+      });
+
+      await tx.incidentUpdate.create({
+        data: {
+          incidentId,
+          fromStatus: current.status,
+          toStatus: "ASSIGNED",
+          note: "Responder assigned",
+          createdById: assignedById,
+        },
+      });
+
+      const incident = await tx.incident.update({
+        where: { id: incidentId },
+        data: { status: "ASSIGNED" },
+        include: detailInclude,
+      });
+
+      return { incident, assignment };
     });
   },
 

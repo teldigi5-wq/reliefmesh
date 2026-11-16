@@ -27,4 +27,14 @@ describe("role permissions", () => {
   it("does not allow responders to verify incidents", () => {
     expect(hasPermission("RESPONDER", "incident:verify")).toBe(false);
   });
+
+  it("allows citizens and responders to register a volunteer profile", () => {
+    expect(hasPermission("CITIZEN", "volunteer:register")).toBe(true);
+    expect(hasPermission("RESPONDER", "volunteer:register")).toBe(true);
+  });
+
+  it("does not allow responders to manage the volunteer roster or assign others", () => {
+    expect(hasPermission("RESPONDER", "volunteer:manage")).toBe(false);
+    expect(hasPermission("RESPONDER", "incident:assign")).toBe(false);
+  });
 });

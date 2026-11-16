@@ -12,16 +12,22 @@
 - [x] Simulated Guardian SOS + location API, clearly labelled test-only
 - [x] One Vitest suite (permissions logic) as a starting pattern for more tests
 
-## Day 2 — incident operations + map
+## Day 2 — incident operations + map — done
 
-- [ ] Incident list/detail pages (citizen view: "my reports"; operator view: all)
-- [ ] Verification workflow UI (operator verifies → status change → audit row)
-- [ ] Interactive map (Leaflet + OpenStreetMap) plotting incidents by severity
-- [ ] Map/list filter sync
-- [ ] Volunteer registration + profile UI
-- [ ] Responder assignment UI (operator assigns volunteer to verified incident)
-- [ ] Incident status tracking UI for responders
-- [ ] Expand automated tests to cover the incident status-transition logic
+- [x] Incident list/detail pages (citizen/responder view: own + assigned; operator/admin view: all)
+- [x] Verification workflow UI (operator verifies → status change → audit row, via `ActionPanel`)
+- [x] Interactive map (Leaflet + OpenStreetMap) plotting incidents by severity (`src/components/map/incident-map.tsx`)
+- [x] Map/list sync — `MapWithList` renders both from the same data, same click target
+- [x] Volunteer registration + profile UI (`/volunteers`, self-service for any role with `volunteer:register`)
+- [x] Responder assignment UI (operator assigns an available volunteer to a VERIFIED incident)
+- [x] Incident status tracking UI for responders (RESPONDING → RESOLVED from `/incidents/[id]`)
+- [x] Server-side transition guard (`ALLOWED_TRANSITIONS` in `incident.service.ts`) — rejects invalid jumps (e.g. REPORTED → RESOLVED) with 409
+- [x] Added `tests/validation.test.ts` and two more permission tests
+
+Known gaps carried into Day 3: no charts yet on the dashboard; incident list
+has no filter/search UI (data layer supports it, UI doesn't expose it yet);
+`/api/volunteers` GET only returns the full roster (fine for a small demo
+dataset, would want pagination for anything larger).
 
 ## Day 3 — resources, citizen portal, Guardian UI, notifications
 

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import { incidentService } from "@/services/incident.service";
 import { StatCard } from "@/components/dashboard/stat-card";
+import { AppNav } from "@/components/layout/app-nav";
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -20,7 +21,9 @@ export default async function DashboardPage() {
     byStatus.find((row) => row.status === "RESOLVED")?._count._all ?? 0;
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-10">
+    <>
+      <AppNav role={session.role} />
+      <main className="mx-auto max-w-6xl px-6 py-10">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">Operations dashboard</h1>
@@ -43,12 +46,12 @@ export default async function DashboardPage() {
       </div>
 
       <p className="mt-8 text-sm text-slate-500">
-        This shell reads real counts from the database via{" "}
-        <code>incidentService.dashboardCounts()</code> — there are no
-        hardcoded numbers here. Charts (incidents by category, by severity,
-        over time, response performance) and the incident/volunteer/resource
-        modules are the next build stages.
+        These counts come straight from the database via{" "}
+        <code>incidentService.dashboardCounts()</code>. Category/severity/
+        time-series charts are the next build stage — see{" "}
+        <code>docs/ROADMAP.md</code>.
       </p>
-    </main>
+      </main>
+    </>
   );
 }

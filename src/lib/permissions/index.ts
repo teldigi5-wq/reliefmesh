@@ -52,8 +52,13 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "incident:view_own",
     "incident:update_status",
     "guardian:view_locations",
+    "volunteer:register",
   ],
-  CITIZEN: ["incident:report", "incident:view_own"],
+  CITIZEN: [
+    "incident:report",
+    "incident:view_own",
+    "volunteer:register",
+  ],
   ORGANISATION: [
     "incident:view_all",
     "resource:manage",
