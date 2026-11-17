@@ -6,23 +6,45 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // "Signal Teal" — ReliefMesh's primary. Deliberately not the blue
-        // every SaaS dashboard defaults to: a deep, composed teal reads as
-        // trustworthy/operational without the alarm connotations of red,
-        // and leaves red free for its one real job — CRITICAL severity.
+        // "Focus Green" — ReliefMesh's primary, from the "Executive Trust &
+        // Relief" palette: a composed, institutional green that reads as
+        // calm authority rather than alarm, leaving red free for its one
+        // real job — CRITICAL severity.
         brand: {
-          50: "#effdfa",
-          100: "#d2f7ec",
-          200: "#a6efdb",
-          300: "#70e0c5",
-          400: "#3fc7aa",
-          500: "#1ea48c",
-          600: "#148273",
-          700: "#11675c",
-          800: "#0f534b",
-          900: "#0c423d",
-          950: "#052723",
+          50: "#eafaf0",
+          100: "#d2f2dd",
+          200: "#a3e0bb",
+          300: "#6cc98f",
+          400: "#2fae63",
+          500: "#0d8a3f",
+          600: "#007330",
+          700: "#045c28",
+          800: "#0a4a22",
+          900: "#0a3d1d",
+          950: "#052712",
         },
+        // "Deep Navy" — the palette's dark neutral, used for headings and
+        // body text in place of slate so the whole site reads as one
+        // considered system instead of default-UI grey.
+        navy: {
+          DEFAULT: "#2b384c",
+          50: "#eef1f4",
+          100: "#d6dce3",
+          200: "#adb9c7",
+          300: "#8496a9",
+          400: "#5f7288",
+          500: "#465873",
+          600: "#384860",
+          700: "#2b384c",
+          800: "#222c3b",
+          900: "#1a222d",
+          950: "#11161d",
+        },
+        // "Crispy Ivory" / "Warm Sand" — the palette's warm neutrals, used
+        // for section backgrounds and secondary accents instead of raw
+        // white or slate-50.
+        ivory: "#e3dac9",
+        sand: "#bda891",
         // "Signal Amber" — the warm counterpart, used sparingly: gradient
         // accents, the logo's pulse dot, highlights that want urgency
         // without borrowing the severity-red vocabulary.
