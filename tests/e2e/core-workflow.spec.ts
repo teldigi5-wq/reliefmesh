@@ -183,3 +183,67 @@ test("a citizen cannot see another citizen's incident", async ({ page }) => {
   // to /incidents rather than leaking the incident's content.
   await expect(page).toHaveURL(/\/incidents$/);
 });
+
+test("a responder cannot transition an incident they are not assigned to", async ({
+  page,
+}) => {
+  // Regression test for a real IDOR: transitionStatus() used to only check
+  // the RESPONDER role's global incident:update_status permission, never
+  // whether this particular responder was actually assigned to this
+  // particular incident — so any responder could change the status of any
+  // incident by id alone. Uses page.request (not UI clicks) because the
+  // attack itself is a direct API call, not something reachable through
+  // the UI for an incident this account was never assigned.
+  await login(page, "citizen@reliefmesh.test");
+
+  const createRes = await page.request.post("/api/incidents", {
+    data: {
+      title: `Unassigned E2E incident ${Date.now()}`,
+      description:
+        "Created to verify a responder can't transition an incident they aren't assigned to.",
+      category: "OTHER",
+      severity: "LOW",
+      latitude: 6.9271,
+      longitude: 79.8612,
+    },
+  });
+  expect(createRes.ok()).toBeTruthy();
+  const incident = await createRes.json();
+
+  await logout(page);
+  await login(page, "responder@reliefmesh.test");
+
+  const attempt = await page.request.post(
+    `/api/incidents/${incident.id}/status`,
+    { data: { toStatus: "RESOLVED" } }
+  );
+  expect(attempt.status()).toBe(403);
+  const body = await attempt.json();
+  expect(body.error).toMatch(/not permitted/i);
+});
+
+test("repeated failed logins get rate-limited", async ({ page }) => {
+  // The login rate limiter keys on the client IP taken from
+  // X-Forwarded-For (src/lib/security/rate-limit.ts). A real browser
+  // hitting this dev server sends no such header, so every other test's
+  // login() calls in this file share a single "unknown" bucket — sending
+  // 11 requests under that same key here would blow through their shared
+  // budget and could spuriously fail unrelated tests depending on run
+  // order/timing. Setting an explicit header gives this test its own
+  // isolated bucket without touching anything else's.
+  const syntheticIp = "203.0.113.55"; // TEST-NET-3 (RFC 5737): reserved for documentation/testing, never a real client.
+
+  let lastStatus = 0;
+  let lastBody: { error?: string } = {};
+  for (let i = 0; i < 11; i++) {
+    const res = await page.request.post("/api/auth/login", {
+      headers: { "x-forwarded-for": syntheticIp },
+      data: { email: "citizen@reliefmesh.test", password: "definitely-wrong" },
+    });
+    lastStatus = res.status();
+    lastBody = await res.json();
+  }
+
+  expect(lastStatus).toBe(429);
+  expect(lastBody.error).toMatch(/too many/i);
+});
