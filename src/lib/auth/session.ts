@@ -1,6 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import type { Role } from "@prisma/client";
+import { prisma } from "@/lib/db/prisma";
 
 const SESSION_COOKIE_NAME = "reliefmesh_session";
 const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 7; // 7 days
@@ -41,12 +42,34 @@ export async function getSession(): Promise<SessionPayload | null> {
   const token = cookies().get(SESSION_COOKIE_NAME)?.value;
   if (!token) return null;
 
+  let tokenPayload: SessionPayload;
   try {
     const { payload } = await jwtVerify(token, getSecretKey());
-    return payload as unknown as SessionPayload;
+    tokenPayload = payload as unknown as SessionPayload;
   } catch {
     return null;
   }
+
+  // The JWT's role/email are a snapshot from login time and are trusted
+  // for up to SESSION_DURATION_SECONDS (7 days) if taken at face value —
+  // long enough that a demoted admin, a disabled account, or a changed
+  // role would stay fully privileged until the token expires on its own.
+  // Re-checking against the database on every request closes that gap at
+  // the cost of one extra query per authenticated request; for this app's
+  // scale that's a reasonable trade for not trusting a week-old claim
+  // about who someone currently is.
+  const user = await prisma.user.findUnique({
+    where: { id: tokenPayload.userId },
+    select: { role: true, isActive: true, email: true },
+  });
+
+  if (!user || !user.isActive) return null;
+
+  return {
+    userId: tokenPayload.userId,
+    role: user.role,
+    email: user.email,
+  };
 }
 
 export function destroySession(): void {
