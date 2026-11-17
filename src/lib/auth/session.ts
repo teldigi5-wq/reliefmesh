@@ -1,5 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import type { Role } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 
@@ -22,7 +22,12 @@ export interface SessionPayload {
   email: string;
 }
 
-export async function createSession(payload: SessionPayload): Promise<void> {
+// Returns the raw signed token in addition to setting the cookie. The web
+// app ignores the return value (the cookie is all it needs); the mobile app
+// has no cookie jar, so the login route hands this same token back in the
+// JSON response body for it to store (in SecureStore) and send as
+// "Authorization: Bearer <token>" on every request instead.
+export async function createSession(payload: SessionPayload): Promise<string> {
   const token = await new SignJWT({ ...payload })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -36,10 +41,22 @@ export async function createSession(payload: SessionPayload): Promise<void> {
     path: "/",
     maxAge: SESSION_DURATION_SECONDS,
   });
+
+  return token;
 }
 
 export async function getSession(): Promise<SessionPayload | null> {
-  const token = cookies().get(SESSION_COOKIE_NAME)?.value;
+  // Cookie first (the web app's path); fall back to a bearer token for
+  // clients with no cookie jar (the mobile app). Checking the header via
+  // headers() rather than threading the request through every caller keeps
+  // every existing getSession() call site — most of them server components
+  // with no request object in scope — unchanged.
+  const cookieToken = cookies().get(SESSION_COOKIE_NAME)?.value;
+  const authHeader = headers().get("authorization");
+  const bearerToken = authHeader?.startsWith("Bearer ")
+    ? authHeader.slice("Bearer ".length)
+    : undefined;
+  const token = cookieToken ?? bearerToken;
   if (!token) return null;
 
   let tokenPayload: SessionPayload;

@@ -55,8 +55,21 @@ export async function POST(req: NextRequest) {
     return genericError;
   }
 
-  await createSession({ userId: user.id, role: user.role, email: user.email });
+  const token = await createSession({
+    userId: user.id,
+    role: user.role,
+    email: user.email,
+  });
   await auditLog(user.id, "LOGIN_SUCCEEDED", "User", user.id);
 
-  return NextResponse.json({ id: user.id, email: user.email, role: user.role });
+  // token: for the mobile app, which has no cookie jar and authenticates
+  // every subsequent request with "Authorization: Bearer <token>" instead.
+  // The web login page never reads this field — it's already authenticated
+  // via the httpOnly cookie createSession() just set.
+  return NextResponse.json({
+    id: user.id,
+    email: user.email,
+    role: user.role,
+    token,
+  });
 }

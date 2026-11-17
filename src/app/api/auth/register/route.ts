@@ -48,11 +48,15 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  await createSession({ userId: user.id, role: user.role, email: user.email });
+  const token = await createSession({
+    userId: user.id,
+    role: user.role,
+    email: user.email,
+  });
   await auditLog(user.id, "USER_REGISTERED", "User", user.id);
 
   return NextResponse.json(
-    { id: user.id, email: user.email, role: user.role },
+    { id: user.id, email: user.email, role: user.role, token },
     { status: 201 }
   );
 }
