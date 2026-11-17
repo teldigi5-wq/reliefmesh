@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "ReliefMesh",
+    "slug": "reliefmesh-mobile",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "../public/icons/icon-512.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#0b1220"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "ReliefMesh needs your location to attach accurate coordinates to emergency reports and to find your position when you trigger an SOS.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "ReliefMesh needs your location to attach accurate coordinates to emergency reports."
+      }
+    },
+    "android": {
+      "package": "com.reliefmesh.mobile",
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
+      "adaptiveIcon": {
+        "foregroundImage": "../public/icons/icon-512.png",
+        "backgroundColor": "#0b1220"
+      }
+    },
+    "extra": {
+      "apiUrl": "https://reliefmesh-theta.vercel.app"
+    }
+  }
+}
