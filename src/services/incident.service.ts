@@ -89,6 +89,24 @@ export const incidentService = {
     const current = await incidentRepository.findById(incidentId);
     if (!current) throw new Error("Incident not found");
 
+    // RESPONDER holds incident:update_status globally (so operators don't
+    // have to grant it per-incident), but that permission check alone lets
+    // any responder transition *any* incident by guessing/enumerating its
+    // id — an IDOR, not just a permissions gap. Operators/admins have
+    // incident:view_all and are meant to act on every incident, so this
+    // only restricts the RESPONDER role specifically, to ones they're
+    // actually assigned to.
+    if (actor.role === "RESPONDER") {
+      const isAssignedToActor = current.assignments.some(
+        (a) => a.volunteer.user.id === actor.id
+      );
+      if (!isAssignedToActor) {
+        throw new PermissionError(
+          "Not permitted to update an incident you aren't assigned to"
+        );
+      }
+    }
+
     if (!ALLOWED_TRANSITIONS[current.status].includes(toStatus)) {
       throw new InvalidTransitionError(
         `Cannot move an incident from ${current.status} to ${toStatus}`
