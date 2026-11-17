@@ -4,6 +4,7 @@ import { guardianService } from "@/services/guardian.service";
 import { AppNav } from "@/components/layout/app-nav";
 import { SOSMapLoader } from "@/components/guardian/sos-map-loader";
 import { PermissionError } from "@/lib/permissions";
+import { RemoteSimulator } from "@/components/guardian/remote-simulator";
 
 export default async function GuardianPage() {
   const session = await getSession();
@@ -57,6 +58,10 @@ export default async function GuardianPage() {
         <div className="mt-6">
           <SOSMapLoader events={mapEvents} />
         </div>
+
+        {(session.role === "ADMIN" || session.role === "OPERATOR") && (
+          <RemoteSimulator />
+        )}
 
         <section className="mt-8">
           <h2 className="font-semibold text-slate-900 dark:text-slate-100">

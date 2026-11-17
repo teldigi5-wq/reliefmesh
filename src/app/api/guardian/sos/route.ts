@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-import { prisma } from "@/lib/db/prisma";
 import { checkRateLimit, clientIpFrom } from "@/lib/security/rate-limit";
 import { timingSafeEqualStrings } from "@/lib/security/timing-safe-equal";
 import { auditLog } from "@/lib/security/audit";
+import { guardianSOSSchema } from "@/lib/validation/guardian";
+import { guardianService } from "@/services/guardian.service";
 
 /**
  * SIMULATED / TEST endpoint only.
@@ -16,13 +16,6 @@ import { auditLog } from "@/lib/security/audit";
  * Use scripts/simulate-sos.ts (or any HTTP client) to send a test event —
  * see docs/GUARDIAN.md.
  */
-
-const sosEventSchema = z.object({
-  deviceSerial: z.string().min(3),
-  latitude: z.number().min(-90).max(90),
-  longitude: z.number().min(-180).max(180),
-  batteryPct: z.number().min(0).max(100).optional(),
-});
 
 export async function POST(req: NextRequest) {
   const ip = clientIpFrom(req);
@@ -43,7 +36,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json().catch(() => null);
-  const parsed = sosEventSchema.safeParse(body);
+  const parsed = guardianSOSSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid input", details: parsed.error.flatten() },
@@ -51,29 +44,29 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { deviceSerial, latitude, longitude, batteryPct } = parsed.data;
+  try {
+    const result = await guardianService.triggerDeviceSOS({
+      ...parsed.data,
+      category: "OTHER",
+      description: "Emergency submitted by the simulated Guardian hardware API.",
+      networkType: "GPRS",
+      locationSource: "SIMULATED_GPS",
+    });
 
-  const device = await prisma.guardianDevice.upsert({
-    where: { deviceSerial },
-    create: { deviceSerial, status: "ACTIVE", batteryPct, lastSeenAt: new Date() },
-    update: { status: "ACTIVE", batteryPct, lastSeenAt: new Date() },
-  });
-
-  const sosEvent = await prisma.sOSEvent.create({
-    data: {
-      deviceId: device.id,
-      latitude,
-      longitude,
-      isSimulated: true, // hard-coded: this route never produces a real event
-    },
-  });
-
-  await auditLog(null, "GUARDIAN_SOS_SIMULATED", "SOSEvent", sosEvent.id, {
-    deviceSerial,
-  });
-
-  return NextResponse.json(
-    { ...sosEvent, notice: "SIMULATED TEST EVENT — no physical device involved" },
-    { status: 201 }
-  );
+    return NextResponse.json(
+      {
+        ...result.sosEvent,
+        incidentId: result.incident.id,
+        notice:
+          "SIMULATED TEST EVENT — a genuine linked incident was created; no physical device involved",
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Guardian SOS failed", error);
+    return NextResponse.json(
+      { error: "Guardian SOS could not create an incident" },
+      { status: 503 }
+    );
+  }
 }

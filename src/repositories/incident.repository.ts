@@ -70,6 +70,28 @@ export const incidentRepository = {
         },
       });
 
+      if (toStatus === "RESPONDING") {
+        await tx.responderAssignment.updateMany({
+          where: {
+            incidentId: id,
+            volunteer: { userId: createdById },
+            status: { in: ["PENDING", "ACCEPTED"] },
+          },
+          data: { status: "IN_PROGRESS" },
+        });
+      }
+
+      if (toStatus === "RESOLVED") {
+        await tx.responderAssignment.updateMany({
+          where: {
+            incidentId: id,
+            volunteer: { userId: createdById },
+            status: "IN_PROGRESS",
+          },
+          data: { status: "COMPLETED", completedAt: new Date() },
+        });
+      }
+
       return tx.incident.update({
         where: { id },
         data: {
