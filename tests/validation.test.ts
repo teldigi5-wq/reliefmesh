@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { transitionStatusSchema, assignVolunteerSchema } from "@/lib/validation/volunteer";
 import { createIncidentSchema } from "@/lib/validation/incident";
 import { createResourceSchema, allocateResourceSchema } from "@/lib/validation/resource";
+import { guardianSimulatorSchema } from "@/lib/validation/guardian";
 
 describe("volunteer/incident validation schemas", () => {
   it("rejects an unknown status on a transition request", () => {
@@ -63,5 +64,31 @@ describe("volunteer/incident validation schemas", () => {
     expect(
       allocateResourceSchema.safeParse({ incidentId: "inc_1", quantity: 5 }).success
     ).toBe(true);
+  });
+
+  it("validates Guardian simulator telemetry and applies safe defaults", () => {
+    const result = guardianSimulatorSchema.safeParse({
+      deviceSerial: "SIM-REMOTE-001",
+      latitude: 6.9271,
+      longitude: 79.8612,
+      batteryPct: 87,
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.category).toBe("OTHER");
+      expect(result.data.networkType).toBe("GPRS");
+      expect(result.data.locationSource).toBe("SIMULATED_GPS");
+    }
+  });
+
+  it("rejects impossible Guardian battery and GPS telemetry", () => {
+    expect(
+      guardianSimulatorSchema.safeParse({
+        deviceSerial: "SIM-REMOTE-001",
+        latitude: 95,
+        longitude: 79.8612,
+        batteryPct: 120,
+      }).success
+    ).toBe(false);
   });
 });

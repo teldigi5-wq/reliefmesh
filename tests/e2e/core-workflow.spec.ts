@@ -126,7 +126,7 @@ test("full incident lifecycle: report → verify → assign → respond → reso
   await test.step("responder progresses the incident to resolved", async () => {
     await login(page, "responder@reliefmesh.test");
     await page.goto(incidentUrl);
-    await page.getByRole("button", { name: /start responding/i }).click();
+    await page.getByRole("button", { name: /accept.*start response/i }).click();
     await expect(page.getByTestId("status-badge")).toHaveText("RESPONDING");
     await page.getByRole("button", { name: /mark resolved/i }).click();
     await expect(page.getByTestId("status-badge")).toHaveText("RESOLVED");

@@ -95,7 +95,7 @@ export function ActionPanel({
 
         {isResponder && status === "ASSIGNED" && (
           <Button disabled={isBusy} onClick={() => transition("RESPONDING")}>
-            Start responding
+            Accept &amp; start response
           </Button>
         )}
 

@@ -87,11 +87,15 @@ npm run build         # production build — catches issues dev mode won't
 ```
 
 To exercise the simulated Guardian SOS endpoint (no physical device exists —
-this just proves the API contract works):
+this creates a real linked incident through the device API contract):
 
 ```bash
 GUARDIAN_DEVICE_API_SECRET=<same value as in .env> npx tsx scripts/simulate-sos.ts
 ```
+
+Admins and operators can also open `/guardian` and use the virtual remote to
+demonstrate battery, GPS, GPRS failure/retry, phone GPS, acknowledgement, and
+the resulting incident without exposing the device secret to the browser.
 
 To run the end-to-end test suite (exercises the real app in a real browser
 against your seeded database — install browsers once, then run):
