@@ -4,6 +4,7 @@ import { incidentService } from "@/services/incident.service";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { AppNav } from "@/components/layout/app-nav";
 import { Card } from "@/components/ui/card";
+import { DisclaimerBanner } from "@/components/ui/disclaimer-banner";
 import {
   CategoryBarChart,
   SeverityBarChart,
@@ -68,6 +69,7 @@ export default async function DashboardPage() {
     <>
       <AppNav role={session.role} />
       <main className="app-backdrop min-h-[calc(100vh-57px)] mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+        <DisclaimerBanner />
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">

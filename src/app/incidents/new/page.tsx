@@ -4,6 +4,8 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { inputClass, labelClass } from "@/components/ui/field-styles";
+import { LocationPicker } from "@/components/incidents/location-picker";
+import { DisclaimerBanner } from "@/components/ui/disclaimer-banner";
 
 const CATEGORIES = [
   "FLOOD",
@@ -24,34 +26,20 @@ export default function NewIncidentPage() {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
     null
   );
-  const [locating, setLocating] = useState(false);
-
-  function useMyLocation() {
-    if (!navigator.geolocation) {
-      setError("Geolocation isn't available in this browser — enter coordinates manually.");
-      return;
-    }
-    setLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-        setLocating(false);
-      },
-      () => {
-        setError("Couldn't get your location — enter coordinates manually.");
-        setLocating(false);
-      }
-    );
-  }
+  const [address, setAddress] = useState("");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     setIsSubmitting(true);
 
+    if (!coords) {
+      setError("Set a location — search for one, use your current location, or enter coordinates.");
+      setIsSubmitting(false);
+      return;
+    }
+
     const form = new FormData(e.currentTarget);
-    const latitude = Number(form.get("latitude"));
-    const longitude = Number(form.get("longitude"));
 
     const res = await fetch("/api/incidents", {
       method: "POST",
@@ -61,9 +49,9 @@ export default function NewIncidentPage() {
         description: form.get("description"),
         category: form.get("category"),
         severity: form.get("severity"),
-        latitude,
-        longitude,
-        address: form.get("address") || undefined,
+        latitude: coords.lat,
+        longitude: coords.lng,
+        address: address || undefined,
       }),
     });
 
@@ -89,6 +77,7 @@ export default function NewIncidentPage() {
   return (
     <main className="app-backdrop min-h-screen px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-xl">
+        <DisclaimerBanner />
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
           Report an emergency
         </h1>
@@ -136,45 +125,12 @@ export default function NewIncidentPage() {
               </label>
             </div>
 
-            <Field
-              label="Address (optional)"
-              name="address"
-              placeholder="Nearest landmark or address"
+            <LocationPicker
+              address={address}
+              onAddressChange={setAddress}
+              coords={coords}
+              onCoordsChange={setCoords}
             />
-
-            <div className="rounded-lg border border-slate-200 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-800/40">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">Location</span>
-                <button
-                  type="button"
-                  onClick={useMyLocation}
-                  disabled={locating}
-                  className="text-sm font-medium text-brand-600 hover:text-brand-700 hover:underline disabled:opacity-50"
-                >
-                  {locating ? "Locating..." : "Use my current location"}
-                </button>
-              </div>
-              <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <Field
-                  label="Latitude"
-                  name="latitude"
-                  type="number"
-                  step="any"
-                  required
-                  defaultValue={coords?.lat}
-                  key={coords?.lat}
-                />
-                <Field
-                  label="Longitude"
-                  name="longitude"
-                  type="number"
-                  step="any"
-                  required
-                  defaultValue={coords?.lng}
-                  key={coords?.lng}
-                />
-              </div>
-            </div>
 
             {error && <p className="text-sm text-red-600">{error}</p>}
 
