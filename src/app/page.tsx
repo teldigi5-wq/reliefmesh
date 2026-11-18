@@ -361,11 +361,12 @@ export default function LandingPage() {
               <a href="#guardians">Guardian collection</a>
               <a href="#technology">Architecture</a>
               <Link href="/login">Log in</Link>
+              <Link href="/privacy">Privacy</Link>
             </nav>
           </div>
           <div className="rm-footer-bottom">
             <span>© 2026 ReliefMesh · Wearable imagery is illustrative.</span>
-            <span><CheckCircle2 size={14} aria-hidden="true" /> Safety for Every Life.</span>
+            <span><CheckCircle2 size={14} aria-hidden="true" /> Safety for Every Life. <CookieSettingsButton className="rm-cookie-footer-button" /></span>
           </div>
         </div>
       </footer>

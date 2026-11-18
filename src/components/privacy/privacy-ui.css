@@ -37,3 +37,11 @@
 .rm-toast button:hover{background:#d8eef0}
 @media(max-width:540px){.rm-cookie-banner{left:12px;bottom:12px}.rm-toast{right:12px;bottom:12px}}
 @media(prefers-reduced-motion:reduce){.rm-cookie-banner *, .rm-toast *{transition:none!important}}
+
+
+/* Quick feedback during secure sign-in and registration. */
+.rm-auth-spinner{display:inline-block;width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:rm-auth-spin .62s linear infinite;flex:none}
+@keyframes rm-auth-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.rm-auth-spinner{animation:none;border-right-color:currentColor}}
+.rm-cookie-footer-button{background:none;border:0;color:inherit;padding:3px 2px 3px 10px;text-decoration:underline;text-underline-offset:3px;font:inherit;cursor:pointer}
+.rm-cookie-footer-button:hover{color:#40e3e3}

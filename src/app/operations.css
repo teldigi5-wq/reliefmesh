@@ -254,3 +254,13 @@ a.ops-list-row:hover{border-color:var(--ops-accent);transform:translateY(-1px)}
 @media(prefers-reduced-motion:reduce){
  .ops-compare-fill,.ops-severity-fill,.ops-range-control button{transition:none}
 }
+
+
+/* Route loading placeholders: immediate feedback, no fake incident metrics. */
+.ops-skeleton{border-radius:12px;background:linear-gradient(110deg,var(--ops-card) 8%,var(--ops-card-soft) 34%,var(--ops-card) 60%);background-size:190% 100%;animation:ops-skeleton-pulse 1.35s ease-in-out infinite;border:1px solid var(--ops-border)}
+.ops-skeleton-heading{width:min(400px,78%);height:34px}
+.ops-skeleton-subheading{width:min(580px,95%);height:16px;margin-top:17px}
+.ops-skeleton-card{height:126px;border-radius:17px}
+.ops-skeleton-chart{height:310px;border-radius:19px}
+@keyframes ops-skeleton-pulse{to{background-position-x:-190%}}
+@media(prefers-reduced-motion:reduce){.ops-skeleton{animation:none}}
