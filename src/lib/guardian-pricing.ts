@@ -34,6 +34,8 @@ export type GuardianPrice = {
   location: string;
   wellness: string;
   phoneRequired: boolean;
+  /** Describe support for a family that has only a keypad/feature phone, not an Android app. */
+  keypadPhoneHousehold: string;
   networkCosts: string;
   portability: string;
   communitySupportGoalLkr?: number;
@@ -58,6 +60,7 @@ export const guardianPricing: Record<GuardianDeviceKey, GuardianPrice> = {
     location: "Paired phone's location",
     wellness: "None",
     phoneRequired: true,
+    keypadPhoneHousehold: "Not directly compatible. The SOS sender must have a paired smartphone.",
     networkCosts: "Phone data",
     portability: "Small keychain, bag or pocket",
   },
@@ -78,6 +81,7 @@ export const guardianPricing: Record<GuardianDeviceKey, GuardianPrice> = {
     location: "Paired phone's location",
     wellness: "None",
     phoneRequired: true,
+    keypadPhoneHousehold: "Not directly compatible. The ring's SOS depends on a paired smartphone.",
     networkCosts: "Phone data",
     portability: "Worn on a finger; everyday-carry design goal",
   },
@@ -98,6 +102,7 @@ export const guardianPricing: Record<GuardianDeviceKey, GuardianPrice> = {
     location: "Paired phone's location",
     wellness: "Experimental PPG / temperature",
     phoneRequired: true,
+    keypadPhoneHousehold: "Not directly compatible. The ring's SOS depends on a paired smartphone.",
     networkCosts: "Phone data",
     portability: "Worn on a finger; everyday-carry design goal",
   },
@@ -118,6 +123,7 @@ export const guardianPricing: Record<GuardianDeviceKey, GuardianPrice> = {
     location: "Integrated GNSS (planned)",
     wellness: "None",
     phoneRequired: false,
+    keypadPhoneHousehold: "Planned SMS or voice alert to family keypad phones using the device's own SIM. Not implemented or certified.",
     networkCosts: "Separate SIM / data plan",
     portability: "Clip, lanyard or bag attachment design goal (dimensions untested)",
     communitySupportGoalLkr: 3990,

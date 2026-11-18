@@ -359,3 +359,22 @@ html:has(.rm-site){scroll-behavior:smooth}
 .rm-family-access-plan p strong{color:#f4ffff;font-weight:820}
 .rm-family-access-plan p b{color:#dff3f5}
 @media(max-width:600px){.rm-family-access-plan{flex-direction:column;padding:20px}.rm-family-plan-icon{width:42px;height:42px}}
+
+
+/* Smartphone-free family outreach: clearly separate concepts from available products. */
+.rm-keypad-section{margin:2px 0 27px;border:1px solid #315e6a;border-radius:18px;padding:25px;background:linear-gradient(135deg,#0c2a38,#081f2e)}
+.rm-keypad-intro{max-width:760px}
+.rm-keypad-intro h3{font-size:clamp(23px,2.9vw,36px);font-weight:820;letter-spacing:-.04em;line-height:1.14;margin:9px 0 12px;color:#f0feff}
+.rm-keypad-intro p{font-size:13px;line-height:1.7;color:#bad1dd}
+.rm-keypad-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0}
+.rm-keypad-option{padding:19px 16px 16px;border:1px solid #325262;background:#102b3d;border-radius:14px;display:flex;flex-direction:column}
+.rm-keypad-number{font-size:9px;font-weight:820;color:#59dce0;letter-spacing:.09em}
+.rm-keypad-option h4{color:#f3fbfc;font-weight:790;letter-spacing:-.02em;font-size:17px;margin:10px 0}
+.rm-keypad-option p{font-size:11px;line-height:1.6;color:#afc8d4;flex:1}
+.rm-keypad-availability{font-size:10px;line-height:1.5;color:#78dfd5;font-weight:700;margin-top:17px;border-top:1px solid #2c5260;padding-top:12px}
+.rm-keypad-flow{padding:17px 20px;border-radius:12px;background:#071b28;border:1px solid #33606b}
+.rm-keypad-flow strong{display:block;font-size:13px;color:#e9fdfc;font-weight:760;margin-bottom:5px}
+.rm-keypad-flow p{font-size:12px;line-height:1.65;color:#b4eff0}
+.rm-keypad-flow small{display:block;font-size:10px;line-height:1.65;color:#96b8c6;margin-top:9px}
+@media(max-width:950px){.rm-keypad-options{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.rm-keypad-section{padding:19px}.rm-keypad-options{grid-template-columns:1fr}.rm-keypad-intro h3{font-size:25px}}
