@@ -1,44 +1,20 @@
-import { clsx } from "clsx";
-
+import { Activity, AlertTriangle, CheckCircle2, Clock3, Layers3, type LucideIcon } from "lucide-react";
 type Tone = "default" | "critical" | "positive";
-
-const toneClasses: Record<Tone, string> = {
-  default: "text-slate-900 dark:text-slate-100",
-  critical: "text-severity-critical",
-  positive: "text-severity-low",
+const ICONS: Record<string, LucideIcon> = {
+ "Total incidents": Layers3,
+ "Active emergencies": Activity,
+ "Critical": AlertTriangle,
+ "Resolved": CheckCircle2,
+ "Avg. resolution time": Clock3,
 };
-
-const toneAccent: Record<Tone, string> = {
-  default: "bg-brand-500",
-  critical: "bg-severity-critical",
-  positive: "bg-severity-low",
-};
-
-export function StatCard({
-  label,
-  value,
-  tone = "default",
-}: {
-  label: string;
-  value: number;
-  tone?: Tone;
+export function StatCard({ label, value, tone = "default", hint }: {
+ label: string; value: number | string; tone?: Tone; hint?: string;
 }) {
-  return (
-    <div className="surface-card hover-lift relative overflow-hidden p-5">
-      <span
-        className={clsx("absolute inset-x-0 top-0 h-1", toneAccent[tone])}
-      />
-      <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-        {label}
-      </p>
-      <p
-        className={clsx(
-          "mt-2 text-3xl font-bold tracking-tight",
-          toneClasses[tone]
-        )}
-      >
-        {value}
-      </p>
-    </div>
-  );
+ const Icon = ICONS[label] ?? Activity;
+ return (
+   <article className={"ops-stat ops-stat-" + tone}>
+     <div className="ops-stat-top"><p>{label}</p><span className="ops-stat-icon"><Icon size={19} strokeWidth={1.9} aria-hidden="true" /></span></div>
+     <div className="ops-stat-bottom"><strong>{value}</strong><span>{hint ?? "From incident records"}</span></div>
+   </article>
+ );
 }

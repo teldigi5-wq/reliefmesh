@@ -1,133 +1,66 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { clsx } from "clsx";
 import type { Role } from "@prisma/client";
+import { LayoutDashboard, AlertTriangle, MapPinned, UsersRound, Boxes, Radio, Menu, X, ChevronRight, LogOut } from "lucide-react";
 import { NotificationBell } from "@/components/layout/notification-bell";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Logo } from "@/components/ui/logo";
-
-const roleClasses: Record<Role, string> = {
-  ADMIN: "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300",
-  OPERATOR: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
-  RESPONDER: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300",
-  CITIZEN: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300",
-  ORGANISATION: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300",
-};
-
-const LINKS: { href: string; label: string }[] = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/incidents", label: "Incidents" },
-  { href: "/map", label: "Map" },
-  { href: "/volunteers", label: "Volunteers" },
-  { href: "/resources", label: "Resources" },
-  { href: "/guardian", label: "Guardian" },
+const LINKS = [
+ { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+ { href: "/incidents", label: "Incidents", icon: AlertTriangle },
+ { href: "/map", label: "Map", icon: MapPinned },
+ { href: "/volunteers", label: "Volunteers", icon: UsersRound },
+ { href: "/resources", label: "Resources", icon: Boxes },
+ { href: "/guardian", label: "Guardian", icon: Radio },
 ];
-
 export function AppNav({ role }: { role: Role }) {
-  const pathname = usePathname();
-  // Below this, the 6 nav links + logo + bell + theme toggle + role badge
-  // don't fit in one row (observed overflow starting around 820-900px on a
-  // real layout with this many items), so they move into a collapsible
-  // mobile menu instead of wrapping or scrolling horizontally.
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  const isActive = (href: string) =>
-    pathname === href || pathname?.startsWith(href + "/");
-
-  return (
-    <nav className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/80 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-950/80">
-      <div className="mx-auto flex max-w-6xl items-center gap-1 px-4 py-3 sm:px-6">
-        <Link href="/dashboard" className="shrink-0">
-          <Logo />
-        </Link>
-
-        {/* Desktop/tablet link row — hidden once there isn't room for it. */}
-        <div className="ml-6 hidden items-center gap-1 text-sm lg:flex">
-          {LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={clsx(
-                "rounded-md px-3 py-1.5 font-medium transition-colors",
-                isActive(link.href)
-                  ? "bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300"
-                  : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-
-        <span className="ml-auto flex items-center gap-2 sm:gap-3">
-          <span className="hidden sm:inline-flex">
-            <ThemeToggle />
-          </span>
-          <NotificationBell />
-          <span
-            className={clsx(
-              "hidden rounded-full px-2.5 py-1 text-xs font-semibold sm:inline-flex",
-              roleClasses[role]
-            )}
-          >
-            {role}
-          </span>
-
-          {/* Hamburger — only present below the breakpoint where the link
-              row above is hidden, so it never shows up alongside it. */}
-          <button
-            type="button"
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
-            aria-expanded={mobileOpen}
-            onClick={() => setMobileOpen((open) => !open)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 lg:hidden"
-          >
-            {mobileOpen ? (
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" d="M4 7h16M4 12h16M4 17h16" />
-              </svg>
-            )}
-          </button>
-        </span>
-      </div>
-
-      {/* Mobile menu panel: links, then the role badge/theme toggle that got
-          hidden from the top bar above, so nothing is unreachable on a
-          phone-width screen. */}
-      {mobileOpen && (
-        <div className="border-t border-slate-200/80 px-4 pb-3 pt-2 dark:border-slate-800/80 lg:hidden">
-          <div className="flex flex-col gap-1 text-sm">
-            {LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className={clsx(
-                  "rounded-md px-3 py-2 font-medium transition-colors",
-                  isActive(link.href)
-                    ? "bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-          <div className="mt-2 flex items-center justify-between border-t border-slate-200/80 pt-2 dark:border-slate-800/80 sm:hidden">
-            <span className={clsx("rounded-full px-2.5 py-1 text-xs font-semibold", roleClasses[role])}>
-              {role}
-            </span>
-            <ThemeToggle />
-          </div>
-        </div>
-      )}
-    </nav>
-  );
+ const pathname = usePathname();
+ const [mobileOpen, setMobileOpen] = useState(false);
+ const active = (href: string) => pathname === href || pathname?.startsWith(href + "/");
+ return (
+   <nav className="ops-nav" aria-label="Application navigation">
+     <div className="ops-nav-inner">
+       <Link href="/dashboard" className="ops-nav-brand" aria-label="ReliefMesh operations home">
+         <Logo badgeSize="h-9 w-9" wordmarkClassName="text-base font-extrabold tracking-tight text-slate-900 dark:text-white" />
+         <span className="ops-brand-suffix">OPS</span>
+       </Link>
+       <div className="ops-nav-links">
+         {LINKS.map(({ href, label, icon: Icon }) => (
+           <Link key={href} href={href} aria-current={active(href) ? "page" : undefined}
+             className={"ops-nav-link" + (active(href) ? " is-active" : "")}>
+             <Icon size={16} strokeWidth={1.9} aria-hidden="true" />{label}
+           </Link>
+         ))}
+       </div>
+       <div className="ops-nav-actions">
+         <span className="ops-nav-theme"><ThemeToggle /></span>
+         <NotificationBell />
+         <span className="ops-role">{role.replace(/_/g, " ")}</span>
+         <form action="/api/auth/logout" method="post"><button type="submit" className="ops-signout" aria-label="Log out" title="Log out"><LogOut size={17}/></button></form>
+         <button type="button" className="ops-menu-btn"
+           aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
+           aria-expanded={mobileOpen} aria-controls="ops-mobile-menu"
+           onClick={() => setMobileOpen(v => !v)}>
+           {mobileOpen ? <X size={21} /> : <Menu size={21} />}
+         </button>
+       </div>
+     </div>
+     {mobileOpen && (
+       <div id="ops-mobile-menu" className="ops-mobile-panel">
+         <div className="ops-mobile-list">
+           {LINKS.map(({ href, label, icon: Icon }) => (
+             <Link key={href} href={href} onClick={() => setMobileOpen(false)}
+               aria-current={active(href) ? "page" : undefined}
+               className={"ops-mobile-link" + (active(href) ? " is-active" : "")}>
+               <Icon size={18} aria-hidden="true" />{label}<ChevronRight size={16} className="ml-auto" aria-hidden="true" />
+             </Link>
+           ))}
+         </div>
+         <div className="ops-mobile-footer"><span>{role}</span><ThemeToggle /></div>
+       </div>
+     )}
+   </nav>
+ );
 }
