@@ -48,12 +48,16 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  const token = await createSession({
+  // Run independent token signing and security audit concurrently.
+  // Both are still awaited before responding; no audit event is skipped.
+  const [token] = await Promise.all([
+    createSession({
     userId: user.id,
     role: user.role,
     email: user.email,
-  });
-  await auditLog(user.id, "USER_REGISTERED", "User", user.id);
+    }),
+    auditLog(user.id, "USER_REGISTERED", "User", user.id);
+  ]);
 
   return NextResponse.json(
     { id: user.id, email: user.email, role: user.role, token },
