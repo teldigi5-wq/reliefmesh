@@ -42,12 +42,15 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       );
     }
-    return NextResponse.json({
-      ok: true,
-      eventId: result.eventId,
-      incidentId: result.incidentId,
-      recordedAt: result.location.recordedAt,
-    });
+    return NextResponse.json(
+      {
+        ok: true,
+        eventId: result.eventId,
+        incidentId: result.incidentId,
+        recordedAt: result.location.recordedAt,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     if (error instanceof PermissionError) {
       return NextResponse.json({ error: error.message }, { status: 403 });
