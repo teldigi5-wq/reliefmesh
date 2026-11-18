@@ -1,6 +1,13 @@
 "use client";
 
-import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
+import { useEffect } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  CircleMarker,
+  Popup,
+  useMap,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 export interface MapSOSEvent {
@@ -29,6 +36,7 @@ export function SOSMap({ events }: { events: MapSOSEvent[] }) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      <MapFocus event={first} />
       {events.map((event) => (
         <CircleMarker
           key={event.id}
@@ -50,4 +58,18 @@ export function SOSMap({ events }: { events: MapSOSEvent[] }) {
       ))}
     </MapContainer>
   );
+}
+
+function MapFocus({ event }: { event?: MapSOSEvent }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!event) return;
+    map.flyTo([event.latitude, event.longitude], Math.max(map.getZoom(), 14), {
+      animate: true,
+      duration: 0.8,
+    });
+  }, [event, map]);
+
+  return null;
 }

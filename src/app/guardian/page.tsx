@@ -49,19 +49,39 @@ export default async function GuardianPage() {
           Guardian device monitoring
         </h1>
         <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 shadow-sm dark:border-amber-900 dark:bg-amber-950/40 dark:text-amber-200">
-          No physical Guardian SOS hardware exists yet. Everything below comes
-          from the simulated test API (<code>docs/GUARDIAN.md</code>) — every
-          event is tagged SIMULATED and there is no code path that can mark
-          one as real.
+          The virtual remote uses real browser GPS, the authenticated Guardian
+          API and the production data model. Hardware is simulated, every event
+          is tagged SIMULATED, and there is no code path that can mark one as
+          physical hardware.
         </p>
 
-        <div className="mt-6">
-          <SOSMapLoader events={mapEvents} />
+        <div className="mt-5 grid gap-2 rounded-2xl border border-slate-200 bg-white/80 p-3 shadow-sm sm:grid-cols-4 dark:border-slate-800 dark:bg-slate-900/70">
+          <p className="rounded-xl bg-slate-50 px-3 py-3 text-center text-xs font-bold dark:bg-slate-800">1 · Virtual SOS remote</p>
+          <p className="rounded-xl bg-slate-50 px-3 py-3 text-center text-xs font-bold dark:bg-slate-800">2 · Secured Next.js API</p>
+          <p className="rounded-xl bg-slate-50 px-3 py-3 text-center text-xs font-bold dark:bg-slate-800">3 · Supabase incident + GPS</p>
+          <p className="rounded-xl bg-slate-50 px-3 py-3 text-center text-xs font-bold dark:bg-slate-800">4 · Operator alerts + map</p>
         </div>
 
         {(session.role === "ADMIN" || session.role === "OPERATOR") && (
           <RemoteSimulator />
         )}
+
+        <section className="mt-8">
+          <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-600">
+                Live operational view
+              </p>
+              <h2 className="mt-1 font-semibold text-slate-900 dark:text-slate-100">
+                SOS location map
+              </h2>
+            </div>
+            <p className="text-xs text-slate-500">
+              Live GPS updates move the marker and linked incident coordinates.
+            </p>
+          </div>
+          <SOSMapLoader events={mapEvents} />
+        </section>
 
         <section className="mt-8">
           <h2 className="font-semibold text-slate-900 dark:text-slate-100">

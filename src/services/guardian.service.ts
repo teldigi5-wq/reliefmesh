@@ -1,7 +1,10 @@
 import { guardianRepository } from "@/repositories/guardian.repository";
 import { hasPermission, PermissionError } from "@/lib/permissions";
 import type { Role } from "@prisma/client";
-import type { GuardianSimulatorInput } from "@/lib/validation/guardian";
+import type {
+  GuardianSimulatorInput,
+  GuardianSimulatorLocationInput,
+} from "@/lib/validation/guardian";
 import { notificationService } from "@/services/notification.service";
 import { auditLog } from "@/lib/security/audit";
 
@@ -49,6 +52,16 @@ export const guardianService = {
       }),
     ]);
     return result;
+  },
+
+  async updateSimulatedLocation(
+    input: GuardianSimulatorLocationInput,
+    actor: { id: string; role: Role }
+  ) {
+    if (!hasPermission(actor.role, "guardian:manage_devices")) {
+      throw new PermissionError("Not permitted to stream Guardian telemetry");
+    }
+    return guardianRepository.updateSimulatedSOSLocation(input);
   },
 
   async getMonitoringData(actor: { role: Role }) {

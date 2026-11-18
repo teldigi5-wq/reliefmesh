@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type TransmissionState =
   | { status: "idle" }
@@ -22,6 +23,7 @@ const CATEGORIES = [
 ] as const;
 
 export function RemoteSimulator() {
+  const router = useRouter();
   const [deviceSerial] = useState(
     () => `SIM-REMOTE-${Math.random().toString(36).slice(2, 7).toUpperCase()}`
   );
@@ -38,35 +40,88 @@ export function RemoteSimulator() {
     "SIMULATED_GPS" | "PHONE_GPS"
   >("SIMULATED_GPS");
   const [locationMessage, setLocationMessage] = useState<string | null>(null);
+  const [liveTracking, setLiveTracking] = useState(false);
+  const [lastLocationAt, setLastLocationAt] = useState<Date | null>(null);
+  const [lastSyncAt, setLastSyncAt] = useState<Date | null>(null);
+  const [syncedUpdates, setSyncedUpdates] = useState(0);
   const [transmission, setTransmission] = useState<TransmissionState>({
     status: "idle",
   });
 
-  function usePhoneLocation() {
-    setLocationMessage("Requesting phone location permission…");
+  const activeIncidentId =
+    transmission.status === "sent" ? transmission.incidentId : null;
+
+  useEffect(() => {
+    if (!liveTracking) return;
     if (!navigator.geolocation) {
       setLocationMessage("This browser does not expose phone GPS.");
+      setLiveTracking(false);
       return;
     }
-    navigator.geolocation.getCurrentPosition(
+
+    setLocationMessage("Requesting location permission and a live GPS fix…");
+    let lastUploadAt = 0;
+    const watchId = navigator.geolocation.watchPosition(
       (position) => {
-        setLatitude(position.coords.latitude);
-        setLongitude(position.coords.longitude);
+        const now = Date.now();
+        const nextLatitude = position.coords.latitude;
+        const nextLongitude = position.coords.longitude;
+        setLatitude(nextLatitude);
+        setLongitude(nextLongitude);
         setAccuracy(position.coords.accuracy);
         setLocationSource("PHONE_GPS");
         setGpsAvailable(true);
-        setLocationMessage("Phone GPS fix acquired.");
+        setLastLocationAt(new Date(now));
+        setLocationMessage(
+          activeIncidentId
+            ? "Live GPS is updating the linked incident."
+            : "Live GPS fix acquired. Arm the remote when ready."
+        );
+
+        if (!activeIncidentId || now - lastUploadAt < 5_000) return;
+        lastUploadAt = now;
+        void fetch("/api/guardian/simulate/location", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            deviceSerial,
+            incidentId: activeIncidentId,
+            latitude: nextLatitude,
+            longitude: nextLongitude,
+            accuracy: position.coords.accuracy,
+            batteryPct,
+          }),
+        })
+          .then(async (response) => {
+            if (!response.ok) {
+              const data = await response.json().catch(() => ({}));
+              throw new Error(data.error ?? "Location update was not acknowledged.");
+            }
+            setLastSyncAt(new Date());
+            setSyncedUpdates((value) => value + 1);
+            router.refresh();
+          })
+          .catch((error) => {
+            setLocationMessage(
+              error instanceof Error
+                ? error.message
+                : "Live location could not be synchronized."
+            );
+          });
       },
       (error) => {
+        setGpsAvailable(false);
         setLocationMessage(
           error.code === error.PERMISSION_DENIED
-            ? "Location permission was denied. Simulated GPS remains selected."
-            : "A phone GPS fix was not available."
+            ? "Location permission was denied. Enable it to demonstrate live GPS."
+            : "Waiting for a usable phone GPS fix."
         );
       },
-      { enableHighAccuracy: true, timeout: 12_000, maximumAge: 5_000 }
+      { enableHighAccuracy: true, timeout: 15_000, maximumAge: 2_000 }
     );
-  }
+
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, [activeIncidentId, batteryPct, deviceSerial, liveTracking, router]);
 
   async function transmit() {
     if (!armed || transmission.status === "sending") return;
@@ -117,6 +172,7 @@ export function RemoteSimulator() {
         eventId: data.eventId,
       });
       setArmed(false);
+      router.refresh();
     } catch (error) {
       setTransmission({
         status: "failed",
@@ -133,11 +189,16 @@ export function RemoteSimulator() {
 
   function reset() {
     setArmed(false);
+    setLiveTracking(false);
+    setLastSyncAt(null);
+    setSyncedUpdates(0);
     setTransmission({ status: "idle" });
   }
 
   const isSending = transmission.status === "sending";
   const isSent = transmission.status === "sent";
+  const hasLiveFix = locationSource === "PHONE_GPS" && lastLocationAt !== null;
+  const demoStep = isSent ? 4 : armed ? 3 : hasLiveFix ? 2 : 1;
 
   return (
     <section className="mt-8" aria-labelledby="virtual-remote-heading">
@@ -160,6 +221,13 @@ export function RemoteSimulator() {
         <span className="rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
           SIMULATED HARDWARE
         </span>
+      </div>
+
+      <div className="mt-5 grid gap-2 rounded-2xl border border-slate-200 bg-white/80 p-3 shadow-sm sm:grid-cols-4 dark:border-slate-800 dark:bg-slate-900/70">
+        <DemoStep number={1} label="Start live GPS" active={demoStep === 1} complete={demoStep > 1} />
+        <DemoStep number={2} label="Arm remote" active={demoStep === 2} complete={demoStep > 2} />
+        <DemoStep number={3} label="Press SOS" active={demoStep === 3} complete={demoStep > 3} />
+        <DemoStep number={4} label="Track incident" active={demoStep === 4} complete={false} />
       </div>
 
       <div className="mt-4 grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
@@ -278,12 +346,22 @@ export function RemoteSimulator() {
                 {latitude.toFixed(5)}, {longitude.toFixed(5)}
                 {accuracy !== null ? ` · ±${Math.round(accuracy)}m` : " · simulated"}
               </span>
-              <button type="button" onClick={usePhoneLocation} disabled={isSending || isSent}
+              <button type="button" onClick={() => setLiveTracking((value) => !value)}
+                disabled={isSending}
                 className="shrink-0 font-bold text-brand-600 hover:text-brand-700">
-                Use phone GPS
+                {liveTracking ? "Stop live GPS" : "Start live GPS"}
               </button>
             </div>
             {locationMessage && <p className="mt-1">{locationMessage}</p>}
+            {lastLocationAt && (
+              <p className="mt-1 text-slate-500">
+                Browser fix {lastLocationAt.toLocaleTimeString()}
+                {lastSyncAt
+                  ? " · database synced " + lastSyncAt.toLocaleTimeString() +
+                    " · " + syncedUpdates + " update" + (syncedUpdates === 1 ? "" : "s")
+                  : ""}
+              </p>
+            )}
           </div>
 
           {transmission.status === "sending" && (
@@ -308,6 +386,11 @@ export function RemoteSimulator() {
             <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-200">
               <p className="font-bold">Acknowledged — genuine incident created.</p>
               <p className="mt-1 font-mono text-xs">Event {transmission.eventId}</p>
+              <p className="mt-1 text-xs">
+                {liveTracking
+                  ? "Live browser GPS is now updating this SOS event and incident in Supabase."
+                  : "Start live GPS above to stream location updates into this incident."}
+              </p>
               <Link href={`/incidents/${transmission.incidentId}`} className="mt-2 inline-block font-bold underline">
                 Open incident
               </Link>
@@ -321,5 +404,37 @@ export function RemoteSimulator() {
         </div>
       </div>
     </section>
+  );
+}
+
+function DemoStep({
+  number,
+  label,
+  active,
+  complete,
+}: {
+  number: number;
+  label: string;
+  active: boolean;
+  complete: boolean;
+}) {
+  const containerClass = active
+    ? "bg-brand-50 text-brand-800 ring-1 ring-brand-200 dark:bg-brand-950/50 dark:text-brand-200 dark:ring-brand-800"
+    : complete
+      ? "text-emerald-700 dark:text-emerald-300"
+      : "text-slate-400";
+  const numberClass = complete
+    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200"
+    : active
+      ? "bg-brand-600 text-white"
+      : "bg-slate-100 text-slate-500 dark:bg-slate-800";
+
+  return (
+    <div className={"flex items-center gap-2 rounded-xl px-3 py-2.5 text-xs font-bold transition " + containerClass}>
+      <span className={"flex h-6 w-6 items-center justify-center rounded-full " + numberClass}>
+        {complete ? "✓" : number}
+      </span>
+      {label}
+    </div>
   );
 }

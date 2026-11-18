@@ -1,5 +1,8 @@
 import { prisma } from "@/lib/db/prisma";
-import type { GuardianSimulatorInput } from "@/lib/validation/guardian";
+import type {
+  GuardianSimulatorInput,
+  GuardianSimulatorLocationInput,
+} from "@/lib/validation/guardian";
 
 export const guardianRepository = {
   createSimulatedSOSIncident(input: GuardianSimulatorInput, reportedById: string) {
@@ -47,6 +50,49 @@ export const guardianRepository = {
       });
 
       return { device, incident, sosEvent };
+    });
+  },
+
+  updateSimulatedSOSLocation(input: GuardianSimulatorLocationInput) {
+    return prisma.$transaction(async (tx) => {
+      const event = await tx.sOSEvent.findFirst({
+        where: {
+          incidentId: input.incidentId,
+          isSimulated: true,
+          device: { deviceSerial: input.deviceSerial },
+        },
+        select: { id: true, deviceId: true, incidentId: true },
+      });
+      if (!event?.incidentId) return null;
+
+      const now = new Date();
+      const [location] = await Promise.all([
+        tx.locationUpdate.create({
+          data: {
+            deviceId: event.deviceId,
+            latitude: input.latitude,
+            longitude: input.longitude,
+          },
+        }),
+        tx.guardianDevice.update({
+          where: { id: event.deviceId },
+          data: { lastSeenAt: now, batteryPct: input.batteryPct },
+        }),
+        tx.sOSEvent.update({
+          where: { id: event.id },
+          data: { latitude: input.latitude, longitude: input.longitude },
+        }),
+        tx.incident.update({
+          where: { id: event.incidentId },
+          data: {
+            latitude: input.latitude,
+            longitude: input.longitude,
+            address: "LIVE PHONE GPS · simulated Guardian telemetry",
+          },
+        }),
+      ]);
+
+      return { eventId: event.id, incidentId: event.incidentId, location };
     });
   },
 

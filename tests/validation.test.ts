@@ -2,7 +2,10 @@ import { describe, it, expect } from "vitest";
 import { transitionStatusSchema, assignVolunteerSchema } from "@/lib/validation/volunteer";
 import { createIncidentSchema } from "@/lib/validation/incident";
 import { createResourceSchema, allocateResourceSchema } from "@/lib/validation/resource";
-import { guardianSimulatorSchema } from "@/lib/validation/guardian";
+import {
+  guardianSimulatorLocationSchema,
+  guardianSimulatorSchema,
+} from "@/lib/validation/guardian";
 import { pushTokenSchema } from "@/lib/validation/push-token";
 
 describe("volunteer/incident validation schemas", () => {
@@ -89,6 +92,27 @@ describe("volunteer/incident validation schemas", () => {
         latitude: 95,
         longitude: 79.8612,
         batteryPct: 120,
+      }).success
+    ).toBe(false);
+  });
+
+  it("validates live Guardian location telemetry for an existing incident", () => {
+    expect(
+      guardianSimulatorLocationSchema.safeParse({
+        deviceSerial: "SIM-REMOTE-DEMO",
+        incidentId: "incident-123",
+        latitude: 6.9271,
+        longitude: 79.8612,
+        accuracy: 8.4,
+        batteryPct: 82,
+      }).success
+    ).toBe(true);
+    expect(
+      guardianSimulatorLocationSchema.safeParse({
+        deviceSerial: "SIM-REMOTE-DEMO",
+        incidentId: "incident-123",
+        latitude: 120,
+        longitude: 79.8612,
       }).success
     ).toBe(false);
   });
