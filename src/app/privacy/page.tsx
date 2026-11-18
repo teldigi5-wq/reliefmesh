@@ -52,7 +52,7 @@ export default function PrivacyPage() {
         </div>
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <CookieSettingsButton className="rounded-xl bg-cyan-600 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-cyan-700" />
-          <p className="max-w-xl text-xs leading-6 text-slate-500 dark:text-slate-400">Browser/session activity may still be processed by your hosting and authentication infrastructure. For privacy inquiries, use the project owner's official contact channel.</p>
+          <p className="max-w-xl text-xs leading-6 text-slate-500 dark:text-slate-400">Browser/session activity may still be processed by your hosting and authentication infrastructure. For privacy inquiries, use the project owner&apos;s official contact channel.</p>
         </div>
       </article>
     </main>
