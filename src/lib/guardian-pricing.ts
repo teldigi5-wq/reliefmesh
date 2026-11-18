@@ -35,51 +35,56 @@ export type GuardianPrice = {
   wellness: string;
   phoneRequired: boolean;
   networkCosts: string;
+  portability: string;
+  communitySupportGoalLkr?: number;
+  communitySupportNote?: string;
 };
 
 export const guardianPricing: Record<GuardianDeviceKey, GuardianPrice> = {
   "guardian-button": {
     label: "Guardian Button",
-    targetRetailLkr: 2990,
-    previousTargetLkr: 4990,
+    targetRetailLkr: 1990,
+    previousTargetLkr: 2990,
     unitCosts: {
-      electronicsAndPower: 800,
-      enclosure: 240,
-      assemblyAndTesting: 220,
-      packagingAndLogistics: 170,
-      warrantyToolingContingency: 470,
+      electronicsAndPower: 610,
+      enclosure: 180,
+      assemblyAndTesting: 170,
+      packagingAndLogistics: 130,
+      warrantyToolingContingency: 310,
     },
     connection: "Bluetooth LE · smartphone required",
     note: "A compatible paired phone and connectivity are needed to forward an SOS alert.",
-    bestFor: "Older adults, families",
+    bestFor: "Budget-conscious households with a paired smartphone",
     location: "Paired phone's location",
     wellness: "None",
     phoneRequired: true,
     networkCosts: "Phone data",
+    portability: "Small keychain, bag or pocket",
   },
   "ring-lite": {
     label: "Guardian Ring Lite",
-    targetRetailLkr: 5490,
-    previousTargetLkr: 8490,
+    targetRetailLkr: 4490,
+    previousTargetLkr: 5490,
     unitCosts: {
-      electronicsAndPower: 1450,
-      enclosure: 650,
-      assemblyAndTesting: 480,
-      packagingAndLogistics: 270,
-      warrantyToolingContingency: 800,
+      electronicsAndPower: 1180,
+      enclosure: 510,
+      assemblyAndTesting: 370,
+      packagingAndLogistics: 240,
+      warrantyToolingContingency: 700,
     },
     connection: "Bluetooth LE · smartphone required",
     note: "Planned phone-assisted SOS; standalone GPS or mobile data is not included.",
-    bestFor: "Everyday SOS wearable",
+    bestFor: "All-day, discreet personal SOS where a smartphone is available",
     location: "Paired phone's location",
     wellness: "None",
     phoneRequired: true,
     networkCosts: "Phone data",
+    portability: "Worn on a finger; everyday-carry design goal",
   },
   "ring-pro": {
     label: "Guardian Ring Pro",
     targetRetailLkr: 11990,
-    previousTargetLkr: 17990,
+    previousTargetLkr: 11990,
     unitCosts: {
       electronicsAndPower: 3550,
       enclosure: 1550,
@@ -94,25 +99,29 @@ export const guardianPricing: Record<GuardianDeviceKey, GuardianPrice> = {
     wellness: "Experimental PPG / temperature",
     phoneRequired: true,
     networkCosts: "Phone data",
+    portability: "Worn on a finger; everyday-carry design goal",
   },
   "guardian-remote": {
     label: "Guardian Remote",
-    targetRetailLkr: 14990,
-    previousTargetLkr: 19990,
+    targetRetailLkr: 8990,
+    previousTargetLkr: 14990,
     unitCosts: {
-      electronicsAndPower: 5700,
-      enclosure: 1000,
-      assemblyAndTesting: 1050,
-      packagingAndLogistics: 450,
-      warrantyToolingContingency: 1800,
+      electronicsAndPower: 3650,
+      enclosure: 570,
+      assemblyAndTesting: 650,
+      packagingAndLogistics: 380,
+      warrantyToolingContingency: 1150,
     },
     connection: "Planned 4G/LTE + GNSS · SIM required",
     note: "Independent cellular signalling is proposed, subject to supported LTE bands and reliable coverage. SIM/data charges are separate.",
-    bestFor: "Independent location-enabled SOS",
+    bestFor: "Phone-free SOS for at-risk people, with community procurement support",
     location: "Integrated GNSS (planned)",
     wellness: "None",
     phoneRequired: false,
     networkCosts: "Separate SIM / data plan",
+    portability: "Clip, lanyard or bag attachment design goal (dimensions untested)",
+    communitySupportGoalLkr: 3990,
+    communitySupportNote: "A proposed assisted household price only if a partner funds the difference; no funding agreement exists.",
   },
 };
 
@@ -143,6 +152,12 @@ export function contributionIfVatApplies(pricing: GuardianPrice): number {
   const gross = illustrativeVatInclusivePrice(pricing);
   const revenueExVat = gross / (1 + VAT_ILLUSTRATION);
   return Math.floor(revenueExVat - gross * PAYMENT_FEE_ILLUSTRATION - unitCostEstimate(pricing));
+}
+
+/** Illustrative support required per unit to reach a community-access goal. */
+export function proposedSupportGap(pricing: GuardianPrice): number {
+  if (pricing.communitySupportGoalLkr === undefined) return 0;
+  return Math.max(0, pricing.targetRetailLkr - pricing.communitySupportGoalLkr);
 }
 
 export function savingsVsPreviousTarget(pricing: GuardianPrice): number {

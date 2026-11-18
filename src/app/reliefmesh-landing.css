@@ -345,3 +345,17 @@ html:has(.rm-site){scroll-behavior:smooth}
 .rm-comparison-disclaimer{font-size:11px;line-height:1.65;margin-top:13px;color:#9dbcca}
 @media(max-width:950px){.rm-bulk-strategy{grid-template-columns:1fr 1fr}.rm-device-compare{margin-top:50px}}
 @media(max-width:600px){.rm-bulk-strategy{grid-template-columns:1fr}.rm-bulk-strategy>div{padding:17px}.rm-device-compare-scroll th,.rm-device-compare-scroll td{padding:13px 12px}.rm-device-compare{margin-top:44px}.rm-tax-plan-banner{padding:15px}}
+
+/* Family-first Guardian positioning and remote sponsorship goal. */
+.rm-pricing-card-portable{font-size:11px!important;color:#b7d7df!important;line-height:1.55!important;margin-top:9px!important}
+.rm-pricing-community-goal{padding:13px 11px;background:rgba(21,155,137,.10);border:1px solid rgba(64,196,174,.4);border-radius:10px;margin-top:15px}
+.rm-pricing-community-goal>span{display:block;color:#73ddd2;font-size:10px;font-weight:800;line-height:1.4}
+.rm-pricing-community-goal>strong{display:block;color:#f1fffc;font-size:25px;font-weight:820;letter-spacing:-.04em;margin-top:4px}
+.rm-pricing-community-goal>small{display:block;color:#bedddc;font-size:10px;line-height:1.6;margin-top:6px}
+.rm-family-access-plan{display:flex;align-items:flex-start;gap:18px;margin-top:24px;padding:25px;border:1px solid #397780;background:linear-gradient(125deg,#0b3542,#0b2433);border-radius:19px}
+.rm-family-plan-icon{width:48px;height:48px;flex:none;display:grid;place-items:center;border:1px solid #367681;background:#164c59;color:#5fe6e0;border-radius:13px}
+.rm-family-access-plan h3{font-size:clamp(19px,2.25vw,27px);font-weight:790;line-height:1.25;letter-spacing:-.03em;margin-top:10px;color:#efffff}
+.rm-family-access-plan p{color:#b5d1d9;font-size:13px;line-height:1.7;margin-top:12px;max-width:900px}
+.rm-family-access-plan p strong{color:#f4ffff;font-weight:820}
+.rm-family-access-plan p b{color:#dff3f5}
+@media(max-width:600px){.rm-family-access-plan{flex-direction:column;padding:20px}.rm-family-plan-icon{width:42px;height:42px}}

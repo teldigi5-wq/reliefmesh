@@ -7,7 +7,7 @@ import { CookieSettingsButton } from "@/components/privacy/cookie-preferences";
 import {
   guardianPricing, estimatedContribution, formatLkr, PRICING_REVIEW_DATE,
   unitCostEstimate, ESTIMATED_ORDER_RANGE, illustrativeVatInclusivePrice,
-  savingsVsPreviousTarget,
+  savingsVsPreviousTarget, proposedSupportGap,
 } from "@/lib/guardian-pricing";
 
 export const metadata: Metadata = {
@@ -27,8 +27,8 @@ const products = [
   {
     name: "Guardian Ring Lite",
     slug: "ring-lite",
-    eyebrow: "COMMUNITY FIRST",
-    description: "An accessible, lightweight emergency SOS wearable concept.",
+    eyebrow: "EVERYDAY WEARABLE",
+    description: "A finger-worn SOS concept for easy everyday access when a paired phone is nearby.",
     detail: "Intentional emergency activation",
     image: "ring-lite.webp",
     alt: "Guardian Ring Lite portrait product poster showing a discreet emergency activation concept",
@@ -45,8 +45,8 @@ const products = [
   {
     name: "Guardian Button",
     slug: "guardian-button",
-    eyebrow: "EVERYDAY PROTECTION",
-    description: "A compact, easy-to-reach Bluetooth emergency button concept.",
+    eyebrow: "FAMILY ESSENTIAL",
+    description: "A small, low-cost emergency button for families who already have a compatible smartphone.",
     detail: "Small, simple and portable",
     image: "guardian-button.webp",
     alt: "Guardian Button portrait infographic with an SOS keychain design and technical concept",
@@ -54,8 +54,8 @@ const products = [
   {
     name: "Guardian Remote",
     slug: "guardian-remote",
-    eyebrow: "CONNECTED RESPONSE",
-    description: "A cellular and GPS-enabled remote SOS device concept.",
+    eyebrow: "PHONE-FREE SAFETY",
+    description: "An independent cellular SOS concept for people without a paired phone; clip-on portability is a design goal.",
     detail: "Location and connectivity",
     image: "guardian-remote.webp",
     alt: "Guardian Remote portrait infographic outlining a GPS and cellular SOS design",
@@ -270,7 +270,7 @@ export default function LandingPage() {
                       <span className="rm-price-kicker">BULK PRICE TARGET · BEFORE VAT</span>
                       <strong>{formatLkr(guardianPricing[product.slug].targetRetailLkr)}</strong>
                     </div>
-                    <span className="rm-pricing-concept-pill">-{savingsVsPreviousTarget(guardianPricing[product.slug])}% vs. previous</span>
+                    {savingsVsPreviousTarget(guardianPricing[product.slug]) > 0 && <span className="rm-pricing-concept-pill">-{savingsVsPreviousTarget(guardianPricing[product.slug])}% vs. previous</span>}
                   </div>
                   <div className="rm-product-bottom"><span>{product.detail}</span><span className="rm-concept-tag">Concept</span></div>
                 </div>
@@ -284,8 +284,8 @@ export default function LandingPage() {
           <div className="rm-pricing-header">
             <div>
               <span className="rm-section-index">GUARDIAN / BULK-PROCUREMENT STRATEGY</span>
-              <h2 id="rm-pricing-heading">A safer future should be <span>more affordable.</span></h2>
-              <p>Our next target is lower-cost production through distributor agreements, shared components and local assembly. Pricing below assumes sourcing at the scale of {ESTIMATED_ORDER_RANGE}. These are planning targets, not confirmed consumer offers.</p>
+              <h2 id="rm-pricing-heading">Safety should fit <span>everyday life and household budgets.</span></h2>
+              <p>People should not need to carry several devices. The ring is intended for daily wear; the Button is a simpler option when a smartphone is available; the phone-free Remote is an alternative when independent cellular alerts are needed. All prices are unverified bulk-manufacturing targets for {ESTIMATED_ORDER_RANGE}.</p>
             </div>
             <div className="rm-pricing-price-note">
               <span>PROPOSED ENTRY PRICE · BEFORE VAT</span>
@@ -311,9 +311,10 @@ export default function LandingPage() {
                   <h3>{model.label}</h3>
                   <strong className="rm-pricing-card-price">{formatLkr(model.targetRetailLkr)}</strong>
                   <span className="rm-pricing-card-note">Bulk-sourcing target · before applicable VAT</span>
-                  <span className="rm-pricing-savings">-{savingsVsPreviousTarget(model)}% from previous target</span>
+                  {savingsVsPreviousTarget(model) > 0 && <span className="rm-pricing-savings">-{savingsVsPreviousTarget(model)}% from previous target</span>}
                   <div className="rm-pricing-card-rule" />
                   <p className="rm-pricing-card-connection">{model.connection}</p>
+                  <p className="rm-pricing-card-portable">Carry option: {model.portability}</p>
                   <p className="rm-pricing-card-caution">{model.note}</p>
                   <div className="rm-pricing-card-foot">
                     <span>Est. unit cost target</span>
@@ -323,6 +324,13 @@ export default function LandingPage() {
                     <span>Est. balance after 3% fee, before fixed costs</span>
                     <strong className="rm-pricing-positive">+{formatLkr(estimatedContribution(model))}</strong>
                   </div>
+                  {model.communitySupportGoalLkr !== undefined && (
+                    <div className="rm-pricing-community-goal">
+                      <span>Community-access goal · support required</span>
+                      <strong>{formatLkr(model.communitySupportGoalLkr)}</strong>
+                      <small>Requires {formatLkr(proposedSupportGap(model))} of partner funding per unit, before any applicable VAT. No sponsor has committed.</small>
+                    </div>
+                  )}
                   <div className="rm-pricing-card-tax">
                     <span>If 18% VAT applies</span>
                     <strong>{formatLkr(illustrativeVatInclusivePrice(model))}</strong>
@@ -331,6 +339,15 @@ export default function LandingPage() {
                 </article>
               );
             })}
+          </div>
+          <div className="rm-family-access-plan" role="note">
+            <div className="rm-family-plan-icon"><Users size={23} aria-hidden="true" /></div>
+            <div>
+              <span className="rm-section-index">FAMILY ACCESS / PROPOSED SUPPORT PROGRAMME</span>
+              <h3>Make the phone-free Remote accessible to households with limited income.</h3>
+              <p>Our proposal is a <strong>{formatLkr(guardianPricing["guardian-remote"].communitySupportGoalLkr ?? 0)}</strong> household contribution towards a Remote, with <strong>{formatLkr(proposedSupportGap(guardianPricing["guardian-remote"]))}</strong> covered by a government, NGO or CSR partner. This is a <strong>funding goal, not an approved subsidy or a selling price</strong>. The Remote still needs a mobile SIM/data plan, and the total cost and VAT treatment must be validated.</p>
+              <p>The Button can be simpler and cheaper, but <b>it cannot send independent alerts without a paired phone or a separately developed and tested gateway</b>. Households without a suitable smartphone would need the standalone Remote or another supported network solution.</p>
+            </div>
           </div>
           <div className="rm-bulk-strategy" aria-label="How ReliefMesh aims to lower device costs">
             <div><span>01 / SOURCING</span><strong>Manufacturer pricing</strong><p>Negotiate production modules, sensors, batteries and PCB components for 100 to 5,000-unit quotations.</p></div>
@@ -341,7 +358,7 @@ export default function LandingPage() {
           <div className="rm-device-compare" id="device-comparison" aria-labelledby="rm-device-compare-heading">
             <div className="rm-device-compare-heading">
               <span className="rm-section-index">COMPARE THE GUARDIAN COLLECTION</span>
-              <h3 id="rm-device-compare-heading">Which Guardian fits each situation?</h3>
+              <h3 id="rm-device-compare-heading">One suitable device, not four devices to carry.</h3>
               <p>Every device is an engineering concept, not independently tested hardware. This comparison shows the planned feature differences and connectivity requirements.</p>
             </div>
             <div className="rm-device-compare-scroll" role="region" tabIndex={0} aria-label="Guardian device feature comparison; scroll horizontally on smaller screens">
@@ -354,6 +371,15 @@ export default function LandingPage() {
                 <tbody>
                   <tr><th scope="row">Base price target</th>
                     {products.map(p => <td key={p.slug}><strong>{formatLkr(guardianPricing[p.slug].targetRetailLkr)}</strong><small>Before applicable VAT</small></td>)}
+                  </tr>
+                  <tr><th scope="row">Daily carry</th>
+                    {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].portability}</td>)}
+                  </tr>
+                  <tr><th scope="row">Low-income assisted target</th>
+                    {products.map(p => {
+                      const supportGoal = guardianPricing[p.slug].communitySupportGoalLkr;
+                      return <td key={p.slug}>{supportGoal === undefined ? "No sponsor programme proposed" : formatLkr(supportGoal) + " · sponsor needed"}</td>;
+                    })}
                   </tr>
                   <tr><th scope="row">Best for</th>
                     {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].bestFor}</td>)}
@@ -376,13 +402,13 @@ export default function LandingPage() {
                 </tbody>
               </table>
             </div>
-            <p className="rm-comparison-disclaimer">Bluetooth devices need the paired smartphone and its network connection to forward alerts. LTE requires a SIM/data plan and coverage. Water-resistance ratings, battery duration, medical sensing and direct emergency dispatch are not certified or guaranteed.</p>
+            <p className="rm-comparison-disclaimer">A person normally chooses one suitable device, not a full bundle. A smartphone-connected Button or ring cannot protect someone outside its paired phone range. The Remote is a phone-independent concept, but portability, battery life, network coverage and certification must be validated. Neither a subsidised price nor emergency dispatch integration is currently available.</p>
           </div>
           <div className="rm-pricing-disclosure">
             <div>
               <strong>Planning prices, not confirmed manufacturing quotes</strong>
               <p>The unit-cost estimates cover components, battery, enclosure, assembly/testing, packaging, logistics and an allowance for warranty and tooling. The pre-VAT modelled balance subtracts a 3% payment-processing allowance and the target unit build cost; it is <b>not net profit</b>. Costs presume bulk procurement of {ESTIMATED_ORDER_RANGE}. Reviewed {PRICING_REVIEW_DATE}.</p>
-              <p>Custom smart-ring engineering, regulatory approval, import taxes/levies, recurring SIM plans, cloud operations, installation, R&amp;D and distribution could cost more. Actual VAT obligations depend on current law and written determinations, not simply on an agreement to seek government support. No devices are being sold or offered for pre-order.</p>
+              <p>The new Remote cost target is especially aggressive and must be verified with real LTE/GNSS, battery, enclosure and assembly quotations. Custom smart-ring engineering, regulatory approval, import taxes/levies, recurring SIM plans, cloud operations, installation, R&amp;D and distribution could cost more. Actual VAT obligations depend on current law and written determinations, not simply on an agreement to seek government support. No devices are being sold or offered for pre-order.</p>
             </div>
             <details className="rm-pricing-source-details">
               <summary>Component prices, sourcing references and tax rules</summary>
