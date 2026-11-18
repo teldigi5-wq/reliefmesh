@@ -222,6 +222,49 @@ test("a responder cannot transition an incident they are not assigned to", async
   expect(body.error).toMatch(/not permitted/i);
 });
 
+test("citizen SOS creates and live-updates a real incident", async ({ page }) => {
+  await login(page, "citizen@reliefmesh.test");
+  const deviceSerial = "E2E-GUARDIAN-" + Date.now();
+
+  const trigger = await page.request.post("/api/guardian/simulate", {
+    data: {
+      deviceSerial,
+      latitude: 6.9271,
+      longitude: 79.8612,
+      batteryPct: 91,
+      category: "MEDICAL_EMERGENCY",
+      description: "Citizen Guardian live-location end-to-end verification.",
+      networkType: "PHONE_DATA",
+      locationSource: "PHONE_GPS",
+    },
+  });
+  expect(trigger.status()).toBe(201);
+  const created = await trigger.json();
+  expect(created.incidentId).toBeTruthy();
+  expect(created.incidentStatus).toBe("REPORTED");
+
+  const liveUpdate = await page.request.post("/api/guardian/simulate/location", {
+    data: {
+      deviceSerial,
+      incidentId: created.incidentId,
+      latitude: 6.9314,
+      longitude: 79.8478,
+      accuracy: 7.5,
+      batteryPct: 90,
+    },
+  });
+  expect(liveUpdate.status()).toBe(201);
+
+  const incidentResponse = await page.request.get(
+    "/api/incidents/" + created.incidentId
+  );
+  expect(incidentResponse.ok()).toBeTruthy();
+  const incident = await incidentResponse.json();
+  expect(incident.latitude).toBeCloseTo(6.9314, 4);
+  expect(incident.longitude).toBeCloseTo(79.8478, 4);
+  expect(incident.address).toContain("LIVE PHONE GPS");
+});
+
 test("repeated failed logins get rate-limited", async ({ page }) => {
   // The login rate limiter keys on the client IP taken from
   // X-Forwarded-For (src/lib/security/rate-limit.ts). A real browser

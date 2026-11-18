@@ -1,11 +1,13 @@
 import { redirect } from "next/navigation";
-import { Radio, AlertTriangle, MapPinned } from "lucide-react";
+import Link from "next/link";
+import { Radio, AlertTriangle, MapPinned, Siren } from "lucide-react";
 import { getSession } from "@/lib/auth/session";
 import { guardianService } from "@/services/guardian.service";
 import { AppNav } from "@/components/layout/app-nav";
 import { OpsPageHeader } from "@/components/layout/ops-page-header";
 import { SOSMapLoader } from "@/components/guardian/sos-map-loader";
 import { PermissionError } from "@/lib/permissions";
+import { GuardianLiveRefresh } from "@/components/guardian/live-refresh";
 
 export default async function GuardianPage() {
  const session = await getSession();
@@ -14,12 +16,7 @@ export default async function GuardianPage() {
  try {
   data = await guardianService.getMonitoringData({ role: session.role });
  } catch (err) {
-  if (err instanceof PermissionError) return (
-   <><AppNav role={session.role} /><main className="ops-page"><div className="ops-container">
-    <OpsPageHeader eyebrow="GUARDIAN / ACCESS" title="Guardian monitoring" description="Your role does not have access to device and location monitoring." icon={Radio} />
-    <div className="ops-empty">Device monitoring is restricted to authorised user roles.</div>
-   </div></main></>
-  );
+  if (err instanceof PermissionError) redirect("/sos");
   throw err;
  }
  const { devices, sosEvents } = data;
@@ -32,8 +29,10 @@ export default async function GuardianPage() {
   <AppNav role={session.role} />
   <main className="ops-page">
    <div className="ops-container">
+    <GuardianLiveRefresh />
     <OpsPageHeader icon={Radio} eyebrow="GUARDIAN / MONITORING" title="Guardian monitoring"
-      description="Review registered prototype devices, simulated SOS events and their test locations." />
+      description="Review registered prototype devices, simulated SOS events and their live locations."
+      action={<Link href="/sos" className="ops-button ops-button-primary"><Siren size={17}/> Open SOS remote</Link>} />
     <div className="ops-notice" role="note"><strong>Simulation only:</strong> No physical Guardian SOS hardware exists yet. All events are simulated test data; this interface is not a live emergency-response service.</div>
     <section className="ops-info-grid" aria-label="Guardian test overview">
      <div className="ops-info-card"><span>Registered test devices</span><strong>{devices.length}</strong></div>

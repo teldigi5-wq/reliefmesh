@@ -9,6 +9,28 @@ import type { IncidentStatus } from "@prisma/client";
  * one of these after a successful transition.
  */
 export const notificationService = {
+  async forNewCriticalIncident(incidentId: string) {
+    const incident = await prisma.incident.findUnique({
+      where: { id: incidentId },
+      select: { title: true, severity: true },
+    });
+    if (!incident || incident.severity !== "CRITICAL") return;
+
+    const operators = await prisma.user.findMany({
+      where: { role: { in: ["OPERATOR", "ADMIN"] }, isActive: true },
+      select: { id: true },
+    });
+    await notificationRepository.createMany(
+      operators.map((operator) => ({
+        userId: operator.id,
+        type: "NEW_CRITICAL_INCIDENT" as const,
+        title: `New critical SOS: ${incident.title}`,
+        message: "Review the incident and assign the nearest available responder.",
+        relatedIncidentId: incidentId,
+      }))
+    );
+  },
+
   async forOwnStatusChange(incidentId: string, toStatus: IncidentStatus) {
     const incident = await prisma.incident.findUnique({
       where: { id: incidentId },

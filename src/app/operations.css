@@ -25,6 +25,10 @@
 .ops-nav-link:hover,.ops-nav-link.is-active{background:rgba(12,190,201,.1);color:#008d9d}
 .dark .ops-nav-link:hover,.dark .ops-nav-link.is-active{background:#102b38;color:#4ae3e8}
 .ops-nav-link.is-active{font-weight:800}
+.ops-nav-link.is-sos{color:#e43d55;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.17);font-weight:780}
+.ops-nav-link.is-sos:hover,.ops-nav-link.is-sos.is-active{color:#fff;background:#e84056;border-color:#e84056;box-shadow:0 7px 20px rgba(190,24,52,.18)}
+.dark .ops-nav-link.is-sos{color:#ff8292;background:rgba(244,63,94,.1);border-color:rgba(251,113,133,.25)}
+.dark .ops-nav-link.is-sos:hover,.dark .ops-nav-link.is-sos.is-active{color:#fff;background:#d93850;border-color:#e94c61}
 .ops-nav-actions{margin-left:auto;display:flex;align-items:center;gap:9px;flex:none}
 .ops-nav-theme button{border-radius:9px!important;padding:9px!important}
 .ops-role{font-size:10px;font-weight:850;letter-spacing:.9px;padding:8px 12px;border:1px solid #d5e4ed;border-radius:999px;color:#486879;background:#eff6f9}
@@ -36,6 +40,8 @@
 .ops-mobile-link{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;font-size:13px;font-weight:650;color:#668094}
 .dark .ops-mobile-link{color:#b7c9d8}
 .ops-mobile-link.is-active{background:rgba(12,187,201,.12);color:#00a7b4}
+.ops-mobile-link.is-sos{color:#df3f55;background:rgba(244,63,94,.08)}
+.ops-mobile-link.is-sos.is-active{color:#fff;background:#df3f55}
 .ops-mobile-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #334c603b;padding-top:13px;font-size:12px;margin-top:10px;color:#8297a7}
 .ops-summary-banner{display:flex;gap:21px;align-items:center;padding:25px 29px;border-radius:20px;background:linear-gradient(110deg,#0e283a,#073344);border:1px solid #255467;color:white;box-shadow:0 17px 50px rgba(3,25,38,.13)}
 .ops-summary-icon{flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:15px;background:rgba(22,211,222,.13);color:#41ecf0}
