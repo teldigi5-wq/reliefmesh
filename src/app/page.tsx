@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight, MapPin, Menu, Radio, ShieldCheck, Users } from "lucide-react";
 import "./reliefmesh-landing.css";
 import { CookieSettingsButton } from "@/components/privacy/cookie-preferences";
+import { guardianPricing, estimatedContribution, formatLkr, PRICING_REVIEW_DATE, unitCostEstimate } from "@/lib/guardian-pricing";
 
 export const metadata: Metadata = {
   title: "ReliefMesh | Connected Safety for Every Life",
@@ -21,6 +22,7 @@ const ASSET_ROOT = "/reliefmesh";
 const products = [
   {
     name: "Guardian Ring Lite",
+    slug: "ring-lite",
     eyebrow: "COMMUNITY FIRST",
     description: "An accessible, lightweight emergency SOS wearable concept.",
     detail: "Intentional emergency activation",
@@ -29,6 +31,7 @@ const products = [
   },
   {
     name: "Guardian Ring Pro",
+    slug: "ring-pro",
     eyebrow: "ADVANCED SAFETY",
     description: "An enhanced SOS ring concept with exploratory wellness sensing.",
     detail: "Safety and wellness concept",
@@ -37,6 +40,7 @@ const products = [
   },
   {
     name: "Guardian Button",
+    slug: "guardian-button",
     eyebrow: "EVERYDAY PROTECTION",
     description: "A compact, easy-to-reach Bluetooth emergency button concept.",
     detail: "Small, simple and portable",
@@ -45,13 +49,14 @@ const products = [
   },
   {
     name: "Guardian Remote",
+    slug: "guardian-remote",
     eyebrow: "CONNECTED RESPONSE",
     description: "A cellular and GPS-enabled remote SOS device concept.",
     detail: "Location and connectivity",
     image: "guardian-remote.webp",
     alt: "Guardian Remote portrait infographic outlining a GPS and cellular SOS design",
   },
-];
+] as const;
 
 const capabilities = [
   {
@@ -142,6 +147,7 @@ export default function LandingPage() {
           <nav className="rm-nav-links" aria-label="Main navigation">
             <a href="#platform">Platform</a>
             <a href="#guardians">Guardian devices</a>
+            <a href="#pricing">Device prices</a>
             <a href="#technology">How it works</a>
             <a href="#mission">Our mission</a>
           </nav>
@@ -156,6 +162,7 @@ export default function LandingPage() {
             <nav aria-label="Mobile navigation">
               <a href="#platform">Platform</a>
               <a href="#guardians">Guardian devices</a>
+              <a href="#pricing">Device prices</a>
               <a href="#technology">How it works</a>
               <a href="#mission">Our mission</a>
               <Link href="/login">Log in</Link>
@@ -254,12 +261,82 @@ export default function LandingPage() {
                   <span className="rm-product-tag">{product.eyebrow}</span>
                   <h3>{product.name}</h3>
                   <p>{product.description}</p>
+                  <div className="rm-product-pricing">
+                    <div>
+                      <span className="rm-price-kicker">PROPOSED RETAIL · LKR</span>
+                      <strong>{formatLkr(guardianPricing[product.slug].targetRetailLkr)}</strong>
+                    </div>
+                    <span className="rm-pricing-concept-pill">Target only</span>
+                  </div>
                   <div className="rm-product-bottom"><span>{product.detail}</span><span className="rm-concept-tag">Concept</span></div>
                 </div>
               </article>
             ))}
           </div>
-          <p className="rm-product-tip"><span className="rm-signal-dot" /> Select any product image to view the complete poster without cropping.</p>
+          <p className="rm-product-tip"><span className="rm-signal-dot" /> Images are design concepts. Prices are illustrative targets, not offers to sell. Select an image to view the full poster.</p>
+        </section>
+
+        <section className="rm-container rm-pricing-section" id="pricing" aria-labelledby="rm-pricing-heading">
+          <div className="rm-pricing-header">
+            <div>
+              <span className="rm-section-index">GUARDIAN / AFFORDABLE SAFETY</span>
+              <h2 id="rm-pricing-heading">Designed with <span>affordability</span> in mind.</h2>
+              <p>Indicative Sri Lankan retail prices informed by component references and a preliminary manufacturing budget. Every target is higher than our estimated unit build cost after illustrative taxes and processing fees.</p>
+            </div>
+            <div className="rm-pricing-price-note">
+              <span>PLANNED ENTRY PRICE</span>
+              <strong>{formatLkr(guardianPricing["guardian-button"].targetRetailLkr)}</strong>
+              <small>Guardian Button · concept</small>
+            </div>
+          </div>
+          <div className="rm-pricing-grid">
+            {products.map(product => {
+              const model = guardianPricing[product.slug];
+              return (
+                <article className="rm-pricing-card" key={product.slug}>
+                  <div className="rm-pricing-card-heading">
+                    <span className="rm-pricing-card-label">{product.eyebrow}</span>
+                    <span className="rm-pricing-unavailable">Concept</span>
+                  </div>
+                  <h3>{model.label}</h3>
+                  <strong className="rm-pricing-card-price">{formatLkr(model.targetRetailLkr)}</strong>
+                  <span className="rm-pricing-card-note">Estimated target retail price · LKR</span>
+                  <div className="rm-pricing-card-rule" />
+                  <p className="rm-pricing-card-connection">{model.connection}</p>
+                  <p className="rm-pricing-card-caution">{model.note}</p>
+                  <div className="rm-pricing-card-foot">
+                    <span>Indicative unit build budget</span>
+                    <strong>{formatLkr(unitCostEstimate(model))}</strong>
+                  </div>
+                  <div className="rm-pricing-card-foot">
+                    <span>Modelled balance after VAT / payment fee</span>
+                    <strong className="rm-pricing-positive">+{formatLkr(estimatedContribution(model))}</strong>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+          <div className="rm-pricing-disclosure">
+            <div>
+              <strong>How we estimated these prices</strong>
+              <p>Budgets include electronics, power, housing, assembly, testing, packaging, logistics and a warranty/tooling allowance. Contribution is calculated from each target price after an illustrative 18% VAT provision and a 3% payment fee, then the estimated unit cost. Review date: {PRICING_REVIEW_DATE}.</p>
+              <p>Final costs depend on manufacturing volume, suppliers, ring miniaturisation, battery safety, RF certification and waterproofing. These figures do not guarantee profitability and exclude one-time R&amp;D, full regulatory certification, recurring connectivity and software operating costs. No device is available for purchase yet.</p>
+            </div>
+            <details className="rm-pricing-source-details">
+              <summary>Component price references &amp; assumptions</summary>
+              <div>
+                <p>Reference retail component prices in Sri Lanka (not verified bulk supplier quotes):</p>
+                <ul>
+                  <li><a href="https://www.atomelectronics.lk/product/esp32-wroom-development-board/" target="_blank" rel="noopener noreferrer">ESP32 board reference</a></li>
+                  <li><a href="https://www.atomelectronics.lk/product/neo-6m-gps-module-with-antenna/" target="_blank" rel="noopener noreferrer">GPS module reference</a></li>
+                  <li><a href="https://etusker.com/product/max30102-high-sensitivity-pulse-oximeter-and-heart-rate-sensor/" target="_blank" rel="noopener noreferrer">Optical sensor reference</a></li>
+                  <li><a href="https://alphatronic.lk/product/sima7670c-fs-mcore-4g-lte-module/" target="_blank" rel="noopener noreferrer">4G/LTE module family reference</a></li>
+                  <li><a href="https://www.ird.gov.lk/en/Type%20of%20Taxes/SitePages/Value%20Added%20Tax%20%28VAT%29.aspx" target="_blank" rel="noopener noreferrer">Sri Lanka Inland Revenue VAT information</a></li>
+                </ul>
+                <p>Bulk component pricing, tooling, certifications, final tax treatment and support obligations must be validated before quoting a retail sale or accepting orders.</p>
+              </div>
+            </details>
+          </div>
         </section>
 
         <section className="rm-container rm-section rm-comparison" aria-labelledby="rm-comparison-heading">
