@@ -1,10 +1,22 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
+  display: "swap",
+});
+
+// Fraunces carries the page's emotional register — headlines and section
+// titles that are making a human statement ("Safety for Every Life.") —
+// while Inter stays the functional voice for nav, body copy, pricing and
+// specs. Two clearly distinct typefaces, each doing one job.
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -36,7 +48,7 @@ export default function RootLayout({
     // class before React hydrates (reading a value only the browser has —
     // localStorage / prefers-color-scheme), so server and first-client
     // render intentionally differ on this one attribute.
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${fraunces.variable}`} suppressHydrationWarning>
       <head>
         <script
           // Static string, written by us, no user input anywhere in it —
