@@ -60,6 +60,15 @@ describe("Guardian access-first concept pricing", () => {
     expect(guardianPricing["guardian-remote"].networkCosts).toContain("SIM");
   });
 
+  it("does not mislabel the Bluetooth SOS button as suitable for keypad-only households", () => {
+    for (const key of ["guardian-button", "ring-lite", "ring-pro"] as const) {
+      expect(guardianPricing[key].phoneRequired).toBe(true);
+      expect(guardianPricing[key].keypadPhoneHousehold).toContain("smartphone");
+    }
+    expect(guardianPricing["guardian-remote"].phoneRequired).toBe(false);
+    expect(guardianPricing["guardian-remote"].keypadPhoneHousehold).toContain("Not implemented");
+  });
+
   it("keeps savings and price formatting correct", () => {
     expect(savingsVsPreviousTarget(guardianPricing["ring-pro"])).toBe(0);
     expect(savingsVsPreviousTarget(guardianPricing["guardian-remote"])).toBe(40);

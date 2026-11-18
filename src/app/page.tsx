@@ -299,6 +299,39 @@ export default function LandingPage() {
               <p>We intend to discuss tax treatment and affordability support with relevant authorities. Until formal eligibility is confirmed, the prices below are <b>before any applicable VAT</b>. An illustrative VAT-inclusive total is shown separately for each product.</p>
             </div>
           </div>
+          <section className="rm-keypad-section" aria-labelledby="rm-keypad-heading">
+            <div className="rm-keypad-intro">
+              <span className="rm-section-index">SAFETY WITHOUT A SMARTPHONE</span>
+              <h3 id="rm-keypad-heading">What if your family only has a button phone?</h3>
+              <p>Safety should not depend on Android apps, internet packages or buying a new smartphone. An ordinary keypad phone can receive calls or SMS; however, it cannot run our proposed Bluetooth smartphone companion app.</p>
+            </div>
+            <div className="rm-keypad-options">
+              <article className="rm-keypad-option">
+                <span className="rm-keypad-number">01 / PRODUCT CONCEPT</span>
+                <h4>Guardian Cellular Button</h4>
+                <p>A proposed separate, no-smartphone version with its own SIM and a large tactile SOS control. It would attempt to send preconfigured SMS messages or place an automated call to trusted family contacts. No GPS or screen required in the basic concept.</p>
+                <span className="rm-keypad-availability">Price pending bulk module and assembly quotes · Not built</span>
+              </article>
+              <article className="rm-keypad-option">
+                <span className="rm-keypad-number">02 / EXISTING CONCEPT</span>
+                <h4>Guardian Remote</h4>
+                <p>Planned standalone cellular/SIM option, with GNSS location support. The future alert flow could notify relatives on ordinary button phones by SMS or call, if tested and enabled with a compatible mobile network.</p>
+                <span className="rm-keypad-availability">Target {formatLkr(guardianPricing["guardian-remote"].targetRetailLkr)} before applicable VAT · Prototype concept</span>
+              </article>
+              <article className="rm-keypad-option">
+                <span className="rm-keypad-number">03 / COMMUNITY SERVICE CONCEPT</span>
+                <h4>Use the keypad phone you already own</h4>
+                <p>Families can call or text their own trusted contacts today. A future ReliefMesh SMS/voice reporting service could receive incident details without an app, but it requires a telephone number, telecom integration and a staffed response process.</p>
+                <span className="rm-keypad-availability">No ReliefMesh SMS hotline currently operates</span>
+              </article>
+            </div>
+            <div className="rm-keypad-flow">
+              <strong>Planned cellular SOS flow</strong>
+              <p>Hold SOS button → device uses its own SIM/network → message or call reaches a basic mobile phone → trusted contact receives the alert. ReliefMesh dashboard integration would need a separate, tested SMS/voice gateway.</p>
+              <small>Concept only. Cellular coverage, charged SIM, battery, delivery acknowledgement, false-alarm prevention and trusted contacts must be validated; no emergency dispatch is guaranteed. A Bluetooth-only Button or Ring Lite still needs a smartphone or a separately engineered gateway.</small>
+            </div>
+          </section>
+
           <div className="rm-pricing-grid">
             {products.map(product => {
               const model = guardianPricing[product.slug];
@@ -344,9 +377,9 @@ export default function LandingPage() {
             <div className="rm-family-plan-icon"><Users size={23} aria-hidden="true" /></div>
             <div>
               <span className="rm-section-index">FAMILY ACCESS / PROPOSED SUPPORT PROGRAMME</span>
-              <h3>Make the phone-free Remote accessible to households with limited income.</h3>
+              <h3>Help families with button phones access a standalone cellular SOS device.</h3>
               <p>Our proposal is a <strong>{formatLkr(guardianPricing["guardian-remote"].communitySupportGoalLkr ?? 0)}</strong> household contribution towards a Remote, with <strong>{formatLkr(proposedSupportGap(guardianPricing["guardian-remote"]))}</strong> covered by a government, NGO or CSR partner. This is a <strong>funding goal, not an approved subsidy or a selling price</strong>. The Remote still needs a mobile SIM/data plan, and the total cost and VAT treatment must be validated.</p>
-              <p>The Button can be simpler and cheaper, but <b>it cannot send independent alerts without a paired phone or a separately developed and tested gateway</b>. Households without a suitable smartphone would need the standalone Remote or another supported network solution.</p>
+              <p><b>The Rs. 1,990 Bluetooth Button is not directly compatible with a basic keypad phone.</b> A separate Cellular Button with its own SIM is a proposed low-cost alternative; its design and price are not confirmed. The proposed Remote can operate without a smartphone, and a future SMS/voice service could notify relatives who only have button phones. The service has not been implemented.</p>
             </div>
           </div>
           <div className="rm-bulk-strategy" aria-label="How ReliefMesh aims to lower device costs">
@@ -387,6 +420,9 @@ export default function LandingPage() {
                   <tr><th scope="row">SOS connection</th>
                     {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].connection}</td>)}
                   </tr>
+                  <tr><th scope="row">Only a basic keypad phone at home?</th>
+                    {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].keypadPhoneHousehold}</td>)}
+                  </tr>
                   <tr><th scope="row">Requires smartphone</th>
                     {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].phoneRequired ? "Yes — paired phone" : "No — planned LTE"}</td>)}
                   </tr>
@@ -402,7 +438,7 @@ export default function LandingPage() {
                 </tbody>
               </table>
             </div>
-            <p className="rm-comparison-disclaimer">A person normally chooses one suitable device, not a full bundle. A smartphone-connected Button or ring cannot protect someone outside its paired phone range. The Remote is a phone-independent concept, but portability, battery life, network coverage and certification must be validated. Neither a subsidised price nor emergency dispatch integration is currently available.</p>
+            <p className="rm-comparison-disclaimer">A basic phone cannot pair directly with the Bluetooth-only Button or ring companion app. Relatives with keypad phones could receive a future Cellular Button/Remote SMS or voice alert, subject to carrier compatibility and implementation. A person normally chooses one suitable device, not a full bundle. A smartphone-connected Button or ring cannot protect someone outside its paired phone range. The Remote is a phone-independent concept, but portability, battery life, network coverage and certification must be validated. Neither a subsidised price nor emergency dispatch integration is currently available.</p>
           </div>
           <div className="rm-pricing-disclosure">
             <div>
