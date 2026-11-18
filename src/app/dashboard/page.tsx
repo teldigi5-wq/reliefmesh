@@ -50,7 +50,7 @@ export default async function DashboardPage() {
  <main className="ops-page">
   <div className="ops-container">
    <DisclaimerBanner />
-   <OpsPageHeader eyebrow="OPERATIONS / OVERVIEW" title="Command center" icon={LayoutDashboard}
+   <OpsPageHeader eyebrow="OPERATIONS / OVERVIEW" title="Operations dashboard" icon={LayoutDashboard}
      description={"Incident intelligence and response coordination · Signed in as " + session.email}
      action={<div className="ops-header-actions">
        <Link href="/incidents" className="ops-button ops-button-outline">View incidents <ArrowUpRight size={16} /></Link>
