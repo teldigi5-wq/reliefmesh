@@ -52,33 +52,35 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="grid items-stretch bg-ivory dark:bg-navy-900 md:grid-cols-2">
         <div className="flex flex-col justify-center gap-6 px-6 py-20 sm:px-10 md:py-28 lg:px-16">
-          <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-navy-800 shadow-sm dark:bg-navy-800 dark:text-navy-100">
+          <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wide text-navy-800 shadow-soft dark:bg-navy-800 dark:text-navy-100">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-600" />
             </span>
             Emergency Technology · Humanitarian Protection
           </span>
-          <h1 className="max-w-xl text-4xl font-extrabold leading-[1.1] tracking-tight text-navy-900 sm:text-5xl lg:text-[52px] dark:text-white">
+          <h1 className="max-w-xl text-5xl font-extrabold leading-[0.98] tracking-tighter text-navy-900 sm:text-6xl lg:text-[68px] dark:text-white">
             Safety for Every Life.
           </h1>
           <p className="max-w-lg text-lg leading-relaxed text-navy-600 dark:text-navy-300">
             An intelligent emergency response ecosystem connecting people,
-            wearable technology and emergency services to help communities
-            access assistance when they need it most.
+            wearable technology and emergency services — so help reaches the
+            people who are hardest to reach.
           </p>
           <div className="flex flex-wrap gap-3 pt-2">
             <Link
               href="#products"
-              className="rounded-lg bg-brand-600 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-brand-600/25 transition-all hover:bg-brand-700 hover:shadow-xl hover:shadow-brand-600/30"
+              className="group inline-flex items-center gap-2 rounded-xl bg-brand-600 px-7 py-4 text-base font-semibold text-white shadow-cta transition-all hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-xl"
             >
               Explore Our Products
+              <ArrowIcon className="transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
               href="#partner"
-              className="rounded-lg border border-sand bg-white px-6 py-3 text-base font-semibold text-navy-900 shadow-sm transition-colors hover:bg-ivory dark:border-navy-700 dark:bg-navy-800 dark:text-white dark:hover:bg-navy-700"
+              className="group inline-flex items-center gap-2 rounded-xl border border-sand bg-white px-7 py-4 text-base font-semibold text-navy-900 shadow-soft transition-all hover:-translate-y-0.5 hover:bg-ivory dark:border-navy-700 dark:bg-navy-800 dark:text-white dark:hover:bg-navy-700"
             >
               Partner With ReliefMesh
+              <ArrowIcon className="transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
         </div>
@@ -192,8 +194,8 @@ export default function LandingPage() {
             <span className="text-sm font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
               Compare products
             </span>
-            <p className="text-lg font-semibold text-navy-900 dark:text-white">
-              See the full product comparison →
+            <p className="flex items-center gap-2 text-lg font-semibold text-navy-900 dark:text-white">
+              See the full product comparison <ArrowIcon />
             </p>
             <p className="text-sm text-navy-600 dark:text-navy-300">
               Price, standalone capability, connectivity and target audience, side by side.
@@ -271,9 +273,10 @@ export default function LandingPage() {
           </div>
           <Link
             href={ENQUIRY_EMAIL}
-            className="rounded-lg bg-navy-900 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-navy-700 dark:bg-white dark:text-navy-900 dark:hover:bg-navy-100"
+            className="group inline-flex items-center gap-2 rounded-xl bg-navy-900 px-7 py-4 text-base font-semibold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-navy-700 hover:shadow-lg dark:bg-white dark:text-navy-900 dark:hover:bg-navy-100"
           >
             Request Institutional Proposal
+            <ArrowIcon className="transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
       </section>
@@ -310,9 +313,10 @@ export default function LandingPage() {
           </p>
           <Link
             href={ENQUIRY_EMAIL}
-            className="mt-2 w-fit rounded-lg bg-brand-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-brand-700"
+            className="group mt-2 inline-flex w-fit items-center gap-2 rounded-xl bg-brand-600 px-7 py-4 text-base font-semibold text-white shadow-cta transition-all hover:-translate-y-0.5 hover:bg-brand-700"
           >
             Enquire About Sponsorship
+            <ArrowIcon className="transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
       </section>
@@ -330,15 +334,17 @@ export default function LandingPage() {
           <div className="flex flex-wrap justify-center gap-3">
             <Link
               href={ENQUIRY_EMAIL}
-              className="rounded-lg bg-white px-6 py-3 text-base font-semibold text-brand-600 shadow-sm transition-colors hover:bg-brand-50"
+              className="group inline-flex items-center gap-2 rounded-xl bg-white px-7 py-4 text-base font-semibold text-brand-600 shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-50"
             >
               Request Institutional Proposal
+              <ArrowIcon className="transition-transform group-hover:translate-x-0.5" />
             </Link>
             <Link
               href={ENQUIRY_EMAIL}
-              className="rounded-lg border border-white px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-white/10"
+              className="group inline-flex items-center gap-2 rounded-xl border border-white/70 px-7 py-4 text-base font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-white/10"
             >
               Contact Us
+              <ArrowIcon className="transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
         </div>
@@ -388,8 +394,8 @@ function Stat({ value, label }: { value: string; label: string }) {
 function Step({ number, title, body }: { number: string; title: string; body: string }) {
   return (
     <div>
-      <span className="text-sm font-bold text-sand">{number}</span>
-      <h3 className="mt-2 font-semibold text-white">{title}</h3>
+      <span className="text-2xl font-extrabold tracking-tight text-sand">{number}</span>
+      <h3 className="mt-3 text-lg font-bold text-white">{title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-navy-300">{body}</p>
     </div>
   );
@@ -457,11 +463,26 @@ function ProductCard({
         {note ? <p className="text-xs leading-relaxed text-sand">{note}</p> : null}
         <Link
           href="mailto:partners@reliefmesh.app"
-          className="mt-auto pt-2 text-sm font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400"
+          className="group mt-auto flex items-center gap-1.5 pt-2 text-sm font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400"
         >
-          Enquire about product →
+          Enquire about product
+          <ArrowIcon className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
         </Link>
       </div>
     </div>
+  );
+}
+
+function ArrowIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={`h-[18px] w-[18px] ${className}`} fill="none">
+      <path
+        d="M5 12h14M13 6l6 6-6 6"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

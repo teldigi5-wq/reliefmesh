@@ -33,12 +33,12 @@ body {
 
 /* Elevated, premium-feeling card surface used across the app. */
 .surface-card {
-  @apply rounded-xl border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_-12px_rgba(15,23,42,0.08)] dark:border-slate-800 dark:bg-slate-900 dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_8px_24px_-12px_rgba(0,0,0,0.5)];
+  @apply rounded-2xl border border-slate-200/70 bg-white shadow-card dark:border-slate-800 dark:bg-slate-900 dark:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_12px_28px_-8px_rgba(0,0,0,0.5)];
 }
 
 /* Gentle lift on hover for anything meant to feel tappable/clickable. */
 .hover-lift {
-  @apply transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md;
+  @apply transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-card-hover;
 }
 
 @media (prefers-reduced-motion: reduce) {
