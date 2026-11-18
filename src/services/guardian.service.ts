@@ -13,8 +13,8 @@ export const guardianService = {
     input: GuardianSimulatorInput,
     actor: { id: string; role: Role }
   ) {
-    if (!hasPermission(actor.role, "guardian:manage_devices")) {
-      throw new PermissionError("Not permitted to operate the Guardian simulator");
+    if (!hasPermission(actor.role, "guardian:trigger_sos")) {
+      throw new PermissionError("Not permitted to trigger the Guardian SOS remote");
     }
 
     const result = await guardianRepository.createSimulatedSOSIncident(input, actor.id);
@@ -58,10 +58,10 @@ export const guardianService = {
     input: GuardianSimulatorLocationInput,
     actor: { id: string; role: Role }
   ) {
-    if (!hasPermission(actor.role, "guardian:manage_devices")) {
+    if (!hasPermission(actor.role, "guardian:trigger_sos")) {
       throw new PermissionError("Not permitted to stream Guardian telemetry");
     }
-    return guardianRepository.updateSimulatedSOSLocation(input);
+    return guardianRepository.updateSimulatedSOSLocation(input, actor.id);
   },
 
   async getMonitoringData(actor: { role: Role }) {

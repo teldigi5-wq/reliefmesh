@@ -4,7 +4,20 @@ import { hasPermission } from "@/lib/permissions";
 describe("role permissions", () => {
   it("allows citizens to report incidents but not verify them", () => {
     expect(hasPermission("CITIZEN", "incident:report")).toBe(true);
+    expect(hasPermission("CITIZEN", "guardian:trigger_sos")).toBe(true);
     expect(hasPermission("CITIZEN", "incident:verify")).toBe(false);
+  });
+
+  it("allows every signed-in role to operate its own SOS remote", () => {
+    for (const role of [
+      "ADMIN",
+      "OPERATOR",
+      "RESPONDER",
+      "CITIZEN",
+      "ORGANISATION",
+    ] as const) {
+      expect(hasPermission(role, "guardian:trigger_sos")).toBe(true);
+    }
   });
 
   it("allows operators to verify and assign incidents", () => {

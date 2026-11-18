@@ -232,7 +232,7 @@ test("a responder cannot transition an incident they are not assigned to", async
 test("virtual Guardian SOS creates and live-updates a real incident", async ({
   page,
 }) => {
-  await login(page, "operator@reliefmesh.test");
+  await login(page, "citizen@reliefmesh.test");
   const deviceSerial = "E2E-GUARDIAN-" + Date.now();
 
   const trigger = await page.request.post("/api/guardian/simulate", {

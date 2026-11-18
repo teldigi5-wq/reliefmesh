@@ -53,13 +53,17 @@ export const guardianRepository = {
     });
   },
 
-  updateSimulatedSOSLocation(input: GuardianSimulatorLocationInput) {
+  updateSimulatedSOSLocation(
+    input: GuardianSimulatorLocationInput,
+    reportedById: string
+  ) {
     return prisma.$transaction(async (tx) => {
       const event = await tx.sOSEvent.findFirst({
         where: {
           incidentId: input.incidentId,
           isSimulated: true,
           device: { deviceSerial: input.deviceSerial },
+          incident: { reportedById },
         },
         select: { id: true, deviceId: true, incidentId: true },
       });

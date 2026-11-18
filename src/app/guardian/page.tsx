@@ -4,7 +4,6 @@ import { guardianService } from "@/services/guardian.service";
 import { AppNav } from "@/components/layout/app-nav";
 import { SOSMapLoader } from "@/components/guardian/sos-map-loader";
 import { PermissionError } from "@/lib/permissions";
-import { RemoteSimulator } from "@/components/guardian/remote-simulator";
 
 export default async function GuardianPage() {
   const session = await getSession();
@@ -15,17 +14,7 @@ export default async function GuardianPage() {
     data = await guardianService.getMonitoringData({ role: session.role });
   } catch (err) {
     if (err instanceof PermissionError) {
-      return (
-        <>
-          <AppNav role={session.role} />
-          <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
-            <h1 className="text-2xl font-semibold">Guardian</h1>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-              Your role doesn&apos;t have access to device/location monitoring.
-            </p>
-          </main>
-        </>
-      );
+      redirect("/sos");
     }
     throw err;
   }
@@ -61,10 +50,6 @@ export default async function GuardianPage() {
           <p className="rounded-xl bg-slate-50 px-3 py-3 text-center text-xs font-bold dark:bg-slate-800">3 · Supabase incident + GPS</p>
           <p className="rounded-xl bg-slate-50 px-3 py-3 text-center text-xs font-bold dark:bg-slate-800">4 · Operator alerts + map</p>
         </div>
-
-        {(session.role === "ADMIN" || session.role === "OPERATOR") && (
-          <RemoteSimulator />
-        )}
 
         <section className="mt-8">
           <div className="mb-3 flex flex-wrap items-end justify-between gap-2">

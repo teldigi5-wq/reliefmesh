@@ -17,6 +17,7 @@ export type Permission =
   | "volunteer:manage"
   | "resource:manage"
   | "resource:allocate"
+  | "guardian:trigger_sos"
   | "guardian:manage_devices"
   | "guardian:view_locations"
   | "user:manage_roles";
@@ -33,6 +34,7 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "volunteer:manage",
     "resource:manage",
     "resource:allocate",
+    "guardian:trigger_sos",
     "guardian:manage_devices",
     "guardian:view_locations",
     "user:manage_roles",
@@ -45,24 +47,28 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     "volunteer:manage",
     "resource:manage",
     "resource:allocate",
+    "guardian:trigger_sos",
     "guardian:manage_devices",
     "guardian:view_locations",
   ],
   RESPONDER: [
     "incident:view_own",
     "incident:update_status",
+    "guardian:trigger_sos",
     "guardian:view_locations",
     "volunteer:register",
   ],
   CITIZEN: [
     "incident:report",
     "incident:view_own",
+    "guardian:trigger_sos",
     "volunteer:register",
   ],
   ORGANISATION: [
     "incident:view_all",
     "resource:manage",
     "resource:allocate",
+    "guardian:trigger_sos",
     "volunteer:register",
   ],
 };

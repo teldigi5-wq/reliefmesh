@@ -17,17 +17,23 @@ const roleClasses: Record<Role, string> = {
   ORGANISATION: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300",
 };
 
-const LINKS: { href: string; label: string }[] = [
+const BASE_LINKS: { href: string; label: string }[] = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/incidents", label: "Incidents" },
   { href: "/map", label: "Map" },
   { href: "/volunteers", label: "Volunteers" },
   { href: "/resources", label: "Resources" },
-  { href: "/guardian", label: "Guardian" },
 ];
 
 export function AppNav({ role }: { role: Role }) {
   const pathname = usePathname();
+  const links = [
+    ...BASE_LINKS,
+    { href: "/sos", label: "SOS Remote" },
+    ...(["ADMIN", "OPERATOR", "RESPONDER"].includes(role)
+      ? [{ href: "/guardian", label: "Guardian" }]
+      : []),
+  ];
   // Below this, the 6 nav links + logo + bell + theme toggle + role badge
   // don't fit in one row (observed overflow starting around 820-900px on a
   // real layout with this many items), so they move into a collapsible
@@ -46,14 +52,18 @@ export function AppNav({ role }: { role: Role }) {
 
         {/* Desktop/tablet link row — hidden once there isn't room for it. */}
         <div className="ml-6 hidden items-center gap-1 text-sm lg:flex">
-          {LINKS.map((link) => (
+          {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={clsx(
                 "rounded-md px-3 py-1.5 font-medium transition-colors",
                 isActive(link.href)
-                  ? "bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300"
+                  ? link.href === "/sos"
+                    ? "bg-red-600 text-white shadow-sm shadow-red-950/20"
+                    : "bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300"
+                  : link.href === "/sos"
+                    ? "bg-red-50 text-red-700 ring-1 ring-inset ring-red-200 hover:bg-red-100 dark:bg-red-950/40 dark:text-red-300 dark:ring-red-900"
                   : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
               )}
             >
@@ -104,7 +114,7 @@ export function AppNav({ role }: { role: Role }) {
       {mobileOpen && (
         <div className="border-t border-slate-200/80 px-4 pb-3 pt-2 dark:border-slate-800/80 lg:hidden">
           <div className="flex flex-col gap-1 text-sm">
-            {LINKS.map((link) => (
+            {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -112,7 +122,11 @@ export function AppNav({ role }: { role: Role }) {
                 className={clsx(
                   "rounded-md px-3 py-2 font-medium transition-colors",
                   isActive(link.href)
-                    ? "bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300"
+                    ? link.href === "/sos"
+                      ? "bg-red-600 text-white"
+                      : "bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300"
+                    : link.href === "/sos"
+                      ? "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
                 )}
               >
