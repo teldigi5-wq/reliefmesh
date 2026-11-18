@@ -1,500 +1,357 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Logo } from "@/components/ui/logo";
+import { ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight, MapPin, Menu, Radio, ShieldCheck, Users } from "lucide-react";
+import "./reliefmesh-landing.css";
 
-const ENQUIRY_EMAIL = "mailto:partners@reliefmesh.app";
+export const metadata: Metadata = {
+  title: "ReliefMesh | Connected Safety for Every Life",
+  description:
+    "A people-first disaster response coordination platform, with Guardian SOS product concepts and an IoT-ready response network.",
+  openGraph: {
+    title: "ReliefMesh — When Every Second Matters",
+    description: "Connecting communities, operators, volunteers and responders.",
+    images: [{ url: "/reliefmesh/hero-network.webp", width: 1672, height: 941 }],
+  },
+};
+
+const ASSET_ROOT = "/reliefmesh";
+
+const products = [
+  {
+    name: "Guardian Ring Lite",
+    eyebrow: "COMMUNITY FIRST",
+    description: "An accessible, lightweight emergency SOS wearable concept.",
+    detail: "Intentional emergency activation",
+    image: "ring-lite.webp",
+    alt: "Guardian Ring Lite portrait product poster showing a discreet emergency activation concept",
+  },
+  {
+    name: "Guardian Ring Pro",
+    eyebrow: "ADVANCED SAFETY",
+    description: "An enhanced SOS ring concept with exploratory wellness sensing.",
+    detail: "Safety and wellness concept",
+    image: "ring-pro.webp",
+    alt: "Guardian Ring Pro portrait product poster illustrating SOS and proposed wellness sensing features",
+  },
+  {
+    name: "Guardian Button",
+    eyebrow: "EVERYDAY PROTECTION",
+    description: "A compact, easy-to-reach Bluetooth emergency button concept.",
+    detail: "Small, simple and portable",
+    image: "guardian-button.webp",
+    alt: "Guardian Button portrait infographic with an SOS keychain design and technical concept",
+  },
+  {
+    name: "Guardian Remote",
+    eyebrow: "CONNECTED RESPONSE",
+    description: "A cellular and GPS-enabled remote SOS device concept.",
+    detail: "Location and connectivity",
+    image: "guardian-remote.webp",
+    alt: "Guardian Remote portrait infographic outlining a GPS and cellular SOS design",
+  },
+];
+
+const capabilities = [
+  {
+    index: "01",
+    title: "Report incidents",
+    description: "Location-aware reporting with severity, details and a review process.",
+    icon: MapPin,
+  },
+  {
+    index: "02",
+    title: "Coordinate response",
+    description: "Review reports, assign teams and track a shared emergency workflow.",
+    icon: Users,
+  },
+  {
+    index: "03",
+    title: "Device-ready architecture",
+    description: "An API and data model prepared for future Guardian SOS integrations.",
+    icon: Radio,
+  },
+];
+
+const steps = [
+  ["01", "SOS activation", "An intentional request for assistance"],
+  ["02", "Location and connectivity", "Proposed device GPS and cellular flow"],
+  ["03", "Incident management", "Backend review and coordination"],
+  ["04", "Responder visibility", "Clear information for assigned teams"],
+];
+
+function Brand({ footer = false }: { footer?: boolean }) {
+  return (
+    <Link href="/" className="rm-brand" aria-label="ReliefMesh homepage">
+      <svg className="rm-brand-mark" viewBox="0 0 64 70" fill="none" aria-hidden="true">
+        <path d="M32 4 58 15v21c0 15-12 25-26 31C18 61 6 51 6 36V15Z" fill="#0C2333" stroke="#17DEE2" strokeWidth="4" />
+        <path d="M32 8 54 18v14" stroke="#FF4056" strokeWidth="4" />
+        <path d="M12 33c8-13 31-13 40 0M18 38c6-9 22-9 28 0" stroke="#17DEE2" strokeWidth="2" />
+        <circle cx="32" cy="42" r="11" fill="#F44357" />
+        <path d="M32 35v14M25 42h14" stroke="white" strokeWidth="4" strokeLinecap="round" />
+      </svg>
+      <span>RELIEF<span className="rm-cyan">MESH</span></span>
+      {footer ? <span className="rm-brand-suffix">/ SAFETY FOR EVERY LIFE</span> : null}
+    </Link>
+  );
+}
+
+function Artwork({
+  name,
+  alt,
+  portrait = false,
+  priority = false,
+}: {
+  name: string;
+  alt: string;
+  portrait?: boolean;
+  priority?: boolean;
+}) {
+  const url = ASSET_ROOT + "/" + name;
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={portrait ? "rm-art rm-art-portrait" : "rm-art rm-art-landscape"}
+      aria-label={"Open full-size image: " + alt}
+    >
+      <Image
+        src={url}
+        alt={alt}
+        width={portrait ? 1122 : 1672}
+        height={portrait ? 1402 : 941}
+        sizes={portrait ? "(max-width: 540px) 90vw, (max-width: 900px) 44vw, 23vw" : "(max-width: 900px) 90vw, 55vw"}
+        priority={priority}
+        className="rm-art-image"
+      />
+      <span className="rm-art-zoom" aria-hidden="true"><ArrowUpRight size={16} /></span>
+    </a>
+  );
+}
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-white dark:bg-navy-950">
-      <header className="sticky top-0 z-30 border-b border-navy-100 bg-white/90 backdrop-blur dark:border-navy-800 dark:bg-navy-950/90">
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-12">
-          <Logo wordmarkClassName="text-lg font-semibold tracking-tight text-navy-900 dark:text-white" />
-          <div className="hidden items-center gap-7 md:flex">
-            <Link href="#products" className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white">
-              Products
-            </Link>
-            <Link href="#solutions" className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white">
-              Solutions
-            </Link>
-            <Link href="#how-it-works" className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white">
-              How It Works
-            </Link>
-            <Link href="#community" className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white">
-              Community
-            </Link>
-            <Link href="#footer" className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white">
-              About
-            </Link>
-            <Link href="#partner" className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white">
-              Contact
+    <div className="rm-site" id="top">
+      <a className="rm-skip" href="#main">Skip to main content</a>
+
+      <header className="rm-header">
+        <div className="rm-container rm-header-inner">
+          <Brand />
+          <nav className="rm-nav-links" aria-label="Main navigation">
+            <a href="#platform">Platform</a>
+            <a href="#guardians">Guardian devices</a>
+            <a href="#technology">How it works</a>
+            <a href="#mission">Our mission</a>
+          </nav>
+          <div className="rm-header-actions">
+            <Link href="/login" className="rm-login">Log in</Link>
+            <Link href="/register" className="rm-button rm-button-red rm-button-small">
+              Get started <ArrowUpRight size={16} aria-hidden="true" />
             </Link>
           </div>
-          <div className="flex items-center gap-3">
-            <ThemeToggle />
-            <Link
-              href="/login"
-              className="hidden rounded-lg px-4 py-2 text-sm font-medium text-navy-700 transition-colors hover:bg-navy-50 dark:text-navy-200 dark:hover:bg-navy-900 sm:inline-block"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/register"
-              className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm shadow-brand-600/20 transition-all hover:bg-brand-700 hover:shadow-md"
-            >
-              Report an Emergency
-            </Link>
-          </div>
-        </nav>
+          <details className="rm-mobile-menu">
+            <summary aria-label="Toggle navigation"><Menu size={22} aria-hidden="true" /></summary>
+            <nav aria-label="Mobile navigation">
+              <a href="#platform">Platform</a>
+              <a href="#guardians">Guardian devices</a>
+              <a href="#technology">How it works</a>
+              <a href="#mission">Our mission</a>
+              <Link href="/login">Log in</Link>
+              <Link href="/register">Create account</Link>
+            </nav>
+          </details>
+        </div>
       </header>
 
-      {/* Hero — the one place motion is choreographed: badge, headline,
-          copy and buttons arrive in a single staggered sequence on load.
-          Nowhere else on the page animates on its own. */}
-      <section className="grid items-stretch bg-ivory dark:bg-navy-900 md:grid-cols-2">
-        <div className="flex flex-col justify-center gap-7 px-6 py-20 sm:px-10 md:py-28 lg:px-16 xl:px-20">
-          <span
-            className="animate-fade-in-up inline-flex w-fit items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-medium text-navy-700 shadow-soft dark:bg-navy-800 dark:text-navy-100"
-            style={{ animationDelay: "0ms" }}
-          >
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-600" />
-            </span>
-            Emergency technology, built for humanitarian response
-          </span>
-          <h1
-            className="animate-fade-in-up max-w-xl text-5xl font-extrabold leading-[1.05] tracking-tight text-navy-900 sm:text-6xl dark:text-white"
-            style={{ animationDelay: "90ms" }}
-          >
-            Safety for every life.
-          </h1>
-          <p
-            className="animate-fade-in-up max-w-md text-lg leading-relaxed text-navy-600 dark:text-navy-300"
-            style={{ animationDelay: "180ms" }}
-          >
-            An emergency response ecosystem connecting people, wearable
-            devices and responders — built so help can still find the
-            people who are hardest to reach.
-          </p>
-          <div
-            className="animate-fade-in-up flex flex-wrap gap-3 pt-2"
-            style={{ animationDelay: "270ms" }}
-          >
-            <Link
-              href="#products"
-              className="group inline-flex items-center gap-2 rounded-xl bg-brand-600 px-7 py-4 text-base font-semibold text-white shadow-cta transition-all hover:-translate-y-0.5 hover:bg-brand-700 hover:shadow-xl"
-            >
-              Explore our products
-              <ArrowIcon className="h-[18px] w-[18px] transition-transform group-hover:translate-x-0.5" />
-            </Link>
-            <Link
-              href="#partner"
-              className="inline-flex items-center rounded-xl border border-sand bg-white px-7 py-4 text-base font-semibold text-navy-900 shadow-soft transition-colors hover:bg-ivory dark:border-navy-700 dark:bg-navy-800 dark:text-white dark:hover:bg-navy-700"
-            >
-              Partner with ReliefMesh
-            </Link>
-          </div>
-        </div>
-
-        <div className="relative min-h-[360px] overflow-hidden md:min-h-0">
-          <Image
-            src="/images/hero-network.jpg"
-            alt="The Guardian Ring, Guardian Button and Guardian Remote arranged together, connected by an illustrated emergency-response network"
-            fill
-            priority
-            sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover"
-          />
-          <div
-            className="absolute inset-x-0 bottom-0 h-40"
-            style={{ background: "linear-gradient(to top, rgba(27,33,43,0.8), rgba(27,33,43,0))" }}
-          />
-          <div className="absolute bottom-6 left-6 right-6 flex items-center gap-3 rounded-2xl bg-white px-5 py-4 shadow-xl sm:right-auto">
-            <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-brand-600" />
-            <p className="text-sm font-semibold text-navy-900">
-              Four devices, one response network
+      <main id="main">
+        <section className="rm-container rm-hero" id="platform" aria-labelledby="rm-hero-heading">
+          <div className="rm-hero-copy">
+            <span className="rm-eyebrow"><span className="rm-signal-dot" /> Disaster response · Connected safety</span>
+            <h1 id="rm-hero-heading">
+              When every second matters, <em>connection</em> makes a difference.
+            </h1>
+            <p>
+              A connected emergency-response platform for citizens, operators,
+              volunteers and organisations — bringing critical information and
+              coordinated action into one shared view.
             </p>
+            <div className="rm-button-row">
+              <Link href="/register" className="rm-button rm-button-red">
+                Report an emergency <ArrowRight size={19} aria-hidden="true" />
+              </Link>
+              <a href="#technology" className="rm-button rm-button-outline">Explore the system</a>
+            </div>
+            <p className="rm-note"><ShieldCheck size={18} aria-hidden="true" /> People first. Built for clarity.</p>
           </div>
-        </div>
-      </section>
-
-      {/* The problem */}
-      <section className="bg-navy-900">
-        <div className="mx-auto flex max-w-4xl flex-col items-center gap-9 px-6 py-24 text-center sm:py-28 lg:px-16">
-          <h2 className="max-w-2xl text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl">
-            Emergency help often arrives too late — or not at all.
-          </h2>
-          <p className="max-w-xl text-base leading-relaxed text-navy-300">
-            Remote communities, elderly residents and lone field workers are
-            often the furthest from help, and the hardest to reach when a
-            crisis hits. ReliefMesh closes that gap with devices and
-            software built for the moment it matters most.
-          </p>
-          <div className="flex flex-wrap justify-center gap-10 sm:gap-16">
-            <Stat value="One tap" label="to send an SOS with location" />
-            <Stat value="24/7" label="operator coverage, no dead zones" />
-            <Stat value="Full trail" label="from alert to resolution" />
+          <div className="rm-hero-media">
+            <div className="rm-media-heading"><span>THE RELIEFMESH VISION</span><span>01 / 05</span></div>
+            <div className="rm-hero-frame">
+              <Artwork name="hero-network.webp" alt="Illustration of the ReliefMesh emergency network and connected Guardian devices" priority />
+            </div>
+            <p className="rm-image-caption"><span className="rm-signal-dot" /> One connected network. More informed response.</p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Product ecosystem */}
-      <section id="products" className="mx-auto max-w-7xl px-6 py-24 sm:py-28 lg:px-16 xl:px-20">
-        <div className="mx-auto mb-16 max-w-2xl text-center">
-          <p className="text-sm font-bold uppercase tracking-wide text-brand-600 dark:text-brand-400">
-            The Guardian ecosystem
-          </p>
-          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl dark:text-white">
-            One ecosystem. Five ways to stay protected.
-          </h2>
-          <p className="mt-4 text-base leading-relaxed text-navy-600 dark:text-navy-300">
-            From a free smartphone app to future wearable hardware, every
-            Guardian product connects back to the same response network.
-          </p>
-        </div>
+        <section className="rm-container rm-capability-grid" aria-label="Core platform capabilities">
+          {capabilities.map(({ index, title, description, icon: Icon }) => (
+            <article className="rm-capability" key={index}>
+              <div className="rm-capability-top"><span>{index}</span><Icon size={25} strokeWidth={1.6} aria-hidden="true" /></div>
+              <h2>{title}</h2>
+              <p>{description}</p>
+            </article>
+          ))}
+        </section>
 
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          <ProductCard
-            name="Guardian Mobile"
-            status="Available now"
-            statusTone="live"
-            price="Free"
-            desc="Smartphone SOS, GPS and incident reporting connected directly to the ReliefMesh platform."
-            note="Depends on your phone's battery, GPS signal and connectivity."
-          />
-          <ProductCard
-            name="Guardian Button"
-            status="Future concept"
-            statusTone="concept"
-            price="Target LKR 1,500–2,500"
-            image="/images/products/guardian-button.jpg"
-            imageAspect="aspect-[1/1]"
-            desc="A compact Bluetooth SOS button that pairs with your phone to send an emergency alert."
-            note="Needs a connected phone nearby — can't transmit on its own yet."
-          />
-          <ProductCard
-            name="Guardian Remote"
-            status="Hardware concept"
-            statusTone="concept"
-            price="Target LKR 5,000–7,000"
-            image="/images/products/guardian-remote.jpg"
-            imageAspect="aspect-[470/560]"
-            desc="A standalone SOS device with its own GPS and cellular connection — no phone required."
-            note="Concept design — not yet commercially available or independently tested."
-          />
-          <ProductCard
-            name="Guardian Ring Lite"
-            status="Coming in the future"
-            statusTone="concept"
-            price="Target LKR 2,990–4,990"
-            image="/images/products/guardian-ring-lite.jpg"
-            imageAspect="aspect-[1/1]"
-            desc="An affordable, discreet ring built for one job: reliable SOS activation for every family."
-          />
-          <ProductCard
-            name="Guardian Ring Pro"
-            status="Future R&D"
-            statusTone="concept"
-            price="Target LKR 24,900–34,900"
-            image="/images/products/guardian-ring-pro.jpg"
-            imageAspect="aspect-[620/480]"
-            desc="Adds heart-rate, sleep and activity tracking alongside SOS, for premium wellness and safety."
-            note="Wellness features only — not a medical device."
-          />
-          <Link
-            href={ENQUIRY_EMAIL}
-            className="flex flex-col items-start justify-center gap-2 rounded-2xl border border-dashed border-navy-200 p-8 transition-colors hover:border-brand-400 hover:bg-brand-50/40 dark:border-navy-700 dark:hover:border-brand-600 dark:hover:bg-brand-900/10"
-          >
-            <p className="text-lg font-bold text-navy-900 dark:text-white">
-              See the full product comparison
-            </p>
-            <p className="text-sm text-navy-600 dark:text-navy-300">
-              Price, standalone capability, connectivity and target audience, side by side.
-            </p>
-          </Link>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section id="how-it-works" className="bg-navy-900">
-        <div className="mx-auto max-w-7xl px-6 py-24 sm:py-28 lg:px-16 xl:px-20">
-          <div className="mx-auto mb-14 max-w-xl text-center">
-            <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-              From SOS to resolution
-            </h2>
+        <section className="rm-band" id="mission">
+          <div className="rm-container rm-mission rm-section">
+            <div>
+              <span className="rm-section-index">01 / OUR MISSION</span>
+              <h2>Technology should reach people <span>when they need it most.</span></h2>
+              <p>ReliefMesh puts community safety at the centre of emergency coordination, helping connect people requesting assistance with the teams coordinating a response.</p>
+              <p>Guardian wearable designs extend that vision through accessible, intentional SOS activation concepts.</p>
+              <Link href="/register" className="rm-text-link">Start with ReliefMesh <ArrowUpRight size={20} aria-hidden="true" /></Link>
+            </div>
+            <figure className="rm-figure">
+              <Artwork name="mission-flood.webp" alt="Concept illustration of volunteers and responders coordinating flood relief in a mountain community" />
+              <figcaption>HUMANITARIAN IMPACT · VISUAL CONCEPT</figcaption>
+            </figure>
           </div>
-          <div className="grid gap-12 sm:grid-cols-3">
-            <Step number="01" title="Activate" body="Press SOS on any Guardian device, or the Guardian Mobile app, in seconds." />
-            <Step number="02" title="Locate and transmit" body="GPS plus cellular or Bluetooth relay the alert and location to ReliefMesh's secure backend." />
-            <Step number="03" title="Respond" body="Operators verify the alert and dispatch responders, tracked from first contact to resolution." />
-          </div>
-          <p className="mt-10 text-center text-sm text-navy-400">
-            Connectivity depends on the device and network coverage in your area.
-          </p>
+        </section>
 
-          <div className="mx-auto mt-16 max-w-3xl overflow-hidden rounded-2xl border border-navy-800">
-            <Image
-              src="/images/iot-ecosystem.jpg"
-              alt="Concept technical architecture diagram: Guardian device with ESP32 controller, GPS receiver and cellular modem relaying an SOS alert through ReliefMesh's backend to a responder dashboard"
-              width={1672}
-              height={941}
-              className="w-full"
-            />
-            <p className="bg-navy-950 px-4 py-2 text-center text-xs text-navy-500">
-              Illustrative concept architecture — not a certified or independently tested design.
-            </p>
+        <section className="rm-container rm-section" id="guardians">
+          <div className="rm-section-heading">
+            <div>
+              <span className="rm-section-index">02 / GUARDIAN COLLECTION</span>
+              <h2>Safety you can <span>carry.</span></h2>
+              <p>Four purpose-led device concepts designed around different needs — from everyday personal safety to future emergency connectivity.</p>
+            </div>
+            <span className="rm-section-pill">PRODUCT CONCEPT COLLECTION <ArrowUpRight size={15} aria-hidden="true" /></span>
           </div>
-        </div>
-      </section>
 
-      {/* Institutional solutions */}
-      <section id="solutions" className="bg-ivory dark:bg-navy-900">
-        <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 px-6 py-24 text-center sm:py-28 lg:px-16">
-          <h2 className="max-w-2xl text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl dark:text-white">
-            Built for governments, NGOs and hospitals.
-          </h2>
-          <p className="max-w-2xl text-base leading-relaxed text-navy-700 dark:text-navy-300">
-            Incident management, device and responder coordination, and
-            analytics — the same software already powering ReliefMesh&apos;s own
-            response operations, available for institutional deployment.
-          </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            {["Government", "NGOs & charities", "Hospitals", "Disaster-response authorities"].map((c) => (
-              <span
-                key={c}
-                className="rounded-full border border-sand bg-white px-4 py-2 text-sm font-semibold text-navy-900 dark:border-navy-700 dark:bg-navy-800 dark:text-white"
-              >
-                {c}
-              </span>
+          <div className="rm-product-grid">
+            {products.map((product) => (
+              <article className="rm-product-card" key={product.name}>
+                <Artwork name={product.image} alt={product.alt} portrait />
+                <div className="rm-product-description">
+                  <span className="rm-product-tag">{product.eyebrow}</span>
+                  <h3>{product.name}</h3>
+                  <p>{product.description}</p>
+                  <div className="rm-product-bottom"><span>{product.detail}</span><span className="rm-concept-tag">Concept</span></div>
+                </div>
+              </article>
             ))}
           </div>
-          <div className="rounded-xl bg-white px-7 py-5 shadow-sm dark:bg-navy-800">
-            <p className="text-base font-bold text-navy-900 dark:text-white">
-              Indicative pricing — from LKR 250,000 / year
-            </p>
-            <p className="text-sm text-navy-500 dark:text-navy-400">
-              Subject to deployment scope and commercial discussion.
-            </p>
-          </div>
-          <Link
-            href={ENQUIRY_EMAIL}
-            className="inline-flex items-center rounded-xl bg-navy-900 px-7 py-4 text-base font-semibold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-navy-700 hover:shadow-lg dark:bg-white dark:text-navy-900 dark:hover:bg-navy-100"
-          >
-            Request institutional proposal
-          </Link>
-        </div>
-      </section>
+          <p className="rm-product-tip"><span className="rm-signal-dot" /> Select any product image to view the complete poster without cropping.</p>
+        </section>
 
-      {/* Community impact */}
-      <section id="community" className="grid md:grid-cols-2">
-        <div className="relative min-h-[340px] md:min-h-0">
-          <Image
-            src="/images/community-care.jpg"
-            alt="A ReliefMesh field worker showing a Guardian SOS device to an elderly woman, with flood relief underway in the background"
-            fill
-            sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover"
-          />
-        </div>
-        <div className="flex flex-col justify-center gap-5 px-6 py-20 sm:px-10 lg:px-16 xl:px-20">
-          <h2 className="max-w-md text-3xl font-extrabold leading-tight tracking-tight text-navy-900 dark:text-white">
-            Sponsor a life. Protect a community.
-          </h2>
-          <p className="max-w-lg text-[15px] leading-relaxed text-navy-700 dark:text-navy-300">
-            Donors, companies and charities can sponsor Guardian devices for
-            elderly residents, rural communities and disaster-affected
-            families through Sponsor a Life, and fund standing
-            emergency-readiness infrastructure through Guardian Disaster
-            Shield.
-          </p>
-          <p className="max-w-lg text-sm leading-relaxed text-sand">
-            Coverage depends on local connectivity; offline events are queued
-            and sent once a signal is available. This is emergency assistance
-            infrastructure, not a guarantee of rescue.
-          </p>
-          <Link
-            href={ENQUIRY_EMAIL}
-            className="mt-2 inline-flex w-fit items-center rounded-xl bg-brand-600 px-7 py-4 text-base font-semibold text-white shadow-cta transition-all hover:-translate-y-0.5 hover:bg-brand-700"
-          >
-            Enquire about sponsorship
-          </Link>
-        </div>
-      </section>
-
-      {/* Partner CTA */}
-      <section id="partner" className="bg-brand-600">
-        <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 px-6 py-24 text-center sm:py-28 lg:px-16">
-          <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-            Partner with ReliefMesh
-          </h2>
-          <p className="max-w-md text-base leading-relaxed text-brand-50">
-            For governments, NGOs, hospitals and corporate partners who want
-            to bring Guardian devices and response infrastructure to their
-            community.
-          </p>
-          <div className="flex flex-wrap justify-center gap-3 pt-2">
-            <Link
-              href={ENQUIRY_EMAIL}
-              className="inline-flex items-center rounded-xl bg-white px-7 py-4 text-base font-semibold text-brand-600 shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-50"
-            >
-              Request institutional proposal
-            </Link>
-            <Link
-              href={ENQUIRY_EMAIL}
-              className="inline-flex items-center rounded-xl border border-white/70 px-7 py-4 text-base font-semibold text-white transition-colors hover:bg-white/10"
-            >
-              Contact us
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <footer id="footer" className="bg-navy-950">
-        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-16 xl:px-20">
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
-            <div className="lg:col-span-1">
-              <Logo wordmarkClassName="text-lg font-semibold tracking-tight text-white" />
-              <p className="mt-3 max-w-[220px] text-sm leading-relaxed text-navy-400">
-                Safety for every life. Connecting people, protecting
-                communities, responding to emergencies.
-              </p>
+        <section className="rm-container rm-section rm-comparison" aria-labelledby="rm-comparison-heading">
+          <div className="rm-section-heading">
+            <div>
+              <span className="rm-section-index">03 / TWO LEVELS OF TECHNOLOGY</span>
+              <h2 id="rm-comparison-heading">One commitment <span>to safety.</span></h2>
+              <p>The proposed Guardian ring family balances accessibility with an expanded-feature concept for different individual and community needs.</p>
             </div>
-            <FooterCol
-              title="Products"
-              links={["Guardian Mobile", "Guardian Button", "Guardian Remote", "Guardian Ring Lite", "Guardian Ring Pro"]}
-            />
-            <FooterCol title="Solutions" links={["Government", "Charities", "Disaster response", "Healthcare"]} />
-            <FooterCol title="Community" links={["Sponsor a Life", "Guardian Disaster Shield"]} />
-            <FooterCol title="Company" links={["About", "Contact", "Partners"]} />
           </div>
-          <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-navy-800 pt-6 text-sm text-navy-500 sm:flex-row">
-            <p>© 2026 ReliefMesh. Indicative pricing and concept products as noted above.</p>
-            <div className="flex items-center gap-6">
-              <Link href="/privacy" className="hover:text-navy-200">Privacy</Link>
-              <Link href="/terms" className="hover:text-navy-200">Terms</Link>
-              <Link href={ENQUIRY_EMAIL} className="hover:text-navy-200">Contact</Link>
+          <div className="rm-comparison-grid">
+            <Artwork name="ring-comparison.webp" alt="Side-by-side comparison artwork of Guardian Ring Lite and Guardian Ring Pro" />
+            <div className="rm-comparison-copy">
+              <article>
+                <span className="rm-product-tag rm-red">LITE / ESSENTIAL</span>
+                <h3>Protection made accessible</h3>
+                <p>An SOS-first design concept focused on affordability, comfort and intentional activation.</p>
+              </article>
+              <hr />
+              <article>
+                <span className="rm-product-tag">PRO / ADVANCED</span>
+                <h3>Protection with insight</h3>
+                <p>An extended safety concept with prospective wellness sensing and support features.</p>
+              </article>
+              <small>Visual concepts only. Product capabilities are not presented as tested or commercially available.</small>
             </div>
+          </div>
+        </section>
+
+        <section className="rm-band" id="technology">
+          <div className="rm-container rm-section">
+            <div className="rm-section-heading">
+              <div>
+                <span className="rm-section-index">04 / TECHNICAL ARCHITECTURE</span>
+                <h2>From signal <span>to response.</span></h2>
+                <p>Explore how future Guardian SOS devices could connect to incident management, emergency teams and the existing ReliefMesh coordination platform.</p>
+              </div>
+            </div>
+            <div className="rm-technology-grid">
+              <Artwork name="architecture.webp" alt="ReliefMesh Emergency IoT Ecosystem infographic showing device, GPS, connectivity, cloud services and responders" />
+              <div className="rm-flow-panel">
+                <span className="rm-section-index">CONNECTED EMERGENCY FLOW</span>
+                <ol>
+                  {steps.map(([index, title, description]) => (
+                    <li key={index}>
+                      <span className="rm-flow-number">{index}</span>
+                      <span><strong>{title}</strong><small>{description}</small></span>
+                    </li>
+                  ))}
+                </ol>
+                <p>Architecture is illustrative. Current Guardian device monitoring uses simulated test events, not live physical hardware.</p>
+                <Link href="/login" className="rm-text-link">Open the platform <ArrowRight size={16} aria-hidden="true" /></Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="rm-container rm-section" id="community">
+          <div className="rm-section-heading">
+            <div>
+              <span className="rm-section-index">05 / COMMUNITY IMPACT</span>
+              <h2>Designed for <span>the real world.</span></h2>
+              <p>Behind every alert is a person. Meaningful emergency technology starts with empathy, clear communication and coordinated action.</p>
+            </div>
+          </div>
+          <div className="rm-community-grid">
+            <figure>
+              <Artwork name="community-care.webp" alt="Illustration of a volunteer demonstrating an accessible Guardian SOS device to an older person" />
+              <figcaption><span>01 / COMMUNITY CARE</span><strong>Making protection easier to access.</strong></figcaption>
+            </figure>
+            <figure>
+              <Artwork name="mission-flood.webp" alt="Concept depiction of coordinated flood relief in a mountainous rural community" />
+              <figcaption><span>02 / RELIEF COORDINATION</span><strong>Connecting care with action.</strong></figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section className="rm-container rm-section rm-final-section">
+          <div className="rm-cta-panel">
+            <div>
+              <span className="rm-section-index">MAKE RESILIENCE A SHARED MISSION</span>
+              <h2>Build a safer tomorrow, <span>together.</span></h2>
+              <p>Join the ReliefMesh platform to report incidents and participate in a more connected emergency-response community.</p>
+            </div>
+            <div className="rm-cta-actions">
+              <Link className="rm-button rm-button-red" href="/register">Create an account <ArrowUpRight size={17} aria-hidden="true" /></Link>
+              <Link className="rm-button rm-button-outline" href="/login">Log in <ChevronRight size={16} aria-hidden="true" /></Link>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer className="rm-footer">
+        <div className="rm-container">
+          <div className="rm-footer-top">
+            <div><Brand footer /><p>Connecting people, emergency information and responders.</p></div>
+            <nav aria-label="Footer navigation">
+              <a href="#platform">Platform</a>
+              <a href="#guardians">Guardian collection</a>
+              <a href="#technology">Architecture</a>
+              <Link href="/login">Log in</Link>
+            </nav>
+          </div>
+          <div className="rm-footer-bottom">
+            <span>© 2026 ReliefMesh · Wearable imagery is illustrative.</span>
+            <span><CheckCircle2 size={14} aria-hidden="true" /> Safety for Every Life.</span>
           </div>
         </div>
       </footer>
-    </main>
-  );
-}
-
-function Stat({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="text-center">
-      <p className="text-3xl font-extrabold text-white sm:text-4xl">{value}</p>
-      <p className="mt-1.5 max-w-[160px] text-sm text-navy-300">{label}</p>
     </div>
-  );
-}
-
-function Step({ number, title, body }: { number: string; title: string; body: string }) {
-  return (
-    <div>
-      <span className="text-2xl font-extrabold text-sand">{number}</span>
-      <h3 className="mt-3 text-lg font-bold text-white">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-navy-300">{body}</p>
-    </div>
-  );
-}
-
-function FooterCol({ title, links }: { title: string; links: string[] }) {
-  return (
-    <div>
-      <p className="text-sm font-semibold text-sand">{title}</p>
-      <ul className="mt-3 space-y-2">
-        {links.map((l) => (
-          <li key={l} className="text-sm text-navy-400">
-            {l}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function ProductCard({
-  name,
-  status,
-  statusTone,
-  price,
-  desc,
-  note,
-  image,
-  imageAspect = "aspect-[1/1]",
-}: {
-  name: string;
-  status: string;
-  statusTone: "live" | "concept";
-  price: string;
-  desc: string;
-  note?: string;
-  image?: string;
-  // A literal Tailwind aspect-ratio class (e.g. "aspect-[470/560]") matching
-  // this product's actual photo dimensions, so object-cover never crops into
-  // the device itself. Must be a literal string at the call site — Tailwind's
-  // build-time scanner can't see a dynamically-interpolated class name.
-  imageAspect?: string;
-}) {
-  return (
-    <div className="flex flex-col overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-card transition-shadow duration-300 hover:shadow-card-hover dark:border-slate-800 dark:bg-slate-900">
-      {image ? (
-        <div className={`relative w-full bg-navy-950 ${imageAspect}`}>
-          <Image
-            src={image}
-            alt={`${name} product photo`}
-            fill
-            sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
-            className="object-cover"
-          />
-        </div>
-      ) : (
-        <div className={`flex w-full items-center justify-center bg-brand-50 dark:bg-brand-900/20 ${imageAspect}`}>
-          <svg viewBox="0 0 24 24" className="h-12 w-12 text-brand-600 dark:text-brand-400">
-            <rect x="7" y="2" width="10" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
-            <line x1="10" y1="18" x2="14" y2="18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-          </svg>
-        </div>
-      )}
-      <div className="flex flex-1 flex-col gap-2.5 p-7">
-        <h3 className="text-lg font-bold text-navy-900 dark:text-white">{name}</h3>
-        <span
-          className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold ${
-            statusTone === "live"
-              ? "bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400"
-              : "bg-navy-100 text-navy-600 dark:bg-navy-800 dark:text-navy-300"
-          }`}
-        >
-          {status}
-        </span>
-        <p className="text-sm font-semibold text-navy-700 dark:text-navy-200">{price}</p>
-        <p className="text-sm leading-relaxed text-navy-600 dark:text-navy-300">{desc}</p>
-        {note ? <p className="text-xs leading-relaxed text-sand">{note}</p> : null}
-        <Link
-          href="mailto:partners@reliefmesh.app"
-          className="mt-auto w-fit pt-2 text-sm font-semibold text-brand-600 underline decoration-brand-300 decoration-2 underline-offset-4 transition-colors hover:text-brand-700 dark:text-brand-400"
-        >
-          Enquire about this product
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-function ArrowIcon({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none">
-      <path
-        d="M5 12h14M13 6l6 6-6 6"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }
