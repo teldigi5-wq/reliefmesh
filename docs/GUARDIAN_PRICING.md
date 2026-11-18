@@ -38,18 +38,24 @@ The scenario assumes 500–1,000 units and supplier/module sourcing rather than 
 
 The **Remote target is aggressive**. Small-batch cellular/GNSS boards, GNSS antennas, certified batteries, reliability tests and network certifications could easily exceed its assumed budget. Design and price must be adjusted to actual manufacturing quotes; never silently use a margin calculation to claim a verified cost.
 
-## Low-income household access goal: Conditional support programme
+## Family access: Free or low contribution, only IF funded
 
-Target household contribution for a Guardian Remote: **Rs. 3,990**, **only if** an NGO, CSR sponsor or government programme provides the remaining **Rs. 5,000 per unit** of the planned Rs. 8,990 base funding total.
+The earlier Rs. 3,990 assisted Remote goal remains too expensive for many intended families. The redesigned **proposed** programme has two household access tiers; **neither is currently approved, funded or available**:
 
-- Household contribution: Rs. 3,990.
-- Third-party funding **needed** (not secured): Rs. 5,000.
-- Planned gross receipts before VAT treatment: Rs. 8,990.
-- Estimated production ceiling: Rs. 6,400.
-- 3% fee allowance on full receipts: Rs. 269.70.
-- Conditional balance after unit costs and fee: **Rs. 2,320.30** before overhead, regulatory costs, VAT and recurring connectivity.
+| Proposal | Household contributes | Outside funding required for each Remote | Combined device funding target |
+|---|---:|---:|---:|
+| Highest-need households — fully sponsored | **Rs. 0** | **Rs. 8,990** | Rs. 8,990 |
+| Other eligible low-income households — nominal contribution | **Rs. 499** | **Rs. 8,491** | Rs. 8,990 |
 
-**No subsidy agreement, relief programme, tax approval, sale or pre-order currently exists.** The Rs. 3,990 figure must never appear as an unconditional market price or promise. Sponsor payments may affect VAT/tax accounting; confirm legal treatment before public procurement.
+The full Rs. 8,990 is the same **unverified** target base funding amount as the current procurement model, not an audited factory price. The model assumes a preliminary production ceiling of Rs. 6,400 per Remote and an illustrative 3% payment fee on full receipts: Rs. 8,990 − Rs. 269.70 − Rs. 6,400 = Rs. 2,320.30 before fixed overhead, applicable VAT and any other unbudgeted expenses. Under either tier, the required sponsor pays the remainder. Receiving only Rs. 0 or Rs. 499 from the family **does not recover manufacturing costs**.
+
+Mandatory limitations:
+- No sponsoring organisation, government agency, NGO, CSR partner or telecom operator has committed to this support.
+- No enrolment process, subsidy approval, sales, free distribution or pre-order is currently available.
+- Applicable VAT, SIM/data service, maintenance, certification, repairs, outreach and operating expenses must be supported separately or explicitly included in a verified and sufficient funding agreement.
+- Eligibility criteria must be developed transparently and fairly, especially for households without smartphones and people at high risk.
+- Families with only basic phones cannot use the Rs. 1,990 Bluetooth Guardian Button independently; a separate Cellular Button remains an unpriced, unbuilt product concept.
+- Actual quotes, tax treatment, device design and sponsor terms must be reviewed before confirming any financial commitment or public availability.
 
 ### Government discussion vs approved VAT relief
 
@@ -77,7 +83,7 @@ A no-smartphone household could use a properly deployed independent Remote, but 
 - [ ] Test battery size, charge life, button activation and connectivity in representative Sri Lankan networks
 - [ ] Validate assembly yield, warranty replacements and accessible physical form factor
 - [ ] Validate product compliance and import obligations and obtain tax advice
-- [ ] Obtain **actual written sponsor commitments** before advertising a supported Rs. 3,990 household contribution
+- [ ] Obtain **actual written sponsor commitments** before advertising any fully sponsored or Rs. 499 household-access plan
 - [ ] Budget cloud/application operating expenses, SIM subscription, outreach, R&D and response coordination
 - [ ] Recalculate target prices or reduce BOM scope if any of the above assumptions fail
 

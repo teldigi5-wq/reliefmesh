@@ -593,3 +593,16 @@ html:has(.rm-site){scroll-behavior:smooth}
  .rm-site .rm-pricing-card,.rm-site .rm-product-card,.rm-site .rm-button{transition:none!important;transform:none!important}
  .rm-site[data-motion="ready"] [data-rm-reveal]{opacity:1!important;transform:none!important;transition:none!important}
 }
+
+
+/* Community support scenarios: clearly not offered for sale or distribution. */
+.rm-site .rm-family-plan-content{min-width:0;width:100%}
+.rm-site .rm-family-access-tiers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:24px 0 21px}
+.rm-site .rm-family-access-tier{display:flex;flex-direction:column;min-width:0;gap:7px;padding:24px 23px 19px;border:1px solid #3b7178;border-radius:15px;background:linear-gradient(145deg,#113948,#0b2737)}
+.rm-site .rm-family-tier-label{color:#81e8e0;font-size:10px;line-height:1.5;letter-spacing:.1em;font-weight:800}
+.rm-site .rm-family-access-tier>strong{font-size:clamp(34px,3vw,44px);line-height:1.12;letter-spacing:-.045em;color:#f7ffff;font-variant-numeric:tabular-nums}
+.rm-site .rm-family-access-tier .rm-family-tier-subtitle{font-size:12px;color:#c4dce4;font-weight:700}
+.rm-site .rm-family-access-tier p{margin-top:11px;color:#bddae1;font-size:12px;line-height:1.65}
+.rm-site .rm-family-access-tier p b{color:#f1ffff}
+.rm-site .rm-family-access-tier small{align-self:flex-start;margin-top:7px;padding:6px 9px;border:1px solid #936a4e;border-radius:7px;color:#ffdcbe;background:rgba(113,67,39,.32);font-size:10px;font-weight:770}
+@media(max-width:700px){.rm-site .rm-family-access-tiers{grid-template-columns:1fr;gap:13px}.rm-site .rm-family-access-tier{padding:20px 19px}}
