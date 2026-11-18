@@ -1,42 +1,51 @@
 import { describe, expect, it } from "vitest";
 import {
   estimatedContribution,
+  contributionIfVatApplies,
+  illustrativeVatInclusivePrice,
+  savingsVsPreviousTarget,
   formatLkr,
   guardianPricing,
   unitCostEstimate,
-  VAT_ILLUSTRATION,
-  PAYMENT_FEE_ILLUSTRATION,
 } from "@/lib/guardian-pricing";
 
 const expected = {
-  "guardian-button": { price: 4990, unitCost: 3250, contribution: 829 },
-  "ring-lite": { price: 8490, unitCost: 5500, contribution: 1440 },
-  "ring-pro": { price: 17990, unitCost: 12000, contribution: 2706 },
-  "guardian-remote": { price: 19990, unitCost: 13600, contribution: 2740 },
+  "guardian-button": { price: 2990, cost: 1900, vat: 3530, old: 4990 },
+  "ring-lite": { price: 5490, cost: 3650, vat: 6480, old: 8490 },
+  "ring-pro": { price: 11990, cost: 8000, vat: 14150, old: 17990 },
+  "guardian-remote": { price: 14990, cost: 10000, vat: 17690, old: 19990 },
 } as const;
 
-describe("Guardian provisional retail pricing", () => {
-  it("lists all four device concept variants with deterministic cost totals", () => {
+describe("provisional Guardian bulk-sourcing price model", () => {
+  it("covers all 4 concepts with consistent target cost breakdowns", () => {
     expect(Object.keys(guardianPricing).sort()).toEqual(Object.keys(expected).sort());
-    for (const [key, row] of Object.entries(expected)) {
+    for (const [key, item] of Object.entries(expected)) {
       const model = guardianPricing[key as keyof typeof guardianPricing];
-      expect(model.targetRetailLkr).toBe(row.price);
-      expect(unitCostEstimate(model)).toBe(row.unitCost);
-      expect(estimatedContribution(model)).toBe(row.contribution);
+      expect(model.targetRetailLkr).toBe(item.price);
+      expect(model.previousTargetLkr).toBe(item.old);
+      expect(unitCostEstimate(model)).toBe(item.cost);
+      expect(illustrativeVatInclusivePrice(model)).toBe(item.vat);
+      expect(savingsVsPreviousTarget(model)).toBeGreaterThanOrEqual(25);
     }
   });
 
-  it("budgets a positive contribution after illustrative VAT and payment fees", () => {
-    for (const entry of Object.values(guardianPricing)) {
-      const netSaleBeforeFee = entry.targetRetailLkr / (1 + VAT_ILLUSTRATION);
-      expect(estimatedContribution(entry)).toBeGreaterThan(0);
-      expect(estimatedContribution(entry) / netSaleBeforeFee).toBeGreaterThan(0.15);
-      expect(entry.targetRetailLkr * PAYMENT_FEE_ILLUSTRATION).toBeGreaterThan(0);
+  it("keeps a 15%+ target contribution under both VAT planning scenarios", () => {
+    for (const model of Object.values(guardianPricing)) {
+      expect(estimatedContribution(model)).toBeGreaterThan(model.targetRetailLkr * 0.15);
+      expect(contributionIfVatApplies(model)).toBeGreaterThan(model.targetRetailLkr * 0.15);
     }
   });
 
-  it("displays LKR prices clearly without purchase claims", () => {
-    expect(formatLkr(4990)).toBe("Rs. 4,990");
-    expect(formatLkr(19990)).toBe("Rs. 19,990");
+  it("does not assume standalone SOS for inexpensive Bluetooth devices", () => {
+    for (const key of ["guardian-button", "ring-lite", "ring-pro"] as const) {
+      expect(guardianPricing[key].phoneRequired).toBe(true);
+    }
+    expect(guardianPricing["guardian-remote"].phoneRequired).toBe(false);
+    expect(guardianPricing["guardian-remote"].networkCosts).toContain("SIM");
+  });
+
+  it("formats prices in Sri Lankan rupees", () => {
+    expect(formatLkr(2990)).toBe("Rs. 2,990");
+    expect(formatLkr(14990)).toBe("Rs. 14,990");
   });
 });
