@@ -376,7 +376,10 @@ export default function LandingPage() {
                     {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].portability}</td>)}
                   </tr>
                   <tr><th scope="row">Low-income assisted target</th>
-                    {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].communitySupportGoalLkr === undefined ? "No sponsor programme proposed" : formatLkr(guardianPricing[p.slug].communitySupportGoalLkr) + " · sponsor needed"}</td>)}
+                    {products.map(p => {
+                      const supportGoal = guardianPricing[p.slug].communitySupportGoalLkr;
+                      return <td key={p.slug}>{supportGoal === undefined ? "No sponsor programme proposed" : formatLkr(supportGoal) + " · sponsor needed"}</td>;
+                    })}
                   </tr>
                   <tr><th scope="row">Best for</th>
                     {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].bestFor}</td>)}
