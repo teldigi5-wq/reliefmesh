@@ -39,15 +39,21 @@ describe("Guardian access-first concept pricing", () => {
     expect(estimatedContribution(guardianPricing["guardian-remote"])).toBe(2320);
   });
 
-  it("never presents a subsidised Remote contribution as full standalone cost coverage", () => {
+  it("requires full sponsor contributions for free and Rs. 499 access", () => {
     const remote = guardianPricing["guardian-remote"];
-    expect(remote.communitySupportGoalLkr).toBe(3990);
-    expect(proposedSupportGap(remote)).toBe(5000);
-    expect(remote.communitySupportGoalLkr! - unitCostEstimate(remote)).toBeLessThan(0);
+    expect(remote.communitySupportGoalLkr).toBe(0);
+    expect(remote.communitySharedContributionLkr).toBe(499);
+    expect(proposedSupportGap(remote)).toBe(8990);
+    expect(proposedSupportGap(remote, remote.communitySharedContributionLkr)).toBe(8491);
     expect(remote.communitySupportGoalLkr! + proposedSupportGap(remote)).toBe(remote.targetRetailLkr);
-    expect(remote.communitySupportNote).toContain("no funding agreement");
+    expect(remote.communitySharedContributionLkr! +
+      proposedSupportGap(remote, remote.communitySharedContributionLkr)).toBe(remote.targetRetailLkr);
+    expect(remote.communitySupportGoalLkr! - unitCostEstimate(remote)).toBeLessThan(0);
+    expect(remote.communitySharedContributionLkr! - unitCostEstimate(remote)).toBeLessThan(0);
+    expect(remote.communitySupportNote).toContain("No sponsor");
     for (const key of ["guardian-button", "ring-lite", "ring-pro"] as const) {
       expect(guardianPricing[key].communitySupportGoalLkr).toBeUndefined();
+      expect(guardianPricing[key].communitySharedContributionLkr).toBeUndefined();
     }
   });
 
@@ -73,6 +79,7 @@ describe("Guardian access-first concept pricing", () => {
     expect(savingsVsPreviousTarget(guardianPricing["ring-pro"])).toBe(0);
     expect(savingsVsPreviousTarget(guardianPricing["guardian-remote"])).toBe(40);
     expect(formatLkr(1990)).toBe("Rs. 1,990");
-    expect(formatLkr(3990)).toBe("Rs. 3,990");
+    expect(formatLkr(499)).toBe("Rs. 499");
+    expect(formatLkr(0)).toBe("Rs. 0");
   });
 });
