@@ -11,7 +11,7 @@ Prices on the public website are **indicative Sri Lankan retail targets**. They 
 | Guardian Button | 4,990 | 1,150 | 450 | 500 | 400 | 750 | 3,250 | 829 |
 | Guardian Ring Lite | 8,490 | 2,050 | 1,250 | 900 | 500 | 800 | 5,500 | 1,440 |
 | Guardian Ring Pro | 17,990 | 4,850 | 2,600 | 1,850 | 700 | 2,000 | 12,000 | 2,706 |
-| Guardian Remote | 19,990 | 7,700 | 1,500 | 1,500 | 800 | 2,100 | 13,600 | 2,741 |
+| Guardian Remote | 19,990 | 7,700 | 1,500 | 1,500 | 800 | 2,100 | 13,600 | 2,740 |
 
 Formula: contribution = retail target / 1.18 − (retail target × 0.03) − unit cost. Rounded *down* to the nearest whole LKR. The model is intentionally preliminary, not based on RFQs from contract manufacturers. It assumes that sourcing and design allow the target unit cost to be achieved. Do **not** claim that these prices guarantee profitability.
 
