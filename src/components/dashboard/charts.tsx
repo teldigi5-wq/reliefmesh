@@ -1,58 +1,176 @@
 "use client";
-import { ResponsiveContainer, BarChart, Bar, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
-const LABEL = "var(--ops-muted)";
-const GRID = "var(--ops-grid)";
-const tooltipStyle = { borderRadius: 12, background: "var(--ops-card)", color: "var(--ops-text)", border: "1px solid var(--ops-border)", boxShadow: "0 10px 35px rgba(0,0,0,.14)", fontSize: 12 };
-const colors = ["#15d5dc", "#378fee", "#a785ff", "#f6ac5b", "#50baaa", "#db80bd", "#738df6", "#a8bfce"];
-export function CategoryBarChart({ data }: { data: { label: string; count: number }[] }) {
- if (data.length === 0) return <p className="ops-chart-empty">No category data available.</p>;
- const display = [...data].sort((a,b) => b.count - a.count);
- return (
- <div className="ops-chart" style={{ height: Math.max(270, display.length * 40 + 48) }}>
-   <ResponsiveContainer width="100%" height="100%">
-     <BarChart data={display} layout="vertical" margin={{ top: 5, right: 18, left: 0, bottom: 5 }} barCategoryGap={12}>
-       <CartesianGrid horizontal={false} strokeDasharray="3 7" stroke={GRID} />
-       <XAxis type="number" allowDecimals={false} tick={{ fill: LABEL, fontSize: 11 }} axisLine={false} tickLine={false} />
-       <YAxis type="category" dataKey="label" width={133} tick={{ fill: LABEL, fontSize: 11 }}
-         tickFormatter={(value: string) => value.length > 19 ? value.slice(0, 18) + "…" : value}
-         axisLine={false} tickLine={false} />
-       <Tooltip cursor={{ fill: "rgba(120,170,200,.08)" }} contentStyle={tooltipStyle} />
-       <Bar dataKey="count" name="Incidents" radius={[0, 6, 6, 0]} maxBarSize={19}>
-         {display.map((_, i) => <Cell key={i} fill={colors[i % colors.length]} />)}
-       </Bar>
-     </BarChart>
-   </ResponsiveContainer>
- </div>);
+
+import { useId, useMemo, useState } from "react";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
+
+const CHART_TEXT = "var(--ops-muted)";
+const CHART_GRID = "var(--ops-grid)";
+const CATEGORY_COLORS = [
+  "#14c8d6", "#4d98eb", "#a18bf3", "#efa75a",
+  "#5db9a6", "#d17ba9", "#7d98e8", "#a0b7c6",
+];
+
+function ChartSummary({ children }: { children: React.ReactNode }) {
+  return <p className="ops-chart-summary">{children}</p>;
 }
-export function SeverityBarChart({ data }: { data: { label: string; count: number; color: string }[] }) {
- return (
- <div className="ops-chart" style={{ height: 300 }}>
-   <ResponsiveContainer width="100%" height="100%">
-     <BarChart data={data} margin={{ top: 10, right: 8, left: -24, bottom: 5 }} barCategoryGap="36%">
-       <CartesianGrid vertical={false} strokeDasharray="3 7" stroke={GRID} />
-       <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fill: LABEL, fontSize: 11 }} />
-       <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={{ fill: LABEL, fontSize: 11 }} />
-       <Tooltip cursor={{ fill: "rgba(120,170,200,.08)" }} contentStyle={tooltipStyle} />
-       <Bar dataKey="count" name="Incidents" radius={[7, 7, 0, 0]} maxBarSize={57}>
-         {data.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-       </Bar>
-     </BarChart>
-   </ResponsiveContainer>
- </div>);
+
+export function CategoryBarChart({
+  data,
+}: {
+  data: { label: string; count: number }[];
+}) {
+  const sorted = useMemo(() => [...data].sort((a, b) => b.count - a.count), [data]);
+  if (sorted.length === 0) {
+    return <p className="ops-chart-empty">No category data available yet.</p>;
+  }
+  const max = Math.max(1, ...sorted.map(row => row.count));
+  const total = sorted.reduce((sum, row) => sum + row.count, 0);
+
+  return (
+    <div className="ops-compare-chart" role="group" aria-label="Incident counts by category">
+      <ChartSummary>{total.toLocaleString()} incidents across {sorted.length} categories</ChartSummary>
+      <div className="ops-compare-list">
+        {sorted.map((row, index) => (
+          <div className="ops-compare-row" key={row.label}>
+            <div className="ops-compare-row-header">
+              <span className="ops-compare-label" title={row.label}>{row.label}</span>
+              <span className="ops-compare-count">{row.count.toLocaleString()}</span>
+            </div>
+            <div
+              className="ops-compare-track"
+              role="img"
+              aria-label={row.label + ": " + row.count + " incidents"}
+            >
+              <div className="ops-compare-fill"
+                style={{
+                  width: (row.count / max * 100) + "%",
+                  backgroundColor: CATEGORY_COLORS[index % CATEGORY_COLORS.length],
+                }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
-export function IncidentsOverTimeChart({ data }: { data: { date: string; count: number }[] }) {
- return (
- <div className="ops-chart" style={{ height: 286 }}>
-   <ResponsiveContainer width="100%" height="100%">
-     <AreaChart data={data} margin={{ top: 14, right: 10, left: -22, bottom: 0 }}>
-       <defs><linearGradient id="opsTrendFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#15d5dc" stopOpacity={0.26} /><stop offset="96%" stopColor="#15d5dc" stopOpacity={0} /></linearGradient></defs>
-       <CartesianGrid vertical={false} strokeDasharray="3 7" stroke={GRID} />
-       <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: LABEL, fontSize: 11 }} minTickGap={16} />
-       <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={{ fill: LABEL, fontSize: 11 }} />
-       <Tooltip contentStyle={tooltipStyle} />
-       <Area type="monotone" dataKey="count" name="New incidents" stroke="#15d5dc" strokeWidth={2.8}
-         fill="url(#opsTrendFill)" dot={false} activeDot={{ r: 5, stroke: "#0b2635", strokeWidth: 2 }} />
-     </AreaChart>
-   </ResponsiveContainer>
- </div>);
+
+export function SeverityBarChart({
+  data,
+}: {
+  data: { label: string; count: number; color: string }[];
+}) {
+  const total = data.reduce((sum, row) => sum + row.count, 0);
+  const max = Math.max(1, ...data.map(row => row.count));
+
+  return (
+    <div className="ops-compare-chart" role="group" aria-label="Incident counts by severity">
+      <ChartSummary>{total.toLocaleString()} incident records · By severity level</ChartSummary>
+      <div className="ops-severity-list">
+        {data.map(row => {
+          const percent = total > 0 ? Math.round((row.count / total) * 100) : 0;
+          return (
+            <div className="ops-severity-row" key={row.label}>
+              <div className="ops-compare-row-header">
+                <span className="ops-severity-label">
+                  <span className="ops-severity-dot" style={{ backgroundColor: row.color }} />
+                  {row.label}
+                </span>
+                <span className="ops-severity-value">
+                  <strong>{row.count.toLocaleString()}</strong>
+                  <small>{percent}%</small>
+                </span>
+              </div>
+              <div className="ops-severity-track" role="img"
+                aria-label={row.label + ": " + row.count + " incidents, " + percent + " percent"}>
+                <div className="ops-severity-fill"
+                  style={{ width: (row.count / max * 100) + "%", backgroundColor: row.color }} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <p className="ops-chart-caption">Bar lengths compare counts; percentages show share of all incidents.</p>
+    </div>
+  );
+}
+
+export function IncidentsOverTimeChart({
+  data,
+}: {
+  data: { date: string; count: number }[];
+}) {
+  const [days, setDays] = useState<7 | 14>(14);
+  const graphId = useId().replace(/:/g, "");
+  const gradientId = "ops-trend-" + graphId;
+  const visible = data.slice(-days);
+  const total = visible.reduce((sum, day) => sum + day.count, 0);
+  const peak = visible.reduce((n, day) => Math.max(n, day.count), 0);
+
+  return (
+    <div className="ops-trend-graph">
+      <div className="ops-trend-head">
+        <ChartSummary>{total.toLocaleString()} reports · Peak {peak.toLocaleString()} in one day</ChartSummary>
+        <div className="ops-range-control" role="group" aria-label="Time range">
+          <button type="button" aria-pressed={days === 7}
+            className={days === 7 ? "is-selected" : ""}
+            onClick={() => setDays(7)}>7 days</button>
+          <button type="button" aria-pressed={days === 14}
+            className={days === 14 ? "is-selected" : ""}
+            onClick={() => setDays(14)}>14 days</button>
+        </div>
+      </div>
+      {visible.length === 0 ? (
+        <p className="ops-chart-empty">No trend data available.</p>
+      ) : (
+        <div className="ops-chart ops-chart-trend">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={visible} margin={{ top: 17, right: 17, left: -20, bottom: 5 }}>
+              <defs>
+                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#11cbd7" stopOpacity={0.23} />
+                  <stop offset="100%" stopColor="#11cbd7" stopOpacity={0.012} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} strokeDasharray="3 7" stroke={CHART_GRID} />
+              <XAxis dataKey="date" axisLine={false} tickLine={false}
+                tick={{ fill: CHART_TEXT, fontSize: 11 }} minTickGap={25}
+                tickMargin={13} />
+              <YAxis allowDecimals={false} axisLine={false} tickLine={false}
+                domain={[0, "auto"]} tick={{ fill: CHART_TEXT, fontSize: 11 }}
+                tickMargin={8} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "var(--ops-card)",
+                  borderColor: "var(--ops-border)",
+                  borderRadius: 12,
+                  boxShadow: "0 15px 35px rgba(0,0,0,.2)",
+                  color: "var(--ops-text)",
+                  fontSize: 12,
+                }}
+                labelStyle={{ color: "var(--ops-text)", fontWeight: 700, marginBottom: 5 }}
+                itemStyle={{ color: "var(--ops-accent)" }}
+              />
+              <Area type="monotone" dataKey="count" name="New incident reports"
+                stroke="#13cbd8" strokeWidth={2.7}
+                fill={"url(#" + gradientId + ")"}
+                dot={false}
+                activeDot={{ r: 5, fill: "#13cbd8", stroke: "#092436", strokeWidth: 2 }}
+                isAnimationActive={false}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+      <div className="ops-graph-legend"><span className="ops-legend-swatch" /> New incident reports per day</div>
+    </div>
+  );
 }

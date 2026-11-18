@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
-import { Bell } from "lucide-react";
+import { Bell, CheckCheck, Inbox, X } from "lucide-react";
 
 type Notification = {
   id: string;
@@ -15,109 +15,190 @@ type Notification = {
 
 export function NotificationBell() {
   const [open, setOpen] = useState(false);
+  const [filter, setFilter] = useState<"all" | "unread">("all");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const panelId = useId();
+  const titleId = useId();
 
-  async function load() {
-    const res = await fetch("/api/notifications");
-    if (!res.ok) return;
-    const data = await res.json();
-    setNotifications(data.notifications);
-    setUnreadCount(data.unreadCount);
-  }
-
-  useEffect(() => {
-    load();
-    // Simple polling — fine for a small hackathon deployment. Replace with
-    // websockets/SSE if this needs to scale past a handful of concurrent users.
-    const interval = setInterval(load, 30_000);
-    return () => clearInterval(interval);
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch("/api/notifications", { cache: "no-store" });
+      if (!res.ok) throw new Error("Unable to retrieve notifications");
+      const data = await res.json();
+      setNotifications(Array.isArray(data.notifications) ? data.notifications : []);
+      setUnreadCount(typeof data.unreadCount === "number" ? data.unreadCount : 0);
+      setError(null);
+    } catch {
+      setError("Notifications could not be refreshed. Try again.");
+    }
   }, []);
 
   useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+    void load();
+    const interval = setInterval(() => void load(), 30_000);
+    return () => clearInterval(interval);
+  }, [load]);
+
+  useEffect(() => {
+    if (!open) return;
+    function handlePointerDown(event: PointerEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open]);
 
   async function markAllRead() {
-    await fetch("/api/notifications/read-all", { method: "POST" });
-    load();
+    if (busy || unreadCount === 0) return;
+    setBusy(true);
+    try {
+      const res = await fetch("/api/notifications/read-all", { method: "POST" });
+      if (!res.ok) throw new Error("Unable to mark notifications read");
+      setNotifications(current => current.map(n => ({ ...n, isRead: true })));
+      setUnreadCount(0);
+      setError(null);
+      await load();
+    } catch {
+      setError("Could not mark notifications as read. Try again.");
+    } finally {
+      setBusy(false);
+    }
   }
 
-  async function openNotification(n: Notification) {
-    if (!n.isRead) {
-      await fetch(`/api/notifications/${n.id}/read`, { method: "POST" });
-      load();
+  async function openNotification(notification: Notification) {
+    if (!notification.isRead) {
+      try {
+        const res = await fetch("/api/notifications/" + encodeURIComponent(notification.id) + "/read", {
+          method: "POST",
+        });
+        if (res.ok) {
+          setNotifications(current => current.map(n =>
+            n.id === notification.id ? { ...n, isRead: true } : n
+          ));
+          setUnreadCount(current => Math.max(0, current - 1));
+        }
+      } catch {
+        // Navigation to an incident remains possible even if the mark-read request fails.
+      }
     }
     setOpen(false);
-    if (n.relatedIncidentId) {
-      // Hard navigation rather than router.push() — see action-panel.tsx.
-      window.location.href = `/incidents/${n.relatedIncidentId}`;
+    if (notification.relatedIncidentId) {
+      // Preserve the existing app's hard-navigation approach for incident details.
+      window.location.href = "/incidents/" + encodeURIComponent(notification.relatedIncidentId);
     }
   }
 
+  const visible = filter === "unread"
+    ? notifications.filter(n => !n.isRead)
+    : notifications;
+
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="ops-notifications-anchor">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => { setOpen(value => !value); if (!open) void load(); }}
         className="ops-notifications-trigger"
         aria-label="Notifications"
         aria-expanded={open}
+        aria-controls={panelId}
         title="Notifications"
       >
         <Bell size={18} aria-hidden="true" />
         <span className="ops-notifications-label">Notifications</span>
-        {unreadCount > 0 && <span className="ops-notification-count">{unreadCount > 9 ? "9+" : unreadCount}</span>}
+        {unreadCount > 0 && (
+          <span className="ops-notification-count" aria-label={unreadCount + " unread"}>
+            {unreadCount > 9 ? "9+" : unreadCount}
+          </span>
+        )}
       </button>
 
       {open && (
-        <div className="ops-notifications-panel absolute right-0 z-50 mt-3 w-80 overflow-hidden rounded-xl">
-          <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/60 p-3 dark:border-slate-800 dark:bg-slate-800/40">
-            <span className="text-sm font-semibold">Notifications</span>
-            {unreadCount > 0 && (
-              <button
-                onClick={markAllRead}
-                className="text-xs font-medium text-brand-600 hover:text-brand-700"
-              >
-                Mark all read
-              </button>
-            )}
+        <section
+          id={panelId}
+          className="ops-notifications-panel"
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby={titleId}
+        >
+          <div className="ops-notification-header">
+            <div className="ops-notification-heading">
+              <span className="ops-notification-heading-icon"><Bell size={17} aria-hidden="true" /></span>
+              <div>
+                <h2 id={titleId}>Notifications</h2>
+                <p>{unreadCount} unread {unreadCount === 1 ? "update" : "updates"}</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="ops-notification-close"
+              onClick={() => setOpen(false)}
+              aria-label="Close notifications"
+            >
+              <X size={18} />
+            </button>
           </div>
-          <div className="max-h-96 overflow-y-auto">
-            {notifications.length === 0 && (
-              <p className="p-4 text-sm text-slate-500">No notifications yet.</p>
-            )}
-            {notifications.map((n) => (
-              <button
-                key={n.id}
-                onClick={() => openNotification(n)}
-                className={`block w-full border-b border-slate-100 p-3 text-left text-sm last:border-0 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800 ${
-                  n.isRead ? "opacity-60" : ""
-                }`}
+
+          <div className="ops-notification-toolbar">
+            <div className="ops-notification-tabs" role="group" aria-label="Filter notifications">
+              <button type="button" className={filter === "all" ? "is-selected" : ""}
+                onClick={() => setFilter("all")} aria-pressed={filter === "all"}>
+                All
+              </button>
+              <button type="button" className={filter === "unread" ? "is-selected" : ""}
+                onClick={() => setFilter("unread")} aria-pressed={filter === "unread"}>
+                Unread
+              </button>
+            </div>
+            <button type="button" className="ops-mark-read"
+              disabled={busy || unreadCount === 0}
+              onClick={() => void markAllRead()}>
+              <CheckCheck size={14} aria-hidden="true" /> Mark all read
+            </button>
+          </div>
+
+          <div className="ops-notification-scroll" aria-label="Notification entries">
+            {error && <p className="ops-notification-error" role="alert">{error}</p>}
+            {visible.length === 0 ? (
+              <div className="ops-notification-empty">
+                <Inbox size={23} aria-hidden="true" />
+                <strong>{filter === "unread" ? "You're all caught up" : "No notifications yet"}</strong>
+                <span>{filter === "unread" ? "There are no unread updates." : "New updates will appear here."}</span>
+              </div>
+            ) : visible.map(n => (
+              <button key={n.id} type="button"
+                className={"ops-notification-item" + (n.isRead ? " is-read" : " is-unread")}
+                onClick={() => void openNotification(n)}
               >
-                <p className="font-medium">{n.title}</p>
-                <p className="text-slate-500">{n.message}</p>
-                <p className="mt-1 text-xs text-slate-400">
-                  {new Date(n.createdAt).toLocaleString()}
-                </p>
+                <span className="ops-notification-status" aria-hidden="true" />
+                <span className="ops-notification-body">
+                  <strong>{n.title}</strong>
+                  <span>{n.message}</span>
+                  <time dateTime={n.createdAt}>{new Date(n.createdAt).toLocaleString()}</time>
+                </span>
               </button>
             ))}
           </div>
-          {notifications.some((n) => n.relatedIncidentId) && (
-            <div className="border-t border-slate-200 bg-slate-50/60 p-2 text-center dark:border-slate-800 dark:bg-slate-800/40">
-              <Link href="/incidents" className="text-xs font-medium text-brand-600 hover:text-brand-700">
-                View all incidents
-              </Link>
-            </div>
-          )}
-        </div>
+
+          <div className="ops-notification-footer">
+            <span>{notifications.length} recent updates</span>
+            <Link href="/incidents" onClick={() => setOpen(false)}>
+              View incidents
+            </Link>
+          </div>
+        </section>
       )}
     </div>
   );
