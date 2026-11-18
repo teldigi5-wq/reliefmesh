@@ -1,38 +1,64 @@
-# ReliefMesh Guardian concept device pricing — November 18, 2026
+# ReliefMesh Guardian bulk-sourcing affordability plan
+Updated: 18 November 2026. Project stage: **concept only; no sales, tax exemption, manufacturer quotations, government approval or certified devices.**
 
-This is **provisional cost-aware pricing**, not a manufacturing quotation, purchase offer, or certification claim. The devices are illustrative product designs and are not currently available for sale.
+## Revised price targets
 
-Prices on the public website are **indicative Sri Lankan retail targets**. They are set above estimated fully landed per-unit build allowances. The calculations reserve a conservative illustrative 18% output VAT and a separate 3% payment-processing fee from the tax-inclusive display price; whether VAT is legally charged depends on registration, supply and tax circumstances.
+The previous proposals assumed relatively small-scale purchasing. These revised targets assume negotiation for **500–1,000 units**, assembled locally where practical. The prices are intended to be more affordable for Sri Lankan families; production and legal feasibility are still unverified.
 
-## Proposed prices and contribution model (LKR / unit)
+**The base prices are before any legally applicable output VAT.** ReliefMesh intends to seek a government-supported exemption, zero-rating, or other appropriate mechanism; none has been granted or verified. Do not display the base price as a final VAT-inclusive consumer quotation unless legally permissible.
 
-| Device | Target retail | Electronics & power | Enclosure | Assembly & test | Packaging & logistics | Warranty, tooling allocation & contingency | Total estimated unit cost | Contribution after 18% illustrative VAT + 3% payment fee |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Guardian Button | 4,990 | 1,150 | 450 | 500 | 400 | 750 | 3,250 | 829 |
-| Guardian Ring Lite | 8,490 | 2,050 | 1,250 | 900 | 500 | 800 | 5,500 | 1,440 |
-| Guardian Ring Pro | 17,990 | 4,850 | 2,600 | 1,850 | 700 | 2,000 | 12,000 | 2,706 |
-| Guardian Remote | 19,990 | 7,700 | 1,500 | 1,500 | 800 | 2,100 | 13,600 | 2,740 |
+| Device | Old target | New base target (before VAT) | Bulk unit cost ceiling (estimated) | Estimated surplus before fixed overhead and any VAT, after 3% fee | If standard 18% VAT is added: illustrated consumer total | Estimated surplus at VAT scenario after VAT + 3% fee |
+|---|---:|---:|---:|---:|---:|---:|
+| Guardian Button | 4,990 | 2,990 | 1,900 | 1,000 | 3,530 | 985 |
+| Guardian Ring Lite | 8,490 | 5,490 | 3,650 | 1,675 | 6,480 | 1,647 |
+| Guardian Ring Pro | 17,990 | 11,990 | 8,000 | 3,630 | 14,150 | 3,567 |
+| Guardian Remote | 19,990 | 14,990 | 10,000 | 4,540 | 17,690 | 4,460 |
 
-Formula: contribution = retail target / 1.18 − (retail target × 0.03) − unit cost. Rounded *down* to the nearest whole LKR. The model is intentionally preliminary, not based on RFQs from contract manufacturers. It assumes that sourcing and design allow the target unit cost to be achieved. Do **not** claim that these prices guarantee profitability.
+*Contribution formula (base scenario): price − 3% processing allowance − estimated per-unit landed build cost. VAT scenario: rounded-up gross / 1.18 − 3% of gross − unit cost. Contribution is **not** net company profit and does **not** cover unbudgeted software operations, financing, installation, certification, research, distribution commission or unforeseen component prices.*
 
-## Capability and scope assumptions
-- **Guardian Button**: Bluetooth LE SOS trigger that requires a compatible paired phone or gateway. No standalone GPS or cellular function.
-- **Guardian Ring Lite**: compact smartphone-assisted SOS ring concept. A ring with an integrated LTE/GPS modem is **not** assumed possible at this target.
-- **Guardian Ring Pro**: smartphone-assisted ring with exploratory optical/temperature sensing. Measurements are **not** medically validated.
-- **Guardian Remote**: 4G/LTE-capable cellular and location concept (not a promise that an inexpensive legacy SIM800L 2G modem is deployment-ready). A SIM/data plan is excluded from the device price.
+## Preliminary per-unit cost ceilings (LKR)
 
-## Evidence informing component assumptions
-Retail prices are only reference points and must **not** be treated as verified manufacturing/bulk pricing:
-- ESP32-WROOM development board (LKR 1,700 at time of review): https://www.atomelectronics.lk/product/esp32-wroom-development-board/
-- NEO-6M GPS module (LKR 1,400): https://www.atomelectronics.lk/product/neo-6m-gps-module-with-antenna/
-- SIM800L reference (LKR 1,200, **2G only**, not the proposed production LTE modem): https://www.atomelectronics.lk/product/sim800l-gsm-gprs-module/
-- MAX30102 sensor module (LKR 420): https://etusker.com/product/max30102-high-sensitivity-pulse-oximeter-and-heart-rate-sensor/
-- TP4056 charger module (LKR 60): https://www.atomelectronics.lk/product/tp4056-1a-li-ion-battery-charger/
-- 500mAh LiPo indicative retail listing: https://37left.lk/product/3-7v-500mah-lipo-battery
-- 4G LTE-capable modem concept: https://alphatronic.lk/product/sima7670c-fs-mcore-4g-lte-module/
-- Sri Lankan Inland Revenue Department VAT reference (standard 18%): https://www.ird.gov.lk/en/Type%20of%20Taxes/SitePages/Value%20Added%20Tax%20%28VAT%29.aspx
+| Component grouping | Button | Ring Lite | Ring Pro | Remote |
+|---|---:|---:|---:|---:|
+| Electronics & power | 800 | 1,450 | 3,550 | 5,700 |
+| Enclosure, tooling allocation | 240 | 650 | 1,550 | 1,000 |
+| Assembly & testing | 220 | 480 | 1,000 | 1,050 |
+| Packaging & logistics | 170 | 270 | 400 | 450 |
+| Warranty, tooling & contingency | 470 | 800 | 1,500 | 1,800 |
+| **Target unit cost ceiling** | **1,900** | **3,650** | **8,000** | **10,000** |
 
-## Gate before taking pre-orders or claiming cost coverage
-Obtain written BOM quotes at the target batch size, battery test results, enclosure manufacturing/tooling prices, ingress protection tests, electrical/RF compliance costs, warranty rate assumptions, payment and distribution fees, and an operator-level recurring service budget. In particular, custom smart-ring tooling, miniaturization and certification and LTE network certification could exceed these preliminary allowances.
+These are **desired procurement targets, not supplier quotations**, and may be too low for short production runs, miniaturized smart rings, or certification-grade hardware. Stop sales planning and reprice if written supplier and assembly quotes do not support these ceilings.
 
-One-time R&D, lab certifications, clinical testing, recurring SIM/data, software/cloud operations, advertising, taxes other than illustrative VAT, and retail-channel commissions are **not** included unless explicitly budgeted in the unit allowances. Recalculate retail targets if supplier quotes or applicable taxes/fees change; don't silently hold a loss-making retail price. No live checkout is included in the website.
+## Product comparisons and required compromises
+
+| Device | Primary audience | SOS communications | Location source | Needs paired smartphone? | Wellness sensors | Ongoing network cost |
+|---|---|---|---|---|---|---|
+| Button | Families, older adults | BLE to mobile app | Paired smartphone | Yes | No | Smartphone data |
+| Ring Lite | Everyday wearable safety | BLE to mobile app | Paired smartphone | Yes | No | Smartphone data |
+| Ring Pro | Personal safety and *exploratory* wellness | BLE to mobile app | Paired smartphone | Yes | Proposed PPG/temp (unvalidated) | Smartphone data |
+| Remote | Independent location-capable concept | Proposed LTE/GNSS cellular hardware | Built-in GNSS (planned) | No | No | SIM/data plan |
+
+None of these designs should claim dispatch integration, guaranteed coverage, waterproof certification, medical-grade metrics or verified battery life. Bluetooth depends on the paired phone's presence and connection; LTE requires reliable network coverage and supported modem bands.
+
+## Component procurement strategy
+
+1. Request written quotations for 100, 500, 1,000 and 5,000 units from **at least three independent suppliers**; do not confuse prototype dev boards with production modules.
+2. Seek genuine ESP32-C3/MINI family production modules for Bluetooth-based products, using a shared PCB/power design across Button/Ring Lite where feasible.
+3. Negotiate local PCB assembly, battery sourcing, enclosure moulding, button manufacturing, testing, packaging, freight, taxes and warranty replacement costs separately.
+4. For Ring Pro, obtain miniaturized PPG/temperature sensor, charging, power-budget, comfort and battery testing quotes. For Remote, specify LTE bands valid in Sri Lanka, GNSS and antenna design before accepting any modem offer. **Do not substitute 2G SIM800L for 4G/LTE**.
+5. Verify written quotes for the full landed unit cost, minimum order quantities, assembly yield, rework/scrap, lead times and safety compliance.
+6. Seek government support for humanitarian/affordability aims and confirm tax treatment **in writing** with the appropriate fiscal authorities and professional tax/legal advice. A meeting or intent to request relief does not make sales VAT-exempt.
+
+### External price and tax references (informational, *not* quote evidence)
+
+- ESP32-C3-MINI reference with 500-unit tier from LCSC: https://www.lcsc.com/product-detail/wifi-modules_espressif-esp32-c3-mini-1-n4-a_C5224444.html
+- Other ESP32-C3 module reference: https://www.lcsc.com/product-detail/C2926676.html
+- SIMCom LTE/M2M modules catalog: https://www.tme.eu/en/katalog/m2m-gprs-lte-5g-modules_113195/p%2Csimcom_109/
+- Sri Lanka IRD VAT rates/registration (standard VAT 18%, legal exemption dependent): https://www.ird.gov.lk/en/Type%20of%20Taxes/SitePages/Value%20Added%20Tax%20%28VAT%29.aspx
+- Sri Lanka IRD VAT exemption schedule and consolidated act: https://www.ird.gov.lk/en/publications/Value%20Added%20Tax_Acts/VAT_Act_No_14%5BE%5D_2002_%28Consolidation_2025%29.pdf
+
+**VAT note:** Under current IRD guidance, commercial importers may have VAT registration obligations irrespective of ordinary turnover thresholds. Further levies/customs/import fees and implications of exemption versus zero-rating or being non-registered must be evaluated separately. A zero-VAT hypothetical is **not** a legal status or current sale price.
+
+## Readiness gate
+
+Before publishing confirmed prices or accepting payment, require: completed hardware/firmware prototypes, at least 3 BOM quotes, fully landed per-unit costs for realistic order volume, enclosure/tooling RFQs, waterproof/battery/electrical/RF testing plans, written tax opinion, written government support status, warranty funding, support/cloud/data recurring-cost budget, and manufacturing batch-loss buffer. Neither fixed R&D overhead nor these further compliance costs are guaranteed covered by this per-unit model.

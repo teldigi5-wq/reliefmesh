@@ -4,7 +4,11 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight, MapPin, Menu, Radio, ShieldCheck, Users } from "lucide-react";
 import "./reliefmesh-landing.css";
 import { CookieSettingsButton } from "@/components/privacy/cookie-preferences";
-import { guardianPricing, estimatedContribution, formatLkr, PRICING_REVIEW_DATE, unitCostEstimate } from "@/lib/guardian-pricing";
+import {
+  guardianPricing, estimatedContribution, formatLkr, PRICING_REVIEW_DATE,
+  unitCostEstimate, ESTIMATED_ORDER_RANGE, illustrativeVatInclusivePrice,
+  savingsVsPreviousTarget,
+} from "@/lib/guardian-pricing";
 
 export const metadata: Metadata = {
   title: "ReliefMesh | Connected Safety for Every Life",
@@ -263,10 +267,10 @@ export default function LandingPage() {
                   <p>{product.description}</p>
                   <div className="rm-product-pricing">
                     <div>
-                      <span className="rm-price-kicker">PROPOSED RETAIL · LKR</span>
+                      <span className="rm-price-kicker">BULK PRICE TARGET · BEFORE VAT</span>
                       <strong>{formatLkr(guardianPricing[product.slug].targetRetailLkr)}</strong>
                     </div>
-                    <span className="rm-pricing-concept-pill">Target only</span>
+                    <span className="rm-pricing-concept-pill">-{savingsVsPreviousTarget(guardianPricing[product.slug])}% vs. previous</span>
                   </div>
                   <div className="rm-product-bottom"><span>{product.detail}</span><span className="rm-concept-tag">Concept</span></div>
                 </div>
@@ -279,14 +283,20 @@ export default function LandingPage() {
         <section className="rm-container rm-pricing-section" id="pricing" aria-labelledby="rm-pricing-heading">
           <div className="rm-pricing-header">
             <div>
-              <span className="rm-section-index">GUARDIAN / AFFORDABLE SAFETY</span>
-              <h2 id="rm-pricing-heading">Designed with <span>affordability</span> in mind.</h2>
-              <p>Indicative Sri Lankan retail prices informed by component references and a preliminary manufacturing budget. Every target is higher than our estimated unit build cost after illustrative taxes and processing fees.</p>
+              <span className="rm-section-index">GUARDIAN / BULK-PROCUREMENT STRATEGY</span>
+              <h2 id="rm-pricing-heading">A safer future should be <span>more affordable.</span></h2>
+              <p>Our next target is lower-cost production through distributor agreements, shared components and local assembly. Pricing below assumes sourcing at the scale of {ESTIMATED_ORDER_RANGE}. These are planning targets, not confirmed consumer offers.</p>
             </div>
             <div className="rm-pricing-price-note">
-              <span>PLANNED ENTRY PRICE</span>
+              <span>PROPOSED ENTRY PRICE · BEFORE VAT</span>
               <strong>{formatLkr(guardianPricing["guardian-button"].targetRetailLkr)}</strong>
-              <small>Guardian Button · concept</small>
+              <small>Guardian Button · bulk target</small>
+            </div>
+          </div>
+          <div className="rm-tax-plan-banner" role="note">
+            <ShieldCheck size={21} aria-hidden="true" />
+            <div><strong>Government-supported VAT relief: proposed, not yet approved</strong>
+              <p>We intend to discuss tax treatment and affordability support with relevant authorities. Until formal eligibility is confirmed, the prices below are <b>before any applicable VAT</b>. An illustrative VAT-inclusive total is shown separately for each product.</p>
             </div>
           </div>
           <div className="rm-pricing-grid">
@@ -296,44 +306,94 @@ export default function LandingPage() {
                 <article className="rm-pricing-card" key={product.slug}>
                   <div className="rm-pricing-card-heading">
                     <span className="rm-pricing-card-label">{product.eyebrow}</span>
-                    <span className="rm-pricing-unavailable">Concept</span>
+                    <span className="rm-pricing-unavailable">Not on sale</span>
                   </div>
                   <h3>{model.label}</h3>
                   <strong className="rm-pricing-card-price">{formatLkr(model.targetRetailLkr)}</strong>
-                  <span className="rm-pricing-card-note">Estimated target retail price · LKR</span>
+                  <span className="rm-pricing-card-note">Bulk-sourcing target · before applicable VAT</span>
+                  <span className="rm-pricing-savings">-{savingsVsPreviousTarget(model)}% from previous target</span>
                   <div className="rm-pricing-card-rule" />
                   <p className="rm-pricing-card-connection">{model.connection}</p>
                   <p className="rm-pricing-card-caution">{model.note}</p>
                   <div className="rm-pricing-card-foot">
-                    <span>Indicative unit build budget</span>
+                    <span>Est. unit cost target</span>
                     <strong>{formatLkr(unitCostEstimate(model))}</strong>
                   </div>
                   <div className="rm-pricing-card-foot">
-                    <span>Modelled balance after VAT / payment fee</span>
+                    <span>Est. balance after 3% fee, before fixed costs</span>
                     <strong className="rm-pricing-positive">+{formatLkr(estimatedContribution(model))}</strong>
+                  </div>
+                  <div className="rm-pricing-card-tax">
+                    <span>If 18% VAT applies</span>
+                    <strong>{formatLkr(illustrativeVatInclusivePrice(model))}</strong>
+                    <small>Illustration only; depends on legal tax treatment</small>
                   </div>
                 </article>
               );
             })}
           </div>
+          <div className="rm-bulk-strategy" aria-label="How ReliefMesh aims to lower device costs">
+            <div><span>01 / SOURCING</span><strong>Manufacturer pricing</strong><p>Negotiate production modules, sensors, batteries and PCB components for 100 to 5,000-unit quotations.</p></div>
+            <div><span>02 / PRODUCTION</span><strong>Local assembly</strong><p>Reduce imported finished-device costs where possible; budget testing, repairs, batteries and certified housings.</p></div>
+            <div><span>03 / PARTNERSHIPS</span><strong>Government and NGOs</strong><p>Discuss humanitarian procurement, subsidies and legally approved tax treatment before promising VAT-free sales.</p></div>
+          </div>
+
+          <div className="rm-device-compare" id="device-comparison" aria-labelledby="rm-device-compare-heading">
+            <div className="rm-device-compare-heading">
+              <span className="rm-section-index">COMPARE THE GUARDIAN COLLECTION</span>
+              <h3 id="rm-device-compare-heading">Which Guardian fits each situation?</h3>
+              <p>Every device is an engineering concept, not independently tested hardware. This comparison shows the planned feature differences and connectivity requirements.</p>
+            </div>
+            <div className="rm-device-compare-scroll" role="region" tabIndex={0} aria-label="Guardian device feature comparison; scroll horizontally on smaller screens">
+              <table>
+                <caption className="sr-only">Guardian Button, Ring Lite, Ring Pro and Remote comparison</caption>
+                <thead><tr>
+                  <th scope="col">Feature</th>
+                  {products.map(product => <th scope="col" key={product.slug}>{product.name}</th>)}
+                </tr></thead>
+                <tbody>
+                  <tr><th scope="row">Base price target</th>
+                    {products.map(p => <td key={p.slug}><strong>{formatLkr(guardianPricing[p.slug].targetRetailLkr)}</strong><small>Before applicable VAT</small></td>)}
+                  </tr>
+                  <tr><th scope="row">Best for</th>
+                    {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].bestFor}</td>)}
+                  </tr>
+                  <tr><th scope="row">SOS connection</th>
+                    {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].connection}</td>)}
+                  </tr>
+                  <tr><th scope="row">Requires smartphone</th>
+                    {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].phoneRequired ? "Yes — paired phone" : "No — planned LTE"}</td>)}
+                  </tr>
+                  <tr><th scope="row">Location source</th>
+                    {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].location}</td>)}
+                  </tr>
+                  <tr><th scope="row">Health and wellness</th>
+                    {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].wellness}</td>)}
+                  </tr>
+                  <tr><th scope="row">Network service cost</th>
+                    {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].networkCosts}</td>)}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="rm-comparison-disclaimer">Bluetooth devices need the paired smartphone and its network connection to forward alerts. LTE requires a SIM/data plan and coverage. Water-resistance ratings, battery duration, medical sensing and direct emergency dispatch are not certified or guaranteed.</p>
+          </div>
           <div className="rm-pricing-disclosure">
             <div>
-              <strong>How we estimated these prices</strong>
-              <p>Budgets include electronics, power, housing, assembly, testing, packaging, logistics and a warranty/tooling allowance. Contribution is calculated from each target price after an illustrative 18% VAT provision and a 3% payment fee, then the estimated unit cost. Review date: {PRICING_REVIEW_DATE}.</p>
-              <p>Final costs depend on manufacturing volume, suppliers, ring miniaturisation, battery safety, RF certification and waterproofing. These figures do not guarantee profitability and exclude one-time R&amp;D, full regulatory certification, recurring connectivity and software operating costs. No device is available for purchase yet.</p>
+              <strong>Planning prices, not confirmed manufacturing quotes</strong>
+              <p>The unit-cost estimates cover components, battery, enclosure, assembly/testing, packaging, logistics and an allowance for warranty and tooling. The pre-VAT modelled balance subtracts a 3% payment-processing allowance and the target unit build cost; it is <b>not net profit</b>. Costs presume bulk procurement of {ESTIMATED_ORDER_RANGE}. Reviewed {PRICING_REVIEW_DATE}.</p>
+              <p>Custom smart-ring engineering, regulatory approval, import taxes/levies, recurring SIM plans, cloud operations, installation, R&amp;D and distribution could cost more. Actual VAT obligations depend on current law and written determinations, not simply on an agreement to seek government support. No devices are being sold or offered for pre-order.</p>
             </div>
             <details className="rm-pricing-source-details">
-              <summary>Component price references &amp; assumptions</summary>
+              <summary>Component prices, sourcing references and tax rules</summary>
               <div>
-                <p>Reference retail component prices in Sri Lanka (not verified bulk supplier quotes):</p>
+                <p>Reference component listings and official VAT information; <b>none is a manufacturer quote for finished Guardian products</b>:</p>
                 <ul>
-                  <li><a href="https://www.atomelectronics.lk/product/esp32-wroom-development-board/" target="_blank" rel="noopener noreferrer">ESP32 board reference</a></li>
-                  <li><a href="https://www.atomelectronics.lk/product/neo-6m-gps-module-with-antenna/" target="_blank" rel="noopener noreferrer">GPS module reference</a></li>
-                  <li><a href="https://etusker.com/product/max30102-high-sensitivity-pulse-oximeter-and-heart-rate-sensor/" target="_blank" rel="noopener noreferrer">Optical sensor reference</a></li>
-                  <li><a href="https://alphatronic.lk/product/sima7670c-fs-mcore-4g-lte-module/" target="_blank" rel="noopener noreferrer">4G/LTE module family reference</a></li>
-                  <li><a href="https://www.ird.gov.lk/en/Type%20of%20Taxes/SitePages/Value%20Added%20Tax%20%28VAT%29.aspx" target="_blank" rel="noopener noreferrer">Sri Lanka Inland Revenue VAT information</a></li>
+                  <li><a href="https://www.lcsc.com/product-detail/wifi-modules_espressif-esp32-c3-mini-1-n4-a_C5224444.html" target="_blank" rel="noopener noreferrer">ESP32-C3-MINI production module, volume tiers</a></li>
+                  <li><a href="https://www.tme.eu/en/katalog/m2m-gprs-lte-5g-modules_113195/p%2Csimcom_109/" target="_blank" rel="noopener noreferrer">SIMCom LTE/GNSS module sourcing</a></li>
+                  <li><a href="https://www.ird.gov.lk/en/Type%20of%20Taxes/SitePages/Value%20Added%20Tax%20%28VAT%29.aspx" target="_blank" rel="noopener noreferrer">Sri Lanka Inland Revenue VAT rates and registration guidance</a></li>
                 </ul>
-                <p>Bulk component pricing, tooling, certifications, final tax treatment and support obligations must be validated before quoting a retail sale or accepting orders.</p>
+                <p>Before setting a final retail price, obtain supplier quotes, test prototypes and get professional confirmation of tax obligations. The 18% VAT scenario is only illustrative.</p>
               </div>
             </details>
           </div>
