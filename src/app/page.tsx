@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight, MapPin, Menu, Radio, ShieldCheck, Users } from "lucide-react";
 import "./reliefmesh-landing.css";
 import { CookieSettingsButton } from "@/components/privacy/cookie-preferences";
+import { LandingMotion } from "@/components/landing/landing-motion";
 import {
   guardianPricing, estimatedContribution, formatLkr, PRICING_REVIEW_DATE,
   unitCostEstimate, ESTIMATED_ORDER_RANGE, illustrativeVatInclusivePrice,
@@ -143,6 +144,7 @@ function Artwork({
 export default function LandingPage() {
   return (
     <div className="rm-site" id="top">
+      <LandingMotion />
       <a className="rm-skip" href="#main">Skip to main content</a>
 
       <header className="rm-header">
@@ -205,6 +207,13 @@ export default function LandingPage() {
           <div className="rm-hero-media">
             <div className="rm-media-heading"><span>RELIEFMESH / THE CONNECTED VISION</span><span>01 — 05</span></div>
             <div className="rm-hero-frame">
+              <div className="rm-hero-ambient" aria-hidden="true">
+                <div className="rm-hero-orbit rm-hero-orbit-outer" />
+                <div className="rm-hero-orbit rm-hero-orbit-inner" />
+                <span className="rm-hero-node rm-hero-node-one" />
+                <span className="rm-hero-node rm-hero-node-two" />
+                <span className="rm-hero-node rm-hero-node-three" />
+              </div>
               <Artwork name="hero-network.webp" alt="Illustration of the ReliefMesh emergency network and Guardian SOS device concepts" priority />
               <div className="rm-hero-visual-badge">
                 <span className="rm-hero-badge-icon"><Radio size={18} aria-hidden="true" /></span>
@@ -223,7 +232,7 @@ export default function LandingPage() {
 
         <section className="rm-container rm-capability-grid" aria-label="Core platform capabilities">
           {capabilities.map(({ index, title, description, icon: Icon }) => (
-            <article className="rm-capability" key={index}>
+            <article className="rm-capability" key={index} data-rm-reveal="card">
               <div className="rm-capability-top"><span>{index}</span><Icon size={25} strokeWidth={1.6} aria-hidden="true" /></div>
               <h2>{title}</h2>
               <p>{description}</p>
@@ -232,7 +241,7 @@ export default function LandingPage() {
         </section>
 
         <section className="rm-band" id="mission">
-          <div className="rm-container rm-mission rm-section">
+          <div className="rm-container rm-mission rm-section" data-rm-reveal="section">
             <div>
               <span className="rm-section-index">01 / OUR MISSION</span>
               <h2>Technology should reach people <span>when they need it most.</span></h2>
@@ -248,7 +257,7 @@ export default function LandingPage() {
         </section>
 
         <section className="rm-container rm-section" id="guardians">
-          <div className="rm-section-heading">
+          <div className="rm-section-heading" data-rm-reveal="section">
             <div>
               <span className="rm-section-index">02 / GUARDIAN COLLECTION</span>
               <h2>Safety you can <span>carry.</span></h2>
@@ -259,7 +268,7 @@ export default function LandingPage() {
 
           <div className="rm-product-grid">
             {products.map((product) => (
-              <article className="rm-product-card" key={product.name}>
+              <article className="rm-product-card" key={product.name} data-rm-reveal="card">
                 <Artwork name={product.image} alt={product.alt} portrait />
                 <div className="rm-product-description">
                   <span className="rm-product-tag">{product.eyebrow}</span>
@@ -281,7 +290,7 @@ export default function LandingPage() {
         </section>
 
         <section className="rm-container rm-pricing-section" id="pricing" aria-labelledby="rm-pricing-heading">
-          <div className="rm-pricing-header">
+          <div className="rm-pricing-header" data-rm-reveal="section">
             <div>
               <span className="rm-section-index">GUARDIAN / BULK-PROCUREMENT STRATEGY</span>
               <h2 id="rm-pricing-heading">Safety should fit <span>everyday life and household budgets.</span></h2>
@@ -293,20 +302,20 @@ export default function LandingPage() {
               <small>Guardian Button · bulk target</small>
             </div>
           </div>
-          <div className="rm-tax-plan-banner" role="note">
+          <div className="rm-tax-plan-banner" role="note" data-rm-reveal="section">
             <ShieldCheck size={21} aria-hidden="true" />
             <div><strong>Government-supported VAT relief: proposed, not yet approved</strong>
               <p>We intend to discuss tax treatment and affordability support with relevant authorities. Until formal eligibility is confirmed, the prices below are <b>before any applicable VAT</b>. An illustrative VAT-inclusive total is shown separately for each product.</p>
             </div>
           </div>
-          <section className="rm-keypad-section" aria-labelledby="rm-keypad-heading">
+          <section className="rm-keypad-section" aria-labelledby="rm-keypad-heading" data-rm-reveal="section">
             <div className="rm-keypad-intro">
               <span className="rm-section-index">SAFETY WITHOUT A SMARTPHONE</span>
               <h3 id="rm-keypad-heading">What if your family only has a button phone?</h3>
               <p>Safety should not depend on Android apps, internet packages or buying a new smartphone. An ordinary keypad phone can receive calls or SMS; however, it cannot run our proposed Bluetooth smartphone companion app.</p>
             </div>
             <div className="rm-keypad-options">
-              <article className="rm-keypad-option">
+              <article className="rm-keypad-option" data-rm-reveal="card">
                 <span className="rm-keypad-number">01 / PRODUCT CONCEPT</span>
                 <h4>Guardian Cellular Button</h4>
                 <p>A proposed separate, no-smartphone version with its own SIM and a large tactile SOS control. It would attempt to send preconfigured SMS messages or place an automated call to trusted family contacts. No GPS or screen required in the basic concept.</p>
@@ -332,48 +341,55 @@ export default function LandingPage() {
             </div>
           </section>
 
-          <div className="rm-pricing-grid">
-            {products.map(product => {
+          <div className="rm-pricing-grid" aria-label="Guardian device pricing">
+            {products.map((product, index) => {
               const model = guardianPricing[product.slug];
               return (
-                <article className="rm-pricing-card" key={product.slug}>
-                  <div className="rm-pricing-card-heading">
-                    <span className="rm-pricing-card-label">{product.eyebrow}</span>
-                    <span className="rm-pricing-unavailable">Not on sale</span>
-                  </div>
-                  <h3>{model.label}</h3>
-                  <strong className="rm-pricing-card-price">{formatLkr(model.targetRetailLkr)}</strong>
-                  <span className="rm-pricing-card-note">Bulk-sourcing target · before applicable VAT</span>
-                  {savingsVsPreviousTarget(model) > 0 && <span className="rm-pricing-savings">-{savingsVsPreviousTarget(model)}% from previous target</span>}
-                  <div className="rm-pricing-card-rule" />
-                  <p className="rm-pricing-card-connection">{model.connection}</p>
-                  <p className="rm-pricing-card-portable">Carry option: {model.portability}</p>
-                  <p className="rm-pricing-card-caution">{model.note}</p>
-                  <div className="rm-pricing-card-foot">
-                    <span>Est. unit cost target</span>
-                    <strong>{formatLkr(unitCostEstimate(model))}</strong>
-                  </div>
-                  <div className="rm-pricing-card-foot">
-                    <span>Est. balance after 3% fee, before fixed costs</span>
-                    <strong className="rm-pricing-positive">+{formatLkr(estimatedContribution(model))}</strong>
-                  </div>
-                  {model.communitySupportGoalLkr !== undefined && (
-                    <div className="rm-pricing-community-goal">
-                      <span>Community-access goal · support required</span>
-                      <strong>{formatLkr(model.communitySupportGoalLkr)}</strong>
-                      <small>Requires {formatLkr(proposedSupportGap(model))} of partner funding per unit, before any applicable VAT. No sponsor has committed.</small>
+                <article className="rm-pricing-card" data-rm-reveal="card" key={product.slug}>
+                  <header className="rm-pricing-card-heading">
+                    <span className="rm-pricing-card-index">{String(index + 1).padStart(2, "0")} / 04</span>
+                    <span className="rm-pricing-unavailable">PRODUCT CONCEPT</span>
+                  </header>
+                  <div className="rm-pricing-card-identity">
+                    <div className="rm-pricing-card-title">
+                      <span className="rm-pricing-card-label">{product.eyebrow}</span>
+                      <h3>{model.label}</h3>
                     </div>
-                  )}
-                  <div className="rm-pricing-card-tax">
-                    <span>If 18% VAT applies</span>
-                    <strong>{formatLkr(illustrativeVatInclusivePrice(model))}</strong>
-                    <small>Illustration only; depends on legal tax treatment</small>
+                    {savingsVsPreviousTarget(model) > 0 && (
+                      <span className="rm-pricing-savings">{savingsVsPreviousTarget(model)}% lower target</span>
+                    )}
+                  </div>
+                  <div className="rm-pricing-price-block">
+                    <strong className="rm-pricing-card-price">{formatLkr(model.targetRetailLkr)}</strong>
+                    <span className="rm-pricing-card-note">Target base price · before applicable VAT</span>
+                  </div>
+                  <div className="rm-pricing-card-specs">
+                    <span className="rm-pricing-spec-eyebrow">CONNECTIVITY & EVERYDAY USE</span>
+                    <p className="rm-pricing-card-connection">{model.connection}</p>
+                    <p className="rm-pricing-card-portable"><span>Carry</span> {model.portability}</p>
+                    <p className="rm-pricing-card-caution">{model.note}</p>
+                  </div>
+                  <div className="rm-pricing-card-bottom">
+                    <div className="rm-pricing-card-finance">
+                      <div className="rm-pricing-card-foot">
+                        <span>Estimated production unit cost</span>
+                        <strong>{formatLkr(unitCostEstimate(model))}</strong>
+                      </div>
+                      <div className="rm-pricing-card-foot">
+                        <span>Modelled balance after a 3% fee*</span>
+                        <strong className="rm-pricing-positive">+{formatLkr(estimatedContribution(model))}</strong>
+                      </div>
+                    </div>
+                    <div className="rm-pricing-card-tax">
+                      <div><span>If standard 18% VAT applies</span><strong>{formatLkr(illustrativeVatInclusivePrice(model))}</strong></div>
+                      <small>Illustrative tax-inclusive total · not a confirmed selling price</small>
+                    </div>
                   </div>
                 </article>
               );
             })}
           </div>
-          <div className="rm-family-access-plan" role="note">
+          <div className="rm-family-access-plan" role="note" data-rm-reveal="section">
             <div className="rm-family-plan-icon"><Users size={23} aria-hidden="true" /></div>
             <div>
               <span className="rm-section-index">FAMILY ACCESS / PROPOSED SUPPORT PROGRAMME</span>
@@ -382,13 +398,13 @@ export default function LandingPage() {
               <p><b>The Rs. 1,990 Bluetooth Button is not directly compatible with a basic keypad phone.</b> A separate Cellular Button with its own SIM is a proposed low-cost alternative; its design and price are not confirmed. The proposed Remote can operate without a smartphone, and a future SMS/voice service could notify relatives who only have button phones. The service has not been implemented.</p>
             </div>
           </div>
-          <div className="rm-bulk-strategy" aria-label="How ReliefMesh aims to lower device costs">
+          <div className="rm-bulk-strategy" aria-label="How ReliefMesh aims to lower device costs" data-rm-reveal="section">
             <div><span>01 / SOURCING</span><strong>Manufacturer pricing</strong><p>Negotiate production modules, sensors, batteries and PCB components for 100 to 5,000-unit quotations.</p></div>
             <div><span>02 / PRODUCTION</span><strong>Local assembly</strong><p>Reduce imported finished-device costs where possible; budget testing, repairs, batteries and certified housings.</p></div>
             <div><span>03 / PARTNERSHIPS</span><strong>Government and NGOs</strong><p>Discuss humanitarian procurement, subsidies and legally approved tax treatment before promising VAT-free sales.</p></div>
           </div>
 
-          <div className="rm-device-compare" id="device-comparison" aria-labelledby="rm-device-compare-heading">
+          <div className="rm-device-compare" data-rm-reveal="section" id="device-comparison" aria-labelledby="rm-device-compare-heading">
             <div className="rm-device-compare-heading">
               <span className="rm-section-index">COMPARE THE GUARDIAN COLLECTION</span>
               <h3 id="rm-device-compare-heading">One suitable device, not four devices to carry.</h3>
@@ -440,7 +456,7 @@ export default function LandingPage() {
             </div>
             <p className="rm-comparison-disclaimer">A basic phone cannot pair directly with the Bluetooth-only Button or ring companion app. Relatives with keypad phones could receive a future Cellular Button/Remote SMS or voice alert, subject to carrier compatibility and implementation. A person normally chooses one suitable device, not a full bundle. A smartphone-connected Button or ring cannot protect someone outside its paired phone range. The Remote is a phone-independent concept, but portability, battery life, network coverage and certification must be validated. Neither a subsidised price nor emergency dispatch integration is currently available.</p>
           </div>
-          <div className="rm-pricing-disclosure">
+          <div className="rm-pricing-disclosure" data-rm-reveal="section">
             <div>
               <strong>Planning prices, not confirmed manufacturing quotes</strong>
               <p>The unit-cost estimates cover components, battery, enclosure, assembly/testing, packaging, logistics and an allowance for warranty and tooling. The pre-VAT modelled balance subtracts a 3% payment-processing allowance and the target unit build cost; it is <b>not net profit</b>. Costs presume bulk procurement of {ESTIMATED_ORDER_RANGE}. Reviewed {PRICING_REVIEW_DATE}.</p>
@@ -469,7 +485,7 @@ export default function LandingPage() {
               <p>The proposed Guardian ring family balances accessibility with an expanded-feature concept for different individual and community needs.</p>
             </div>
           </div>
-          <div className="rm-comparison-grid">
+          <div className="rm-comparison-grid" data-rm-reveal="section">
             <Artwork name="ring-comparison.webp" alt="Side-by-side comparison artwork of Guardian Ring Lite and Guardian Ring Pro" />
             <div className="rm-comparison-copy">
               <article>
@@ -497,7 +513,7 @@ export default function LandingPage() {
                 <p>Explore how future Guardian SOS devices could connect to incident management, emergency teams and the existing ReliefMesh coordination platform.</p>
               </div>
             </div>
-            <div className="rm-technology-grid">
+            <div className="rm-technology-grid" data-rm-reveal="section">
               <Artwork name="architecture.webp" alt="ReliefMesh Emergency IoT Ecosystem infographic showing device, GPS, connectivity, cloud services and responders" />
               <div className="rm-flow-panel">
                 <span className="rm-section-index">CONNECTED EMERGENCY FLOW</span>
@@ -524,7 +540,7 @@ export default function LandingPage() {
               <p>Behind every alert is a person. Meaningful emergency technology starts with empathy, clear communication and coordinated action.</p>
             </div>
           </div>
-          <div className="rm-community-grid">
+          <div className="rm-community-grid" data-rm-reveal="section">
             <figure>
               <Artwork name="community-care.webp" alt="Illustration of a volunteer demonstrating an accessible Guardian SOS device to an older person" />
               <figcaption><span>01 / COMMUNITY CARE</span><strong>Making protection easier to access.</strong></figcaption>
@@ -537,7 +553,7 @@ export default function LandingPage() {
         </section>
 
         <section className="rm-container rm-section rm-final-section">
-          <div className="rm-cta-panel">
+          <div className="rm-cta-panel" data-rm-reveal="section">
             <div>
               <span className="rm-section-index">MAKE RESILIENCE A SHARED MISSION</span>
               <h2>Build a safer tomorrow, <span>together.</span></h2>
