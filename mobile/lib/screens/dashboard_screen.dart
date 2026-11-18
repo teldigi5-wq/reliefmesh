@@ -58,13 +58,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final session = widget.controller.session!;
     final name = session.fullName?.split(' ').first ?? 'there';
+    final isCitizen = session.role == 'CITIZEN';
+    final isResponder = session.role == 'RESPONDER';
+    final heading = isCitizen ? 'Stay ready, $name.' : isResponder ? 'Field response, $name.' : 'Operations command.';
+    final subtitle = isCitizen
+        ? 'Report danger, share precise location and follow the response in real time.'
+        : isResponder
+            ? 'Review assignments, navigate to incidents and update response status.'
+            : 'Triage reports, verify incidents and coordinate available responders.';
     final active = widget.controller.incidents.where((item) => !{'RESOLVED', 'CLOSED'}.contains(item.status)).length;
     final critical = widget.controller.incidents.where((item) => item.severity == 'CRITICAL').length;
     final latest = widget.controller.incidents.take(3).toList();
 
     return SafeArea(
       child: RefreshIndicator(
-        onRefresh: widget.controller.refreshIncidents,
+        onRefresh: () => Future.wait([widget.controller.refreshIncidents(), widget.controller.refreshNotifications()]),
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 18, 20, 30),
           children: [
@@ -81,11 +89,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ],
             ),
             const SizedBox(height: 30),
-            Text('Stay ready, $name.', style: Theme.of(context).textTheme.displaySmall),
+            Text(heading, style: Theme.of(context).textTheme.displaySmall),
             const SizedBox(height: 8),
-            const Text('Report danger, share precise location and follow the response in real time.', style: TextStyle(color: AppColors.muted, height: 1.45)),
+            Text(subtitle, style: const TextStyle(color: AppColors.muted, height: 1.45)),
             const SizedBox(height: 24),
-            Container(
+            if (isCitizen) Container(
               padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(colors: [Color(0xFF351822), Color(0xFF142033)], begin: Alignment.topLeft, end: Alignment.bottomRight),
@@ -119,7 +127,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 18),
+            if (isCitizen) const SizedBox(height: 18),
             Row(
               children: [
                 Expanded(child: _Metric(label: 'Active reports', value: '$active', icon: Icons.radar_rounded, color: AppColors.teal)),
@@ -127,13 +135,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Expanded(child: _Metric(label: 'Critical', value: '$critical', icon: Icons.warning_amber_rounded, color: AppColors.gold)),
               ],
             ),
-            const SizedBox(height: 18),
-            FilledButton.tonalIcon(onPressed: widget.openReport, icon: const Icon(Icons.add_location_alt_rounded), label: const Text('Create a detailed incident report')),
+            if (isCitizen) ...[
+              const SizedBox(height: 18),
+              FilledButton.tonalIcon(onPressed: widget.openReport, icon: const Icon(Icons.add_location_alt_rounded), label: const Text('Create a detailed incident report')),
+            ],
             const SizedBox(height: 26),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text('Latest activity', style: Theme.of(context).textTheme.titleLarge), Text('${widget.controller.incidents.length} total', style: const TextStyle(color: AppColors.muted))]),
             const SizedBox(height: 12),
             if (latest.isEmpty)
-              const Card(child: Padding(padding: EdgeInsets.all(22), child: Text('No reports yet. Use the report button when you need help.', style: TextStyle(color: AppColors.muted))))
+              Card(child: Padding(padding: const EdgeInsets.all(22), child: Text(isCitizen ? 'No reports yet. Use the report button when you need help.' : 'No incidents are currently visible for this role.', style: const TextStyle(color: AppColors.muted))))
             else
               ...latest.map((incident) => _ActivityRow(incident: incident)),
           ],

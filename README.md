@@ -16,6 +16,7 @@ connected to the real API/database path.
 - Tailwind CSS
 - PostgreSQL + Prisma ORM
 - Flutter (Android/iOS) with encrypted session storage and GPS reporting
+- Firebase Cloud Messaging with server-side device-token registration
 - Custom auth: bcrypt password hashing + signed JWT session cookie (no
   third-party auth service — see `src/lib/auth/`)
 - Vitest (unit) + Playwright (e2e — `tests/e2e/core-workflow.spec.ts`)

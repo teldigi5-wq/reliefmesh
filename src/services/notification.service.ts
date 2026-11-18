@@ -1,6 +1,39 @@
 import { notificationRepository } from "@/repositories/notification.repository";
 import { prisma } from "@/lib/db/prisma";
-import type { IncidentStatus } from "@prisma/client";
+import { pushService } from "@/services/push.service";
+import type { IncidentStatus, NotificationType } from "@prisma/client";
+
+type NotificationInput = {
+  userId: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  relatedIncidentId?: string;
+};
+
+async function createWithPush(input: NotificationInput) {
+  await notificationRepository.create(input);
+  await pushService
+    .sendToUser(input.userId, {
+      title: input.title,
+      message: input.message,
+      incidentId: input.relatedIncidentId,
+    })
+    .catch((error) => console.error("Push notification delivery failed", error));
+}
+
+async function createManyWithPush(inputs: NotificationInput[]) {
+  await notificationRepository.createMany(inputs);
+  await Promise.allSettled(
+    inputs.map((input) =>
+      pushService.sendToUser(input.userId, {
+        title: input.title,
+        message: input.message,
+        incidentId: input.relatedIncidentId,
+      })
+    )
+  );
+}
 
 /**
  * Notification side-effects for incident events. Kept as its own service
@@ -20,7 +53,7 @@ export const notificationService = {
       where: { role: { in: ["OPERATOR", "ADMIN"] }, isActive: true },
       select: { id: true },
     });
-    await notificationRepository.createMany(
+    await createManyWithPush(
       operators.map((operator) => ({
         userId: operator.id,
         type: "NEW_CRITICAL_INCIDENT" as const,
@@ -38,7 +71,7 @@ export const notificationService = {
     });
     if (!incident) return;
 
-    await notificationRepository.create({
+    await createWithPush({
       userId: incident.reportedById,
       type: "STATUS_CHANGED",
       title: `Incident update: ${incident.title}`,
@@ -47,7 +80,7 @@ export const notificationService = {
     });
 
     if (toStatus === "VERIFIED") {
-      await notificationRepository.create({
+      await createWithPush({
         userId: incident.reportedById,
         type: "INCIDENT_VERIFIED",
         title: `Incident verified: ${incident.title}`,
@@ -63,7 +96,7 @@ export const notificationService = {
         where: { role: { in: ["OPERATOR", "ADMIN"] }, isActive: true },
         select: { id: true },
       });
-      await notificationRepository.createMany(
+      await createManyWithPush(
         operators.map((op) => ({
           userId: op.id,
           type: "NEW_CRITICAL_INCIDENT" as const,
@@ -82,7 +115,7 @@ export const notificationService = {
     });
     if (!incident) return;
 
-    await notificationRepository.create({
+    await createWithPush({
       userId: volunteerUserId,
       type: "RESPONDER_ASSIGNED",
       title: `You've been assigned: ${incident.title}`,

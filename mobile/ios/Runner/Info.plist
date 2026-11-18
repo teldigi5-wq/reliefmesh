@@ -18,6 +18,10 @@
 	<string>ReliefMesh</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>ReliefMesh uses your precise location only when you send an SOS or incident report so emergency responders can find you.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>

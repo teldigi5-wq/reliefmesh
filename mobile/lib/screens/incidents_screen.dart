@@ -38,7 +38,7 @@ class IncidentsScreen extends StatelessWidget {
                   itemCount: controller.incidents.length,
                   itemBuilder: (context, index) => _IncidentCard(
                     incident: controller.incidents[index],
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => IncidentDetailScreen(incident: controller.incidents[index]))),
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => IncidentDetailScreen(incident: controller.incidents[index], controller: controller))),
                   ),
                 ),
               ),

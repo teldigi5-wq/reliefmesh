@@ -1,5 +1,6 @@
 import '../core/network/api_client.dart';
 import '../models/incident.dart';
+import '../models/volunteer.dart';
 
 class IncidentService {
   IncidentService(this._api);
@@ -34,5 +35,22 @@ class IncidentService {
       if (address != null && address.trim().isNotEmpty) 'address': address.trim(),
     }) as Map<String, dynamic>;
     return Incident.fromJson(data);
+  }
+
+  Future<Incident> transitionStatus(String incidentId, String toStatus, {String? note}) async {
+    final data = await _api.post('/api/incidents/$incidentId/status', body: {
+      'toStatus': toStatus,
+      if (note != null && note.trim().isNotEmpty) 'note': note.trim(),
+    }) as Map<String, dynamic>;
+    return Incident.fromJson(data);
+  }
+
+  Future<List<Volunteer>> volunteers() async {
+    final data = await _api.get('/api/volunteers') as List<dynamic>;
+    return data.cast<Map<String, dynamic>>().map(Volunteer.fromJson).toList(growable: false);
+  }
+
+  Future<void> assignResponder(String incidentId, String volunteerId) async {
+    await _api.post('/api/incidents/$incidentId/assign', body: {'volunteerId': volunteerId});
   }
 }

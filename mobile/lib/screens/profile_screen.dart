@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../controllers/app_controller.dart';
 import '../core/config/app_config.dart';
+import '../core/config/push_config.dart';
 import '../core/theme/app_theme.dart';
 import '../models/incident.dart';
 import '../widgets/brand_mark.dart';
@@ -43,6 +44,12 @@ class ProfileScreen extends StatelessWidget {
                 const _Setting(icon: Icons.security_rounded, title: 'Secure session', subtitle: 'Token stored in encrypted device storage'),
                 const Divider(height: 28, color: AppColors.line),
                 const _Setting(icon: Icons.cloud_done_outlined, title: 'Live platform', subtitle: 'Connected to the production ReliefMesh API'),
+                const Divider(height: 28, color: AppColors.line),
+                _Setting(
+                  icon: Icons.notifications_active_outlined,
+                  title: 'Notification bar',
+                  subtitle: PushConfig.isConfigured ? 'Background emergency push is configured' : 'Permission and local alerts enabled; Firebase build variables are pending',
+                ),
                 const Divider(height: 28, color: AppColors.line),
                 _Setting(icon: Icons.link_rounded, title: 'API host', subtitle: AppConfig.normalizedBaseUrl),
               ]),

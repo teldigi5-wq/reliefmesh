@@ -3,6 +3,7 @@ import { transitionStatusSchema, assignVolunteerSchema } from "@/lib/validation/
 import { createIncidentSchema } from "@/lib/validation/incident";
 import { createResourceSchema, allocateResourceSchema } from "@/lib/validation/resource";
 import { guardianSimulatorSchema } from "@/lib/validation/guardian";
+import { pushTokenSchema } from "@/lib/validation/push-token";
 
 describe("volunteer/incident validation schemas", () => {
   it("rejects an unknown status on a transition request", () => {
@@ -90,5 +91,12 @@ describe("volunteer/incident validation schemas", () => {
         batteryPct: 120,
       }).success
     ).toBe(false);
+  });
+
+  it("accepts only supported mobile push-token platforms", () => {
+    const token = "fcm-registration-token-that-is-long-enough";
+    expect(pushTokenSchema.safeParse({ token, platform: "ANDROID" }).success).toBe(true);
+    expect(pushTokenSchema.safeParse({ token, platform: "IOS" }).success).toBe(true);
+    expect(pushTokenSchema.safeParse({ token, platform: "WEB" }).success).toBe(false);
   });
 });

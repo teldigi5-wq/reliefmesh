@@ -81,6 +81,11 @@ enum DeviceStatus {
   DECOMMISSIONED
 }
 
+enum PushPlatform {
+  ANDROID
+  IOS
+}
+
 // ---------------------------------------------------------------------------
 // Core identity
 // ---------------------------------------------------------------------------
@@ -104,9 +109,22 @@ model User {
   assignments         ResponderAssignment[]
   notifications       Notification[]
   auditLogs           AuditLog[]
+  pushTokens          PushToken[]
 
   @@index([role])
   @@index([organisationId])
+}
+
+model PushToken {
+  id        String       @id @default(cuid())
+  token     String       @unique
+  platform  PushPlatform
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([userId])
 }
 
 model Organisation {

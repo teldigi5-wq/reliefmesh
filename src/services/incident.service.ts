@@ -28,7 +28,13 @@ export const incidentService = {
     if (!hasPermission(actor.role, "incident:report")) {
       throw new PermissionError("Not permitted to report incidents");
     }
-    return incidentRepository.create(input, actor.id);
+    const incident = await incidentRepository.create(input, actor.id);
+    if (input.severity === "CRITICAL") {
+      notificationService
+        .forNewCriticalIncident(incident.id)
+        .catch((error) => console.error("Failed to notify operators of critical incident", error));
+    }
+    return incident;
   },
 
   async listIncidents(actor: Actor) {

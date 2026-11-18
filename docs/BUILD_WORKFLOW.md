@@ -71,6 +71,14 @@ add database credentials or Supabase service-role keys to Flutter build
 arguments. They remain server-side as deployment secrets (`DATABASE_URL`,
 `AUTH_SECRET`, and Guardian secrets).
 
+For notification-bar push delivery, also set these GitHub repository
+**Variables**: `FIREBASE_API_KEY`, `FIREBASE_ANDROID_APP_ID`,
+`FIREBASE_MESSAGING_SENDER_ID`, and `FIREBASE_PROJECT_ID`. Add
+`FIREBASE_SERVICE_ACCOUNT_JSON` to Vercel as a protected **Secret** scoped to
+Production/Preview. The service-account JSON is server-only and must never be
+passed to Flutter or committed. Deploy the `20261118090000_add_push_tokens`
+migration before the mobile rollout.
+
 ## GitHub artifact
 
 Open the repository's **Actions** tab, select a successful **Build and
@@ -83,6 +91,8 @@ contains the APK; there is no Expo/EAS dependency.
 - The deployed web API has its production database migration applied.
 - Login, registration, GPS permission, SOS creation and incident refresh are
   checked on a physical Android device.
+- Notification permission, background delivery and notification-tap routing
+  are checked on a physical device with the production Firebase project.
 - A private Android upload keystore is supplied through protected CI secrets
   before Play Store distribution.
 - Production Supabase/database secrets remain only in the server deployment.
