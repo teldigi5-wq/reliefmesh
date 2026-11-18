@@ -1,52 +1,29 @@
 "use client";
-
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { MapPin, ArrowUpRight } from "lucide-react";
 import { SeverityBadge, StatusBadge } from "@/components/incidents/badges";
 import type { MapIncident } from "@/components/map/incident-map";
-
-// Leaflet touches `window` at import time, so the map must never render on
-// the server — dynamic() with ssr: false keeps it out of the SSR pass.
 const IncidentMap = dynamic(
-  () => import("@/components/map/incident-map").then((m) => m.IncidentMap),
-  { ssr: false, loading: () => <MapSkeleton /> }
+ () => import("@/components/map/incident-map").then(m => m.IncidentMap),
+ { ssr: false, loading: () => <div className="ops-map-loading">Loading map tiles…</div> }
 );
-
-function MapSkeleton() {
-  return (
-    <div className="surface-card flex h-[600px] w-full items-center justify-center text-sm text-slate-400">
-      Loading map...
-    </div>
-  );
-}
-
 export function MapWithList({ incidents }: { incidents: MapIncident[] }) {
-  return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-      <div className="surface-card overflow-hidden p-0">
-        <IncidentMap incidents={incidents} />
-      </div>
-
-      <div className="surface-card max-h-[600px] divide-y divide-slate-200/80 overflow-y-auto p-0 dark:divide-slate-800">
-        {incidents.length === 0 && (
-          <p className="p-4 text-sm text-slate-500">No incidents to show.</p>
-        )}
-        {incidents.map((incident) => (
-          <Link
-            key={incident.id}
-            href={`/incidents/${incident.id}`}
-            className="block p-3 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60"
-          >
-            <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
-              {incident.title}
-            </p>
-            <div className="mt-1 flex gap-2">
-              <SeverityBadge severity={incident.severity} />
-              <StatusBadge status={incident.status} />
-            </div>
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
+ return (
+ <div className="ops-map-grid">
+  <div className="ops-panel ops-map-frame"><IncidentMap incidents={incidents} /></div>
+  <aside className="ops-panel ops-map-sidebar">
+   <div className="ops-panel-heading"><div><span className="ops-panel-kicker">VISIBLE REPORTS</span><h3>Incident locations</h3></div><span className="ops-panel-badge">{incidents.length}</span></div>
+   <div className="ops-map-sidebar-list">
+    {incidents.length === 0 && <div className="ops-empty">No incident locations to show.</div>}
+    {incidents.map(i => (
+     <Link key={i.id} href={"/incidents/" + i.id} className="ops-map-sidebar-item">
+      <div className="ops-map-sidebar-icon"><MapPin size={16} /></div>
+      <div className="min-w-0 flex-1"><p className="ops-list-title">{i.title}</p><p className="ops-list-caption">{i.category.replace(/_/g, " ")}</p><div className="mt-3 flex flex-wrap gap-2"><SeverityBadge severity={i.severity} /><StatusBadge status={i.status} /></div></div>
+      <ArrowUpRight size={16} className="ops-faint" />
+     </Link>
+    ))}
+   </div>
+  </aside>
+ </div>);
 }
