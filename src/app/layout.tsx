@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "./operations.css";
+import "@/components/privacy/privacy-ui.css";
+import { CookiePreferences } from "@/components/privacy/cookie-preferences";
+import { SiteFeedback } from "@/components/feedback/site-feedback";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -48,7 +51,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>{children}</body>
+      <body>{children}<CookiePreferences /><SiteFeedback /></body>
     </html>
   );
 }
