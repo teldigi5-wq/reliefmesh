@@ -38,7 +38,10 @@ export type GuardianPrice = {
   keypadPhoneHousehold: string;
   networkCosts: string;
   portability: string;
+  /** Goal for highest-need families; requires uncommitted third-party funding. */
   communitySupportGoalLkr?: number;
+  /** Optional small-contribution access goal, also conditional on sponsorship. */
+  communitySharedContributionLkr?: number;
   communitySupportNote?: string;
 };
 
@@ -126,8 +129,9 @@ export const guardianPricing: Record<GuardianDeviceKey, GuardianPrice> = {
     keypadPhoneHousehold: "Planned SMS or voice alert to family keypad phones using the device's own SIM. Not implemented or certified.",
     networkCosts: "Separate SIM / data plan",
     portability: "Clip, lanyard or bag attachment design goal (dimensions untested)",
-    communitySupportGoalLkr: 3990,
-    communitySupportNote: "A proposed assisted household price only if a partner funds the difference; no funding agreement exists.",
+    communitySupportGoalLkr: 0,
+    communitySharedContributionLkr: 499,
+    communitySupportNote: "Free access for highest-need households or Rs. 499 for other eligible families is proposed only. No sponsor or government funding is committed.",
   },
 };
 
@@ -161,9 +165,12 @@ export function contributionIfVatApplies(pricing: GuardianPrice): number {
 }
 
 /** Illustrative support required per unit to reach a community-access goal. */
-export function proposedSupportGap(pricing: GuardianPrice): number {
-  if (pricing.communitySupportGoalLkr === undefined) return 0;
-  return Math.max(0, pricing.targetRetailLkr - pricing.communitySupportGoalLkr);
+export function proposedSupportGap(
+  pricing: GuardianPrice,
+  contribution: number | undefined = pricing.communitySupportGoalLkr
+): number {
+  if (contribution === undefined) return 0;
+  return Math.max(0, pricing.targetRetailLkr - contribution);
 }
 
 export function savingsVsPreviousTarget(pricing: GuardianPrice): number {

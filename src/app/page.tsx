@@ -391,11 +391,28 @@ export default function LandingPage() {
           </div>
           <div className="rm-family-access-plan" role="note" data-rm-reveal="section">
             <div className="rm-family-plan-icon"><Users size={23} aria-hidden="true" /></div>
-            <div>
-              <span className="rm-section-index">FAMILY ACCESS / PROPOSED SUPPORT PROGRAMME</span>
-              <h3>Help families with button phones access a standalone cellular SOS device.</h3>
-              <p>Our proposal is a <strong>{formatLkr(guardianPricing["guardian-remote"].communitySupportGoalLkr ?? 0)}</strong> household contribution towards a Remote, with <strong>{formatLkr(proposedSupportGap(guardianPricing["guardian-remote"]))}</strong> covered by a government, NGO or CSR partner. This is a <strong>funding goal, not an approved subsidy or a selling price</strong>. The Remote still needs a mobile SIM/data plan, and the total cost and VAT treatment must be validated.</p>
-              <p><b>The Rs. 1,990 Bluetooth Button is not directly compatible with a basic keypad phone.</b> A separate Cellular Button with its own SIM is a proposed low-cost alternative; its design and price are not confirmed. The proposed Remote can operate without a smartphone, and a future SMS/voice service could notify relatives who only have button phones. The service has not been implemented.</p>
+            <div className="rm-family-plan-content">
+              <span className="rm-section-index">FAMILY ACCESS / UNFUNDED PROPOSAL</span>
+              <h3>For families with the greatest need, our goal is no upfront device cost.</h3>
+              <p>Our proposed programme would fully sponsor a Guardian Remote for households facing the greatest financial hardship. A second tier would ask other eligible families for only a small contribution. Both depend on written partner commitments, confirmed unit costs and a reliable distribution service.</p>
+              <div className="rm-family-access-tiers" aria-label="Proposed household contributions; no funding is currently available">
+                <div className="rm-family-access-tier">
+                  <span className="rm-family-tier-label">HIGHEST-NEED HOUSEHOLDS · UNFUNDED GOAL</span>
+                  <strong>{formatLkr(guardianPricing["guardian-remote"].communitySupportGoalLkr ?? 0)}</strong>
+                  <span className="rm-family-tier-subtitle">Proposed household device contribution</span>
+                  <p>Partner support required: <b>{formatLkr(proposedSupportGap(guardianPricing["guardian-remote"]))} per device</b></p>
+                  <small>Not yet funded, approved or available</small>
+                </div>
+                <div className="rm-family-access-tier">
+                  <span className="rm-family-tier-label">OTHER ELIGIBLE FAMILIES · UNFUNDED GOAL</span>
+                  <strong>{formatLkr(guardianPricing["guardian-remote"].communitySharedContributionLkr ?? 0)}</strong>
+                  <span className="rm-family-tier-subtitle">Proposed household device contribution</span>
+                  <p>Partner support required: <b>{formatLkr(proposedSupportGap(guardianPricing["guardian-remote"], guardianPricing["guardian-remote"].communitySharedContributionLkr))} per device</b></p>
+                  <small>Not yet funded, approved or available</small>
+                </div>
+              </div>
+              <p>The figures above are <b>proposals, not current selling prices or subsidies</b>. Each scenario must cover the current unverified {formatLkr(guardianPricing["guardian-remote"].targetRetailLkr)} device funding target. Any applicable VAT, SIM/data services, compliance, repairs and operational costs must also be funded or included in a confirmed partner agreement.</p>
+              <p><b>Families with only keypad phones need a standalone cellular SOS solution.</b> The inexpensive Bluetooth Guardian Button requires a smartphone and cannot independently contact a basic button phone. A separate SIM-enabled Cellular Button is under consideration, but its design and cost remain unverified.</p>
             </div>
           </div>
           <div className="rm-bulk-strategy" aria-label="How ReliefMesh aims to lower device costs" data-rm-reveal="section">
@@ -424,10 +441,15 @@ export default function LandingPage() {
                   <tr><th scope="row">Daily carry</th>
                     {products.map(p => <td key={p.slug}>{guardianPricing[p.slug].portability}</td>)}
                   </tr>
-                  <tr><th scope="row">Low-income assisted target</th>
+                  <tr><th scope="row">Proposed family support (unfunded)</th>
                     {products.map(p => {
-                      const supportGoal = guardianPricing[p.slug].communitySupportGoalLkr;
-                      return <td key={p.slug}>{supportGoal === undefined ? "No sponsor programme proposed" : formatLkr(supportGoal) + " · sponsor needed"}</td>;
+                      const cost = guardianPricing[p.slug];
+                      const free = cost.communitySupportGoalLkr;
+                      const shared = cost.communitySharedContributionLkr;
+                      return <td key={p.slug}>{free === undefined || shared === undefined
+                        ? "No sponsored access proposed"
+                        : formatLkr(free) + " fully sponsored / " + formatLkr(shared) + " with partner support — neither is available"
+                      }</td>;
                     })}
                   </tr>
                   <tr><th scope="row">Best for</th>
