@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Role } from "@prisma/client";
-import { LayoutDashboard, AlertTriangle, MapPinned, UsersRound, Boxes, Radio, Menu, X, ChevronRight } from "lucide-react";
+import { LayoutDashboard, AlertTriangle, MapPinned, UsersRound, Boxes, Radio, Menu, X, ChevronRight, LogOut } from "lucide-react";
 import { NotificationBell } from "@/components/layout/notification-bell";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Logo } from "@/components/ui/logo";
@@ -38,6 +38,7 @@ export function AppNav({ role }: { role: Role }) {
          <span className="ops-nav-theme"><ThemeToggle /></span>
          <NotificationBell />
          <span className="ops-role">{role.replace(/_/g, " ")}</span>
+         <form action="/api/auth/logout" method="post"><button type="submit" className="ops-signout" aria-label="Log out" title="Log out"><LogOut size={17}/></button></form>
          <button type="button" className="ops-menu-btn"
            aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
            aria-expanded={mobileOpen} aria-controls="ops-mobile-menu"

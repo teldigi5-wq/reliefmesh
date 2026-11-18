@@ -138,3 +138,16 @@ a.ops-list-row:hover{border-color:var(--ops-accent);transform:translateY(-1px)}
 .ops-page .ops-data-card{padding:24px 26px}
 .ops-page .ops-data-card dl{border-radius:13px}
 @media(max-width:900px){.ops-map-grid{grid-template-columns:1fr}.ops-map-sidebar{max-height:450px}.ops-map-frame{min-height:490px}.ops-map-loading{min-height:480px}}
+
+
+/* Compact notification and account actions */
+.ops-signout{height:37px;width:37px;display:grid;place-items:center;border:1px solid transparent;border-radius:9px;color:#758a9b;background:transparent;transition:background .2s,color .2s}
+.ops-signout:hover{color:#f15263;background:rgba(241,82,99,.1)}
+.ops-notifications-trigger{height:38px;display:flex;align-items:center;gap:8px;padding:0 10px;border:1px solid transparent;border-radius:10px;color:#60788d;font-size:12px;font-weight:700;transition:background .2s}
+.dark .ops-notifications-trigger{color:#a3b8c8}
+.ops-notifications-trigger:hover,.ops-notifications-trigger[aria-expanded="true"]{background:rgba(17,187,201,.1);color:#0096a8}
+.ops-notification-count{display:inline-grid;place-items:center;min-width:19px;height:19px;border-radius:99px;padding:0 4px;background:#fa5165;color:white;font-size:10px;font-weight:850}
+.ops-notifications-panel{background:#fff;border:1px solid #dbe6ef;box-shadow:0 22px 65px rgba(0,20,40,.2);color:#112637}
+.dark .ops-notifications-panel{background:#101f30;border-color:#345061;color:#e8f5fa}
+@media(max-width:1160px){.ops-notifications-label{display:none}}
+@media(max-width:480px){.ops-nav-inner{padding:0 10px;gap:5px}.ops-nav-actions{gap:3px}.ops-notifications-trigger{padding:0 7px}.ops-signout{width:32px}.ops-brand-suffix{display:none}}

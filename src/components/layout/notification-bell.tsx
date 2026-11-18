@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { Bell } from "lucide-react";
 
 type Notification = {
   id: string;
@@ -64,20 +65,20 @@ export function NotificationBell() {
   return (
     <div ref={containerRef} className="relative">
       <button
+        type="button"
         onClick={() => setOpen((v) => !v)}
-        className="relative rounded-md px-2.5 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800"
+        className="ops-notifications-trigger"
         aria-label="Notifications"
+        aria-expanded={open}
+        title="Notifications"
       >
-        Notifications
-        {unreadCount > 0 && (
-          <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-xs font-medium text-white shadow-sm">
-            {unreadCount > 9 ? "9+" : unreadCount}
-          </span>
-        )}
+        <Bell size={18} aria-hidden="true" />
+        <span className="ops-notifications-label">Notifications</span>
+        {unreadCount > 0 && <span className="ops-notification-count">{unreadCount > 9 ? "9+" : unreadCount}</span>}
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl shadow-slate-900/10 dark:border-slate-700 dark:bg-slate-900">
+        <div className="ops-notifications-panel absolute right-0 z-50 mt-3 w-80 overflow-hidden rounded-xl">
           <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/60 p-3 dark:border-slate-800 dark:bg-slate-800/40">
             <span className="text-sm font-semibold">Notifications</span>
             {unreadCount > 0 && (
