@@ -3,37 +3,39 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Logo } from "@/components/ui/logo";
 
+const ENQUIRY_EMAIL = "mailto:partners@reliefmesh.app";
+
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white dark:bg-navy-950">
-      <header className="border-b border-navy-100 dark:border-navy-800">
+      <header className="sticky top-0 z-30 border-b border-navy-100 bg-white/90 backdrop-blur dark:border-navy-800 dark:bg-navy-950/90">
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Logo wordmarkClassName="text-lg font-semibold tracking-tight text-navy-900 dark:text-white" />
-          <div className="hidden items-center gap-8 md:flex">
-            <Link
-              href="/dashboard"
-              className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white"
-            >
-              Dashboard
+          <div className="hidden items-center gap-7 md:flex">
+            <Link href="#products" className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white">
+              Products
             </Link>
-            <Link
-              href="/incidents"
-              className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white"
-            >
-              Live map
+            <Link href="#solutions" className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white">
+              Solutions
             </Link>
-            <Link
-              href="/docs"
-              className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white"
-            >
-              Resources
+            <Link href="#how-it-works" className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white">
+              How It Works
+            </Link>
+            <Link href="#community" className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white">
+              Community
+            </Link>
+            <Link href="#footer" className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white">
+              About
+            </Link>
+            <Link href="#partner" className="text-sm font-medium text-navy-600 transition-colors hover:text-navy-900 dark:text-navy-300 dark:hover:text-white">
+              Contact
             </Link>
           </div>
           <div className="flex items-center gap-3">
             <ThemeToggle />
             <Link
               href="/login"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-navy-700 transition-colors hover:bg-navy-50 dark:text-navy-200 dark:hover:bg-navy-900"
+              className="hidden rounded-lg px-4 py-2 text-sm font-medium text-navy-700 transition-colors hover:bg-navy-50 dark:text-navy-200 dark:hover:bg-navy-900 sm:inline-block"
             >
               Log in
             </Link>
@@ -41,15 +43,13 @@ export default function LandingPage() {
               href="/register"
               className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm shadow-brand-600/20 transition-all hover:bg-brand-700 hover:shadow-md"
             >
-              Report an emergency
+              Report an Emergency
             </Link>
           </div>
         </nav>
       </header>
 
-      {/* Hero — full-bleed editorial layout: copy on the left, a real
-          disaster-response photo on the right with a floating live-incident
-          card overlapping its edge, instead of the usual boxed stock photo. */}
+      {/* Hero */}
       <section className="grid items-stretch bg-ivory dark:bg-navy-900 md:grid-cols-2">
         <div className="flex flex-col justify-center gap-6 px-6 py-20 sm:px-10 md:py-28 lg:px-16">
           <span className="inline-flex w-fit items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-navy-800 shadow-sm dark:bg-navy-800 dark:text-navy-100">
@@ -57,216 +57,318 @@ export default function LandingPage() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-500 opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-brand-600" />
             </span>
-            Built for real-time disaster response
+            Emergency Technology · Humanitarian Protection
           </span>
           <h1 className="max-w-xl text-4xl font-extrabold leading-[1.1] tracking-tight text-navy-900 sm:text-5xl lg:text-[52px] dark:text-white">
-            Connecting people,{" "}
-            <span className="text-brand-600 dark:text-brand-400">
-              emergency information
-            </span>{" "}
-            and responders when every second matters.
+            Safety for Every Life.
           </h1>
           <p className="max-w-lg text-lg leading-relaxed text-navy-600 dark:text-navy-300">
-            ReliefMesh is a disaster-response coordination platform linking
-            citizens, operators, volunteers and organisations around a
-            single, verified view of what is happening and who is
-            responding.
+            An intelligent emergency response ecosystem connecting people,
+            wearable technology and emergency services to help communities
+            access assistance when they need it most.
           </p>
           <div className="flex flex-wrap gap-3 pt-2">
             <Link
-              href="/register"
+              href="#products"
               className="rounded-lg bg-brand-600 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-brand-600/25 transition-all hover:bg-brand-700 hover:shadow-xl hover:shadow-brand-600/30"
             >
-              Get started
+              Explore Our Products
             </Link>
             <Link
-              href="/login"
+              href="#partner"
               className="rounded-lg border border-sand bg-white px-6 py-3 text-base font-semibold text-navy-900 shadow-sm transition-colors hover:bg-ivory dark:border-navy-700 dark:bg-navy-800 dark:text-white dark:hover:bg-navy-700"
             >
-              I already have an account
+              Partner With ReliefMesh
             </Link>
           </div>
         </div>
 
         <div className="relative min-h-[320px] overflow-hidden md:min-h-0">
           <Image
-            src="/images/hero-flood-rescue.jpg"
-            alt="Rescue responders wading through a flooded residential street at dusk, guiding a boat toward stranded residents"
+            src="/images/hero-network.jpg"
+            alt="The Guardian Ring, Guardian Button and Guardian Remote arranged together, connected by an illustrated emergency-response network"
             fill
             priority
             sizes="(min-width: 768px) 50vw, 100vw"
             className="object-cover"
           />
           <div
-            className="absolute inset-x-0 bottom-0 h-56"
-            style={{
-              background:
-                "linear-gradient(to top, rgba(43,56,76,0.85), rgba(43,56,76,0))",
-            }}
+            className="absolute inset-x-0 bottom-0 h-40"
+            style={{ background: "linear-gradient(to top, rgba(27,33,43,0.8), rgba(27,33,43,0))" }}
           />
           <div className="absolute bottom-6 left-6 right-6 flex items-center gap-3 rounded-2xl bg-white px-5 py-4 shadow-xl sm:right-auto">
-            <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-severity-critical" />
-            <div>
-              <p className="text-sm font-semibold text-navy-900">
-                Flooding — Riverside District
-              </p>
-              <p className="text-xs text-navy-500">
-                Responder dispatched · 2 min ago
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats band */}
-      <section className="bg-navy-900">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-12 sm:grid-cols-4 lg:px-16">
-          <Stat value="< 60s" label="to report and geotag an incident" />
-          <Stat value="24/7" label="operator coverage, no dead zones" />
-          <Stat value="Full" label="audit trail from report to resolution" />
-          <Stat value="IoT-ready" label="built-in Guardian SOS integration" />
-        </div>
-      </section>
-
-      {/* Command center banner — a second full-width photo section to break
-          up the card-after-card rhythm of the rest of the page. */}
-      <section className="relative overflow-hidden">
-        <div className="relative min-h-[420px]">
-          <Image
-            src="/images/command-center.jpg"
-            alt="Emergency operators monitoring hazard maps and satellite storm imagery across a wall of screens in a command center"
-            fill
-            sizes="100vw"
-            className="object-cover"
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(to right, rgba(27,33,43,0.92) 0%, rgba(27,33,43,0.55) 50%, rgba(27,33,43,0.15) 100%)",
-            }}
-          />
-          <div className="relative mx-auto flex max-w-6xl flex-col gap-4 px-6 py-20 sm:py-28 lg:px-16">
-            <span className="text-xs font-bold uppercase tracking-wider text-sand">
-              One command center
-            </span>
-            <h2 className="max-w-xl text-3xl font-bold leading-tight text-white sm:text-4xl">
-              Every hazard, coordinated from a single verified view
-            </h2>
-            <p className="max-w-lg text-base leading-relaxed text-navy-100">
-              Floods, fires, structural damage and missing-person cases all
-              flow through the same operator view — verified, assigned, and
-              tracked to resolution.
+            <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-brand-600" />
+            <p className="text-sm font-semibold text-navy-900">
+              4 Guardian devices · 1 connected network
             </p>
           </div>
         </div>
       </section>
 
-      {/* Feature cards */}
-      <section className="mx-auto max-w-6xl px-6 py-20 lg:px-16">
-        <div className="mx-auto mb-12 max-w-xl text-center">
+      {/* The problem */}
+      <section className="bg-navy-900">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 px-6 py-20 text-center lg:px-16">
+          <h2 className="max-w-2xl text-3xl font-bold leading-tight text-white sm:text-4xl">
+            Emergency help often arrives too late — or not at all.
+          </h2>
+          <p className="max-w-2xl text-base leading-relaxed text-navy-300">
+            Remote communities, elderly residents and lone field workers are
+            often the furthest from help — and the hardest to reach when a
+            crisis hits. ReliefMesh exists to close that gap with devices and
+            software built for the moment it matters most.
+          </p>
+          <div className="flex flex-wrap justify-center gap-10 sm:gap-16">
+            <Stat value="One tap" label="to send an SOS with location" />
+            <Stat value="24/7" label="operator coverage, no dead zones" />
+            <Stat value="Full trail" label="from alert to resolution" />
+          </div>
+        </div>
+      </section>
+
+      {/* Product ecosystem */}
+      <section id="products" className="mx-auto max-w-6xl px-6 py-20 lg:px-16">
+        <div className="mx-auto mb-14 max-w-2xl text-center">
           <span className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
-            What you get
+            The Guardian Ecosystem
           </span>
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-navy-900 dark:text-white">
-            Everything coordination needs, in one place
+            One ecosystem. Five ways to stay protected.
           </h2>
+          <p className="mt-3 text-base text-navy-600 dark:text-navy-300">
+            From a free smartphone app to future wearable hardware, every
+            Guardian product connects back to the same ReliefMesh response
+            network.
+          </p>
         </div>
-        <div className="grid gap-6 sm:grid-cols-3">
-          <FeatureCard
-            icon={
-              <path
-                d="M9 11l3 3L22 4M2 12l5 5L22 2M2 20h20"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-            }
-            title="Report & verify"
-            body="Citizens report incidents with location and severity. Operators review and verify before resources are committed."
+
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <ProductCard
+            name="Guardian Mobile"
+            status="Available now"
+            statusTone="live"
+            price="Free"
+            desc="Smartphone SOS, GPS and incident reporting connected directly to the ReliefMesh platform."
+            note="Depends on your phone's battery, GPS signal and connectivity."
           />
-          <FeatureCard
-            icon={
-              <path
-                d="M17 20h5v-2a4 4 0 0 0-3-3.87M9 20H4v-2a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v2M15 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-            }
-            title="Coordinate response"
-            body="Operators assign responders and track every incident from report through resolution with a full audit trail."
+          <ProductCard
+            name="Guardian Button"
+            status="Future concept"
+            statusTone="concept"
+            price="Target LKR 1,500–2,500"
+            image="/images/products/guardian-button.jpg"
+            desc="A compact Bluetooth SOS button that pairs with your phone to send an emergency alert."
+            note="Needs a connected phone nearby — can't transmit on its own yet."
           />
-          <FeatureCard
-            icon={
-              <path
-                d="M12 2a10 10 0 1 0 10 10M12 2v10l7 7"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                fill="none"
-              />
-            }
-            title="IoT-ready by design"
-            body="The backend is built to accept a future Guardian SOS remote — GPS, cellular, battery status — without a redesign."
+          <ProductCard
+            name="Guardian Remote"
+            status="Hardware concept"
+            statusTone="concept"
+            price="Target LKR 5,000–7,000"
+            image="/images/products/guardian-remote.jpg"
+            desc="A standalone SOS device with its own GPS and cellular connection — no phone required."
+            note="Concept design — not yet commercially available or independently tested."
           />
+          <ProductCard
+            name="Guardian Ring Lite"
+            status="Coming in the future"
+            statusTone="concept"
+            price="Target LKR 2,990–4,990"
+            image="/images/products/guardian-ring-lite.jpg"
+            desc="An affordable, discreet ring built for one job: reliable SOS activation for every family."
+          />
+          <ProductCard
+            name="Guardian Ring Pro"
+            status="Future R&D"
+            statusTone="concept"
+            price="Target LKR 24,900–34,900"
+            image="/images/products/guardian-ring-pro.jpg"
+            desc="Adds heart-rate, sleep and activity tracking alongside SOS, for premium wellness and safety."
+            note="Wellness features only — not a medical device."
+          />
+          <Link
+            href={ENQUIRY_EMAIL}
+            className="surface-card hover-lift flex flex-col items-start justify-center gap-2 p-6"
+          >
+            <span className="text-sm font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+              Compare products
+            </span>
+            <p className="text-lg font-semibold text-navy-900 dark:text-white">
+              See the full product comparison →
+            </p>
+            <p className="text-sm text-navy-600 dark:text-navy-300">
+              Price, standalone capability, connectivity and target audience, side by side.
+            </p>
+          </Link>
         </div>
       </section>
 
       {/* How it works */}
-      <section className="bg-ivory dark:bg-navy-900">
+      <section id="how-it-works" className="bg-navy-900">
         <div className="mx-auto max-w-6xl px-6 py-20 lg:px-16">
           <div className="mx-auto mb-12 max-w-xl text-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
-              How it works
+            <span className="text-xs font-bold uppercase tracking-wider text-sand">
+              How It Works
             </span>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-navy-900 dark:text-white">
-              From report to resolution
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-white">
+              From SOS to resolution
             </h2>
           </div>
           <div className="grid gap-10 sm:grid-cols-3">
-            <Step
-              number="01"
-              title="Report"
-              body="A citizen or a Guardian device reports an incident with GPS location and severity."
+            <Step number="01" title="Activate" body="Press SOS on any Guardian device, or the Guardian Mobile app, in seconds." />
+            <Step number="02" title="Locate & transmit" body="GPS plus cellular or Bluetooth relay the alert and location to ReliefMesh's secure backend." />
+            <Step number="03" title="Respond" body="Operators verify the alert and dispatch responders, tracked from first contact to resolution." />
+          </div>
+          <p className="mt-10 text-center text-sm text-navy-400">
+            Connectivity depends on the device and network coverage in your area.
+          </p>
+
+          <div className="mt-14 overflow-hidden rounded-2xl border border-navy-800">
+            <Image
+              src="/images/iot-ecosystem.jpg"
+              alt="Concept technical architecture diagram: Guardian device with ESP32 controller, GPS receiver and cellular modem relaying an SOS alert through ReliefMesh's backend to a responder dashboard"
+              width={1672}
+              height={941}
+              className="w-full"
             />
-            <Step
-              number="02"
-              title="Verify & assign"
-              body="An operator reviews the report, verifies it, and assigns responders in the field."
-            />
-            <Step
-              number="03"
-              title="Resolve"
-              body="Responders act and update status live; every step is logged in a full audit trail."
-            />
+            <p className="bg-navy-950 px-4 py-2 text-center text-xs text-navy-500">
+              Illustrative concept architecture — not a certified or independently tested design.
+            </p>
           </div>
         </div>
       </section>
 
-      <footer className="border-t border-navy-100 dark:border-navy-800">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 py-8 sm:flex-row lg:px-16">
-          <div className="flex items-center gap-2">
-            <Logo wordmarkClassName="hidden" badgeSize="h-6 w-6" />
-            <span className="text-sm text-navy-500 dark:text-navy-400">
-              © 2026 ReliefMesh — built for disaster response coordination
-            </span>
+      {/* Institutional solutions */}
+      <section id="solutions" className="bg-ivory dark:bg-navy-900">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-7 px-6 py-20 text-center lg:px-16">
+          <span className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+            ReliefMesh Response Network
+          </span>
+          <h2 className="max-w-2xl text-3xl font-bold tracking-tight text-navy-900 dark:text-white">
+            Built for governments, NGOs and hospitals.
+          </h2>
+          <p className="max-w-2xl text-base leading-relaxed text-navy-700 dark:text-navy-300">
+            Incident management, device and responder coordination, and
+            analytics — the same software already powering ReliefMesh's own
+            response operations, available for institutional deployment.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            {["Government", "NGOs & Charities", "Hospitals", "Disaster-Response Authorities"].map((c) => (
+              <span
+                key={c}
+                className="rounded-full border border-sand bg-white px-4 py-2 text-sm font-semibold text-navy-900 dark:border-navy-700 dark:bg-navy-800 dark:text-white"
+              >
+                {c}
+              </span>
+            ))}
           </div>
-          <div className="flex items-center gap-6 text-sm text-navy-500 dark:text-navy-400">
-            <Link href="/privacy" className="hover:text-navy-800 dark:hover:text-white">
-              Privacy
+          <div className="rounded-xl bg-white px-6 py-4 shadow-sm dark:bg-navy-800">
+            <p className="text-base font-bold text-navy-900 dark:text-white">
+              Indicative pricing — from LKR 250,000 / year
+            </p>
+            <p className="text-sm text-navy-500 dark:text-navy-400">
+              Subject to deployment scope and commercial discussion.
+            </p>
+          </div>
+          <Link
+            href={ENQUIRY_EMAIL}
+            className="rounded-lg bg-navy-900 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-navy-700 dark:bg-white dark:text-navy-900 dark:hover:bg-navy-100"
+          >
+            Request Institutional Proposal
+          </Link>
+        </div>
+      </section>
+
+      {/* Community impact */}
+      <section id="community" className="grid md:grid-cols-2">
+        <div className="relative min-h-[320px] md:min-h-0">
+          <Image
+            src="/images/community-care.jpg"
+            alt="A ReliefMesh field worker showing a Guardian SOS device to an elderly woman, with flood relief underway in the background"
+            fill
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover"
+          />
+        </div>
+        <div className="flex flex-col justify-center gap-4 px-6 py-16 sm:px-10 lg:px-16">
+          <span className="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">
+            Community Impact
+          </span>
+          <h2 className="max-w-md text-3xl font-bold leading-tight tracking-tight text-navy-900 dark:text-white">
+            Sponsor a Life. Protect a Community.
+          </h2>
+          <p className="max-w-lg text-[15px] leading-relaxed text-navy-700 dark:text-navy-300">
+            Donors, companies and charities can sponsor Guardian devices for
+            elderly residents, rural communities and disaster-affected
+            families through Sponsor a Life, and fund standing
+            emergency-readiness infrastructure through Guardian Disaster
+            Shield for floods, landslides and other disasters.
+          </p>
+          <p className="max-w-lg text-sm leading-relaxed text-sand">
+            Coverage depends on local connectivity; offline events are queued
+            and sent once a signal is available. This is emergency assistance
+            infrastructure, not a guarantee of rescue.
+          </p>
+          <Link
+            href={ENQUIRY_EMAIL}
+            className="mt-2 w-fit rounded-lg bg-brand-600 px-6 py-3 text-base font-semibold text-white shadow-sm transition-colors hover:bg-brand-700"
+          >
+            Enquire About Sponsorship
+          </Link>
+        </div>
+      </section>
+
+      {/* Partner CTA */}
+      <section id="partner" className="bg-brand-600">
+        <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 px-6 py-20 text-center lg:px-16">
+          <h2 className="text-3xl font-bold text-white sm:text-4xl">
+            Partner With ReliefMesh
+          </h2>
+          <p className="max-w-xl text-[15px] font-medium text-brand-50">
+            Government · NGO · Charity · Hospital · Corporate Sponsorship ·
+            Enterprise · Technology Integration
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link
+              href={ENQUIRY_EMAIL}
+              className="rounded-lg bg-white px-6 py-3 text-base font-semibold text-brand-600 shadow-sm transition-colors hover:bg-brand-50"
+            >
+              Request Institutional Proposal
             </Link>
-            <Link href="/terms" className="hover:text-navy-800 dark:hover:text-white">
-              Terms
+            <Link
+              href={ENQUIRY_EMAIL}
+              className="rounded-lg border border-white px-6 py-3 text-base font-semibold text-white transition-colors hover:bg-white/10"
+            >
+              Contact Us
             </Link>
-            <Link href="/contact" className="hover:text-navy-800 dark:hover:text-white">
-              Contact
-            </Link>
+          </div>
+        </div>
+      </section>
+
+      <footer id="footer" className="bg-navy-950">
+        <div className="mx-auto max-w-6xl px-6 py-14 lg:px-16">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="lg:col-span-1">
+              <Logo wordmarkClassName="text-lg font-semibold tracking-tight text-white" />
+              <p className="mt-3 max-w-[220px] text-sm leading-relaxed text-navy-400">
+                Safety for Every Life. Connecting people, protecting
+                communities, responding to emergencies.
+              </p>
+            </div>
+            <FooterCol
+              title="Products"
+              links={["Guardian Mobile", "Guardian Button", "Guardian Remote", "Guardian Ring Lite", "Guardian Ring Pro"]}
+            />
+            <FooterCol title="Solutions" links={["Government", "Charities", "Disaster Response", "Healthcare"]} />
+            <FooterCol title="Community" links={["Sponsor a Life", "Guardian Disaster Shield"]} />
+            <FooterCol title="Company" links={["About", "Contact", "Partners"]} />
+          </div>
+          <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-navy-800 pt-6 text-sm text-navy-500 sm:flex-row">
+            <p>© 2026 ReliefMesh. Indicative pricing and concept products as noted above.</p>
+            <div className="flex items-center gap-6">
+              <Link href="/privacy" className="hover:text-navy-200">Privacy</Link>
+              <Link href="/terms" className="hover:text-navy-200">Terms</Link>
+              <Link href={ENQUIRY_EMAIL} className="hover:text-navy-200">Contact</Link>
+            </div>
           </div>
         </div>
       </footer>
@@ -276,57 +378,90 @@ export default function LandingPage() {
 
 function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <div>
+    <div className="text-center">
       <p className="text-2xl font-bold text-white sm:text-3xl">{value}</p>
-      <p className="mt-1 text-sm text-navy-300">{label}</p>
+      <p className="mt-1 max-w-[160px] text-sm text-navy-300">{label}</p>
     </div>
   );
 }
 
-function Step({
-  number,
-  title,
-  body,
-}: {
-  number: string;
-  title: string;
-  body: string;
-}) {
+function Step({ number, title, body }: { number: string; title: string; body: string }) {
   return (
     <div>
-      <span className="text-sm font-bold text-brand-600 dark:text-brand-400">
-        {number}
-      </span>
-      <h3 className="mt-2 font-semibold text-navy-900 dark:text-white">
-        {title}
-      </h3>
-      <p className="mt-2 text-sm leading-relaxed text-navy-600 dark:text-navy-300">
-        {body}
-      </p>
+      <span className="text-sm font-bold text-sand">{number}</span>
+      <h3 className="mt-2 font-semibold text-white">{title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-navy-300">{body}</p>
     </div>
   );
 }
 
-function FeatureCard({
-  icon,
-  title,
-  body,
+function FooterCol({ title, links }: { title: string; links: string[] }) {
+  return (
+    <div>
+      <p className="text-xs font-bold uppercase tracking-wider text-sand">{title}</p>
+      <ul className="mt-3 space-y-2">
+        {links.map((l) => (
+          <li key={l} className="text-sm text-navy-400">
+            {l}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ProductCard({
+  name,
+  status,
+  statusTone,
+  price,
+  desc,
+  note,
+  image,
 }: {
-  icon: React.ReactNode;
-  title: string;
-  body: string;
+  name: string;
+  status: string;
+  statusTone: "live" | "concept";
+  price: string;
+  desc: string;
+  note?: string;
+  image?: string;
 }) {
   return (
-    <div className="surface-card hover-lift p-6">
-      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-900/30 dark:text-brand-400">
-        <svg viewBox="0 0 24 24" className="h-5 w-5">
-          {icon}
-        </svg>
+    <div className="surface-card hover-lift flex flex-col overflow-hidden">
+      {image ? (
+        <div className="relative h-44 w-full bg-navy-950">
+          <Image src={image} alt={`${name} product photo`} fill sizes="(min-width: 1024px) 360px, 50vw" className="object-cover" />
+        </div>
+      ) : (
+        <div className="flex h-44 w-full items-center justify-center bg-brand-50 dark:bg-brand-900/20">
+          <svg viewBox="0 0 24 24" className="h-12 w-12 text-brand-600 dark:text-brand-400">
+            <rect x="7" y="2" width="10" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+            <line x1="10" y1="18" x2="14" y2="18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        </div>
+      )}
+      <div className="flex flex-1 flex-col gap-2 p-6">
+        <h3 className="text-base font-bold text-navy-900 dark:text-white">{name}</h3>
+        <span
+          className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold ${
+            statusTone === "live"
+              ? "bg-brand-50 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400"
+              : "bg-navy-100 text-navy-600 dark:bg-navy-800 dark:text-navy-300"
+          }`}
+        >
+          {status}
+        </span>
+        <p className="text-sm font-semibold text-navy-700 dark:text-navy-200">{price}</p>
+        <p className="text-sm text-navy-600 dark:text-navy-300">{desc}</p>
+        {note ? <p className="text-xs leading-relaxed text-sand">{note}</p> : null}
+        <Link
+          href="mailto:partners@reliefmesh.app"
+          className="mt-auto pt-2 text-sm font-semibold text-brand-600 hover:text-brand-700 dark:text-brand-400"
+        >
+          Enquire about product →
+        </Link>
       </div>
-      <h3 className="mt-4 font-semibold text-navy-900 dark:text-white">
-        {title}
-      </h3>
-      <p className="mt-2 text-sm text-navy-600 dark:text-navy-300">{body}</p>
     </div>
   );
 }
