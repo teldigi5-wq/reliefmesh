@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { Boxes, PackagePlus, ArrowUpRight, PackageCheck } from "lucide-react";
+import { Boxes, PackagePlus, PackageCheck } from "lucide-react";
 import { getSession } from "@/lib/auth/session";
 import { resourceService } from "@/services/resource.service";
 import { incidentService } from "@/services/incident.service";

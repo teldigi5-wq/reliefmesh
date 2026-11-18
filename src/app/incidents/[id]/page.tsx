@@ -1,4 +1,7 @@
 import { redirect, notFound } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft, FileText } from "lucide-react";
+import { OpsPageHeader } from "@/components/layout/ops-page-header";
 import { getSession } from "@/lib/auth/session";
 import { incidentService } from "@/services/incident.service";
 import { volunteerService } from "@/services/volunteer.service";
@@ -37,7 +40,9 @@ export default async function IncidentDetailPage({
   return (
     <>
       <AppNav role={session.role} />
-      <main className="app-backdrop min-h-[calc(100vh-57px)] mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10">
+      <main className="ops-page"><div className="ops-container ops-detail-wrap">
+        <Link href="/incidents" className="ops-back-link"><ArrowLeft size={15}/> Back to incidents</Link>
+        <OpsPageHeader eyebrow="OPERATIONS / INCIDENT RECORD" title="Incident details" icon={FileText} description="Review location, severity, assignments and case history." />
         <Card className="p-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
@@ -125,7 +130,7 @@ export default async function IncidentDetailPage({
             )}
           </ol>
         </Card>
-      </main>
+      </div></main>
     </>
   );
 }

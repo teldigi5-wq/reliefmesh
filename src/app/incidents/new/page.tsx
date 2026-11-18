@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
+import { ArrowLeft, AlertTriangle } from "lucide-react";
+import { OpsPageHeader } from "@/components/layout/ops-page-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { inputClass, labelClass } from "@/components/ui/field-styles";
@@ -75,16 +78,12 @@ export default function NewIncidentPage() {
   }
 
   return (
-    <main className="app-backdrop min-h-screen px-4 py-8 sm:px-6 sm:py-10">
-      <div className="mx-auto max-w-xl">
+    <main className="ops-page">
+      <div className="ops-container ops-form-wrap">
         <DisclaimerBanner />
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
-          Report an emergency
-        </h1>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-          Give as much detail as you safely can. An operator will review and
-          verify this report.
-        </p>
+        <Link href="/incidents" className="ops-back-link"><ArrowLeft size={15}/> Back to incidents</Link>
+        <OpsPageHeader eyebrow="OPERATIONS / NEW REPORT" title="Report an emergency" icon={AlertTriangle}
+          description="Share clear details and a precise location. An authorised operator will review the report." />
 
         <Card className="mt-6 p-6">
           <form onSubmit={handleSubmit} className="space-y-4">

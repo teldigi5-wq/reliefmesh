@@ -27,7 +27,7 @@ export default async function DashboardPage() {
  const severityData = (["LOW", "MEDIUM", "HIGH", "CRITICAL"] as const).map(severity => ({
   label: severity,
   count: bySeverity.find(row => row.severity === severity)?._count._all ?? 0,
-  color: SEVERITY_COLOR[severity],
+  color: SEVERITY_COLOR[severity] ?? "#64748b",
  }));
  const dayBuckets = new Map<string, number>();
  for (let i = 13; i >= 0; i--) {

@@ -5,7 +5,6 @@ import { volunteerService } from "@/services/volunteer.service";
 import { AppNav } from "@/components/layout/app-nav";
 import { OpsPageHeader } from "@/components/layout/ops-page-header";
 import { VolunteerRegisterForm } from "@/components/volunteers/register-form";
-import { Card } from "@/components/ui/card";
 import { hasPermission } from "@/lib/permissions";
 
 export default async function VolunteersPage() {

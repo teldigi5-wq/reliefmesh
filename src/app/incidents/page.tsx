@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { AlertTriangle, ArrowUpRight, ClipboardList, Plus, ShieldCheck } from "lucide-react";
+import { AlertTriangle, ArrowUpRight, ClipboardList, Plus } from "lucide-react";
 import { getSession } from "@/lib/auth/session";
 import { incidentService } from "@/services/incident.service";
 import { AppNav } from "@/components/layout/app-nav";

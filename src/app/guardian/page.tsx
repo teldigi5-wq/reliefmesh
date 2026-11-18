@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { Radio, AlertTriangle, BatteryFull, MapPinned, ShieldCheck } from "lucide-react";
+import { Radio, AlertTriangle, MapPinned } from "lucide-react";
 import { getSession } from "@/lib/auth/session";
 import { guardianService } from "@/services/guardian.service";
 import { AppNav } from "@/components/layout/app-nav";
