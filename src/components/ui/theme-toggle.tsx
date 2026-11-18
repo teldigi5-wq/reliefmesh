@@ -19,7 +19,9 @@ export function ThemeToggle() {
     setIsDark(next);
     document.documentElement.classList.toggle("dark", next);
     try {
-      localStorage.setItem("theme", next ? "dark" : "light");
+      const prefersSavedTheme = document.cookie.split("; ").some(part => part === "reliefmesh_cookie_choice=preferences");
+      if (prefersSavedTheme) localStorage.setItem("theme", next ? "dark" : "light");
+      else localStorage.removeItem("theme");
     } catch {
       // Private browsing / storage disabled — theme just won't persist.
     }

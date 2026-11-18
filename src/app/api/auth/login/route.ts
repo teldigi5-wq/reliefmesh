@@ -55,12 +55,16 @@ export async function POST(req: NextRequest) {
     return genericError;
   }
 
-  const token = await createSession({
-    userId: user.id,
-    role: user.role,
-    email: user.email,
-  });
-  await auditLog(user.id, "LOGIN_SUCCEEDED", "User", user.id);
+  // Run independent token signing and security audit concurrently.
+  // Both are still awaited before responding; no audit event is skipped.
+  const [token] = await Promise.all([
+    createSession({
+      userId: user.id,
+      role: user.role,
+      email: user.email,
+    }),
+    auditLog(user.id, "LOGIN_SUCCEEDED", "User", user.id),
+  ]);
 
   // token: for the mobile app, which has no cookie jar and authenticates
   // every subsequent request with "Authorization: Bearer <token>" instead.
