@@ -248,7 +248,7 @@ export default function LandingPage() {
           </h2>
           <p className="max-w-2xl text-base leading-relaxed text-navy-700 dark:text-navy-300">
             Incident management, device and responder coordination, and
-            analytics — the same software already powering ReliefMesh's own
+            analytics — the same software already powering ReliefMesh&apos;s own
             response operations, available for institutional deployment.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
