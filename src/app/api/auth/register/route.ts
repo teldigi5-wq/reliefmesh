@@ -52,11 +52,11 @@ export async function POST(req: NextRequest) {
   // Both are still awaited before responding; no audit event is skipped.
   const [token] = await Promise.all([
     createSession({
-    userId: user.id,
-    role: user.role,
-    email: user.email,
+      userId: user.id,
+      role: user.role,
+      email: user.email,
     }),
-    auditLog(user.id, "USER_REGISTERED", "User", user.id);
+    auditLog(user.id, "USER_REGISTERED", "User", user.id),
   ]);
 
   return NextResponse.json(

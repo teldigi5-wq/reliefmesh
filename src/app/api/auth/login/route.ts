@@ -59,11 +59,11 @@ export async function POST(req: NextRequest) {
   // Both are still awaited before responding; no audit event is skipped.
   const [token] = await Promise.all([
     createSession({
-    userId: user.id,
-    role: user.role,
-    email: user.email,
+      userId: user.id,
+      role: user.role,
+      email: user.email,
     }),
-    auditLog(user.id, "LOGIN_SUCCEEDED", "User", user.id);
+    auditLog(user.id, "LOGIN_SUCCEEDED", "User", user.id),
   ]);
 
   // token: for the mobile app, which has no cookie jar and authenticates
