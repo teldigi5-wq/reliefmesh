@@ -47,7 +47,7 @@ export default function RootLayout({
           // this is the standard "avoid a flash of the wrong theme"
           // pattern, not a place untrusted content ever flows through.
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme');var dark=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(dark)document.documentElement.classList.add('dark');}catch(e){}})();`,
+            __html: `(function(){try{var saved=document.cookie.split('; ').includes('reliefmesh_cookie_choice=preferences');var t=saved?localStorage.getItem('theme'):null;var dark=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(dark)document.documentElement.classList.add('dark');}catch(e){}})();`,
           }}
         />
       </head>
