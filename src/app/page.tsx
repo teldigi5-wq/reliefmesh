@@ -65,7 +65,7 @@ export default function LandingPage() {
             Emergency technology, built for humanitarian response
           </span>
           <h1
-            className="animate-fade-in-up max-w-xl font-display text-6xl font-semibold leading-[0.98] tracking-tight text-navy-900 sm:text-7xl dark:text-white"
+            className="animate-fade-in-up max-w-xl text-5xl font-extrabold leading-[1.05] tracking-tight text-navy-900 sm:text-6xl dark:text-white"
             style={{ animationDelay: "90ms" }}
           >
             Safety for every life.
@@ -123,7 +123,7 @@ export default function LandingPage() {
       {/* The problem */}
       <section className="bg-navy-900">
         <div className="mx-auto flex max-w-4xl flex-col items-center gap-9 px-6 py-24 text-center sm:py-28 lg:px-16">
-          <h2 className="max-w-2xl font-display text-3xl font-semibold leading-tight text-white sm:text-5xl">
+          <h2 className="max-w-2xl text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl">
             Emergency help often arrives too late — or not at all.
           </h2>
           <p className="max-w-xl text-base leading-relaxed text-navy-300">
@@ -143,10 +143,10 @@ export default function LandingPage() {
       {/* Product ecosystem */}
       <section id="products" className="mx-auto max-w-7xl px-6 py-24 sm:py-28 lg:px-16 xl:px-20">
         <div className="mx-auto mb-16 max-w-2xl text-center">
-          <p className="font-display text-lg italic text-brand-600 dark:text-brand-400">
+          <p className="text-sm font-bold uppercase tracking-wide text-brand-600 dark:text-brand-400">
             The Guardian ecosystem
           </p>
-          <h2 className="mt-1 font-display text-4xl font-semibold tracking-tight text-navy-900 sm:text-5xl dark:text-white">
+          <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl dark:text-white">
             One ecosystem. Five ways to stay protected.
           </h2>
           <p className="mt-4 text-base leading-relaxed text-navy-600 dark:text-navy-300">
@@ -203,7 +203,7 @@ export default function LandingPage() {
             href={ENQUIRY_EMAIL}
             className="flex flex-col items-start justify-center gap-2 rounded-2xl border border-dashed border-navy-200 p-8 transition-colors hover:border-brand-400 hover:bg-brand-50/40 dark:border-navy-700 dark:hover:border-brand-600 dark:hover:bg-brand-900/10"
           >
-            <p className="font-display text-xl font-semibold text-navy-900 dark:text-white">
+            <p className="text-lg font-bold text-navy-900 dark:text-white">
               See the full product comparison
             </p>
             <p className="text-sm text-navy-600 dark:text-navy-300">
@@ -217,7 +217,7 @@ export default function LandingPage() {
       <section id="how-it-works" className="bg-navy-900">
         <div className="mx-auto max-w-7xl px-6 py-24 sm:py-28 lg:px-16 xl:px-20">
           <div className="mx-auto mb-14 max-w-xl text-center">
-            <h2 className="font-display text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+            <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
               From SOS to resolution
             </h2>
           </div>
@@ -230,7 +230,7 @@ export default function LandingPage() {
             Connectivity depends on the device and network coverage in your area.
           </p>
 
-          <div className="mt-16 overflow-hidden rounded-2xl border border-navy-800">
+          <div className="mx-auto mt-16 max-w-3xl overflow-hidden rounded-2xl border border-navy-800">
             <Image
               src="/images/iot-ecosystem.jpg"
               alt="Concept technical architecture diagram: Guardian device with ESP32 controller, GPS receiver and cellular modem relaying an SOS alert through ReliefMesh's backend to a responder dashboard"
@@ -248,7 +248,7 @@ export default function LandingPage() {
       {/* Institutional solutions */}
       <section id="solutions" className="bg-ivory dark:bg-navy-900">
         <div className="mx-auto flex max-w-4xl flex-col items-center gap-8 px-6 py-24 text-center sm:py-28 lg:px-16">
-          <h2 className="max-w-2xl font-display text-4xl font-semibold tracking-tight text-navy-900 sm:text-5xl dark:text-white">
+          <h2 className="max-w-2xl text-3xl font-extrabold tracking-tight text-navy-900 sm:text-4xl dark:text-white">
             Built for governments, NGOs and hospitals.
           </h2>
           <p className="max-w-2xl text-base leading-relaxed text-navy-700 dark:text-navy-300">
@@ -295,7 +295,7 @@ export default function LandingPage() {
           />
         </div>
         <div className="flex flex-col justify-center gap-5 px-6 py-20 sm:px-10 lg:px-16 xl:px-20">
-          <h2 className="max-w-md font-display text-4xl font-semibold leading-tight tracking-tight text-navy-900 dark:text-white">
+          <h2 className="max-w-md text-3xl font-extrabold leading-tight tracking-tight text-navy-900 dark:text-white">
             Sponsor a life. Protect a community.
           </h2>
           <p className="max-w-lg text-[15px] leading-relaxed text-navy-700 dark:text-navy-300">
@@ -322,7 +322,7 @@ export default function LandingPage() {
       {/* Partner CTA */}
       <section id="partner" className="bg-brand-600">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 px-6 py-24 text-center sm:py-28 lg:px-16">
-          <h2 className="font-display text-4xl font-semibold text-white sm:text-5xl">
+          <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
             Partner with ReliefMesh
           </h2>
           <p className="max-w-md text-base leading-relaxed text-brand-50">
@@ -382,7 +382,7 @@ export default function LandingPage() {
 function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div className="text-center">
-      <p className="font-display text-3xl font-semibold text-white sm:text-4xl">{value}</p>
+      <p className="text-3xl font-extrabold text-white sm:text-4xl">{value}</p>
       <p className="mt-1.5 max-w-[160px] text-sm text-navy-300">{label}</p>
     </div>
   );
@@ -391,7 +391,7 @@ function Stat({ value, label }: { value: string; label: string }) {
 function Step({ number, title, body }: { number: string; title: string; body: string }) {
   return (
     <div>
-      <span className="font-display text-3xl font-semibold text-sand">{number}</span>
+      <span className="text-2xl font-extrabold text-sand">{number}</span>
       <h3 className="mt-3 text-lg font-bold text-white">{title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-navy-300">{body}</p>
     </div>
@@ -433,7 +433,7 @@ function ProductCard({
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-card transition-shadow duration-300 hover:shadow-card-hover dark:border-slate-800 dark:bg-slate-900">
       {image ? (
-        <div className="relative aspect-square w-full bg-navy-950">
+        <div className="relative aspect-[4/3] w-full bg-navy-950">
           <Image
             src={image}
             alt={`${name} product photo`}
@@ -443,15 +443,15 @@ function ProductCard({
           />
         </div>
       ) : (
-        <div className="flex aspect-square w-full items-center justify-center bg-brand-50 dark:bg-brand-900/20">
-          <svg viewBox="0 0 24 24" className="h-16 w-16 text-brand-600 dark:text-brand-400">
+        <div className="flex aspect-[4/3] w-full items-center justify-center bg-brand-50 dark:bg-brand-900/20">
+          <svg viewBox="0 0 24 24" className="h-12 w-12 text-brand-600 dark:text-brand-400">
             <rect x="7" y="2" width="10" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
             <line x1="10" y1="18" x2="14" y2="18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
           </svg>
         </div>
       )}
       <div className="flex flex-1 flex-col gap-2.5 p-7">
-        <h3 className="font-display text-xl font-semibold text-navy-900 dark:text-white">{name}</h3>
+        <h3 className="text-lg font-bold text-navy-900 dark:text-white">{name}</h3>
         <span
           className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold ${
             statusTone === "live"
