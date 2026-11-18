@@ -14,6 +14,8 @@ class AppNotificationService {
   bool _hasLoadedOnce = false;
 
   Future<void> initialize() => _push.initialize(registerToken: registerToken);
+  Stream<String> get incidentOpened => _push.incidentOpened;
+  String? takePendingIncidentId() => _push.takePendingIncidentId();
 
   Future<void> registerToken(String token) async {
     await _api.post('/api/push-tokens', body: {

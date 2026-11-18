@@ -15,17 +15,25 @@ Future<void> reliefMeshBackgroundMessageHandler(RemoteMessage message) async {
 
 class PushNotificationManager {
   final FlutterLocalNotificationsPlugin _local = FlutterLocalNotificationsPlugin();
+  final StreamController<String> _incidentOpenedController = StreamController<String>.broadcast();
   StreamSubscription<RemoteMessage>? _foregroundSubscription;
   StreamSubscription<RemoteMessage>? _openedSubscription;
   StreamSubscription<String>? _tokenSubscription;
   bool _initialized = false;
   String? _currentToken;
+  String? _pendingIncidentId;
 
   String? get token => _currentToken;
+  Stream<String> get incidentOpened => _incidentOpenedController.stream;
+
+  String? takePendingIncidentId() {
+    final incidentId = _pendingIncidentId;
+    _pendingIncidentId = null;
+    return incidentId;
+  }
 
   Future<void> initialize({
     required Future<void> Function(String token) registerToken,
-    void Function(String incidentId)? onIncidentOpened,
   }) async {
     if (_initialized) {
       if (_currentToken != null) {
@@ -45,8 +53,7 @@ class PushNotificationManager {
         iOS: DarwinInitializationSettings(),
       ),
       onDidReceiveNotificationResponse: (response) {
-        final incidentId = response.payload;
-        if (incidentId != null && incidentId.isNotEmpty) onIncidentOpened?.call(incidentId);
+        _recordIncidentOpen(response.payload);
       },
     );
 
@@ -99,9 +106,20 @@ class PushNotificationManager {
       );
     });
     _openedSubscription = FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      final incidentId = message.data['incidentId']?.toString();
-      if (incidentId != null && incidentId.isNotEmpty) onIncidentOpened?.call(incidentId);
+      _recordIncidentOpen(message.data['incidentId']?.toString());
     });
+
+    final initialMessage = await messaging.getInitialMessage();
+    _recordIncidentOpen(initialMessage?.data['incidentId']?.toString());
+  }
+
+  void _recordIncidentOpen(String? incidentId) {
+    if (incidentId == null || incidentId.isEmpty) return;
+    if (_incidentOpenedController.hasListener) {
+      _incidentOpenedController.add(incidentId);
+    } else {
+      _pendingIncidentId = incidentId;
+    }
   }
 
   Future<void> show({required String title, required String body, String? incidentId}) {
@@ -128,5 +146,6 @@ class PushNotificationManager {
     await _foregroundSubscription?.cancel();
     await _openedSubscription?.cancel();
     await _tokenSubscription?.cancel();
+    await _incidentOpenedController.close();
   }
 }
