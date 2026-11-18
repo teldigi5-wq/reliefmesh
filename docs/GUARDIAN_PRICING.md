@@ -10,9 +10,9 @@ The previous proposals assumed relatively small-scale purchasing. These revised 
 | Device | Old target | New base target (before VAT) | Bulk unit cost ceiling (estimated) | Estimated surplus before fixed overhead and any VAT, after 3% fee | If standard 18% VAT is added: illustrated consumer total | Estimated surplus at VAT scenario after VAT + 3% fee |
 |---|---:|---:|---:|---:|---:|---:|
 | Guardian Button | 4,990 | 2,990 | 1,900 | 1,000 | 3,530 | 985 |
-| Guardian Ring Lite | 8,490 | 5,490 | 3,650 | 1,675 | 6,480 | 1,645 |
-| Guardian Ring Pro | 17,990 | 11,990 | 8,000 | 3,630 | 14,150 | 3,566 |
-| Guardian Remote | 19,990 | 14,990 | 10,000 | 4,540 | 17,690 | 4,463 |
+| Guardian Ring Lite | 8,490 | 5,490 | 3,650 | 1,675 | 6,480 | 1,647 |
+| Guardian Ring Pro | 17,990 | 11,990 | 8,000 | 3,630 | 14,150 | 3,567 |
+| Guardian Remote | 19,990 | 14,990 | 10,000 | 4,540 | 17,690 | 4,460 |
 
 *Contribution formula (base scenario): price − 3% processing allowance − estimated per-unit landed build cost. VAT scenario: rounded-up gross / 1.18 − 3% of gross − unit cost. Contribution is **not** net company profit and does **not** cover unbudgeted software operations, financing, installation, certification, research, distribution commission or unforeseen component prices.*
 
