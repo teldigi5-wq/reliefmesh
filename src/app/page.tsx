@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight, MapPin, Menu, Radio, ShieldCheck, Users } from "lucide-react";
 import "./reliefmesh-landing.css";
+import { CookieSettingsButton } from "@/components/privacy/cookie-preferences";
 
 export const metadata: Metadata = {
   title: "ReliefMesh | Connected Safety for Every Life",
@@ -146,7 +147,7 @@ export default function LandingPage() {
           </nav>
           <div className="rm-header-actions">
             <Link href="/login" className="rm-login">Log in</Link>
-            <Link href="/register" className="rm-button rm-button-red rm-button-small">
+            <Link href="/register" className="rm-button rm-button-red rm-button-small" prefetch>
               Get started <ArrowUpRight size={16} aria-hidden="true" />
             </Link>
           </div>
@@ -167,29 +168,45 @@ export default function LandingPage() {
       <main id="main">
         <section className="rm-container rm-hero" id="platform" aria-labelledby="rm-hero-heading">
           <div className="rm-hero-copy">
-            <span className="rm-eyebrow"><span className="rm-signal-dot" /> Disaster response · Connected safety</span>
+            <span className="rm-eyebrow"><span className="rm-signal-dot" /> CONNECTED EMERGENCY COORDINATION</span>
             <h1 id="rm-hero-heading">
-              When every second matters, <em>connection</em> makes a difference.
+              Response starts with <em>connection.</em>
             </h1>
             <p>
-              A connected emergency-response platform for citizens, operators,
-              volunteers and organisations — bringing critical information and
-              coordinated action into one shared view.
+              Bring citizens, volunteers and response teams into one coordinated
+              view. Report incidents, make informed decisions and keep communities connected.
             </p>
             <div className="rm-button-row">
               <Link href="/register" className="rm-button rm-button-red">
-                Report an emergency <ArrowRight size={19} aria-hidden="true" />
+                Get started <ArrowUpRight size={19} aria-hidden="true" />
               </Link>
-              <a href="#technology" className="rm-button rm-button-outline">Explore the system</a>
+              <a href="#technology" className="rm-button rm-button-outline">
+                Explore the platform <ArrowRight size={18} aria-hidden="true" />
+              </a>
             </div>
-            <p className="rm-note"><ShieldCheck size={18} aria-hidden="true" /> People first. Built for clarity.</p>
+            <div className="rm-hero-principles" aria-label="ReliefMesh approach">
+              <span><ShieldCheck size={16} aria-hidden="true" /> People first</span>
+              <span><MapPin size={16} aria-hidden="true" /> Location-aware</span>
+              <span><Radio size={16} aria-hidden="true" /> Device-ready</span>
+            </div>
+            <p className="rm-hero-disclaimer">Hackathon prototype · Not an official emergency dispatch service.</p>
           </div>
           <div className="rm-hero-media">
-            <div className="rm-media-heading"><span>THE RELIEFMESH VISION</span><span>01 / 05</span></div>
+            <div className="rm-media-heading"><span>RELIEFMESH / THE CONNECTED VISION</span><span>01 — 05</span></div>
             <div className="rm-hero-frame">
-              <Artwork name="hero-network.webp" alt="Illustration of the ReliefMesh emergency network and connected Guardian devices" priority />
+              <Artwork name="hero-network.webp" alt="Illustration of the ReliefMesh emergency network and Guardian SOS device concepts" priority />
+              <div className="rm-hero-visual-badge">
+                <span className="rm-hero-badge-icon"><Radio size={18} aria-hidden="true" /></span>
+                <div><strong>A connected safety network</strong><small>Guardian product ecosystem · Concept</small></div>
+              </div>
             </div>
-            <p className="rm-image-caption"><span className="rm-signal-dot" /> One connected network. More informed response.</p>
+            <div className="rm-hero-process" aria-label="Response workflow">
+              <span><b>01</b> Report</span>
+              <ArrowRight size={16} aria-hidden="true" />
+              <span><b>02</b> Coordinate</span>
+              <ArrowRight size={16} aria-hidden="true" />
+              <span><b>03</b> Respond</span>
+            </div>
           </div>
         </section>
 
