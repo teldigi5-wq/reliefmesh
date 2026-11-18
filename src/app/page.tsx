@@ -170,6 +170,7 @@ export default function LandingPage() {
             statusTone="concept"
             price="Target LKR 1,500–2,500"
             image="/images/products/guardian-button.jpg"
+            imageAspect="aspect-[1/1]"
             desc="A compact Bluetooth SOS button that pairs with your phone to send an emergency alert."
             note="Needs a connected phone nearby — can't transmit on its own yet."
           />
@@ -179,6 +180,7 @@ export default function LandingPage() {
             statusTone="concept"
             price="Target LKR 5,000–7,000"
             image="/images/products/guardian-remote.jpg"
+            imageAspect="aspect-[470/560]"
             desc="A standalone SOS device with its own GPS and cellular connection — no phone required."
             note="Concept design — not yet commercially available or independently tested."
           />
@@ -188,6 +190,7 @@ export default function LandingPage() {
             statusTone="concept"
             price="Target LKR 2,990–4,990"
             image="/images/products/guardian-ring-lite.jpg"
+            imageAspect="aspect-[1/1]"
             desc="An affordable, discreet ring built for one job: reliable SOS activation for every family."
           />
           <ProductCard
@@ -196,6 +199,7 @@ export default function LandingPage() {
             statusTone="concept"
             price="Target LKR 24,900–34,900"
             image="/images/products/guardian-ring-pro.jpg"
+            imageAspect="aspect-[620/480]"
             desc="Adds heart-rate, sleep and activity tracking alongside SOS, for premium wellness and safety."
             note="Wellness features only — not a medical device."
           />
@@ -421,6 +425,7 @@ function ProductCard({
   desc,
   note,
   image,
+  imageAspect = "aspect-[1/1]",
 }: {
   name: string;
   status: string;
@@ -429,11 +434,16 @@ function ProductCard({
   desc: string;
   note?: string;
   image?: string;
+  // A literal Tailwind aspect-ratio class (e.g. "aspect-[470/560]") matching
+  // this product's actual photo dimensions, so object-cover never crops into
+  // the device itself. Must be a literal string at the call site — Tailwind's
+  // build-time scanner can't see a dynamically-interpolated class name.
+  imageAspect?: string;
 }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-card transition-shadow duration-300 hover:shadow-card-hover dark:border-slate-800 dark:bg-slate-900">
       {image ? (
-        <div className="relative aspect-[4/3] w-full bg-navy-950">
+        <div className={`relative w-full bg-navy-950 ${imageAspect}`}>
           <Image
             src={image}
             alt={`${name} product photo`}
@@ -443,7 +453,7 @@ function ProductCard({
           />
         </div>
       ) : (
-        <div className="flex aspect-[4/3] w-full items-center justify-center bg-brand-50 dark:bg-brand-900/20">
+        <div className={`flex w-full items-center justify-center bg-brand-50 dark:bg-brand-900/20 ${imageAspect}`}>
           <svg viewBox="0 0 24 24" className="h-12 w-12 text-brand-600 dark:text-brand-400">
             <rect x="7" y="2" width="10" height="20" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
             <line x1="10" y1="18" x2="14" y2="18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
