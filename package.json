@@ -15,6 +15,8 @@
     "test:e2e": "playwright test",
     "mobile:typecheck": "npm --prefix mobile run typecheck",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run mobile:typecheck && npm run build",
+    "smoke": "node scripts/smoke-app.mjs",
+    "verify:ci": "npm run verify && npm run smoke",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",

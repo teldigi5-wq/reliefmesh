@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { IncidentStatus, Role } from "@prisma/client";
@@ -24,7 +24,13 @@ export function ActionPanel({
 }) {
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedVolunteer, setSelectedVolunteer] = useState("");
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // These controls are server-rendered, but their event handlers do not exist
+  // until React hydrates the client component. Keeping them disabled for that
+  // brief window prevents fast users (and automated browsers) from clicking a
+  // button that looks ready while its click would still be ignored.
+  useEffect(() => setIsHydrated(true), []);
 
   async function transition(toStatus: IncidentStatus) {
     setIsBusy(true);
@@ -49,8 +55,12 @@ export function ActionPanel({
     window.location.reload();
   }
 
-  async function assign() {
-    if (!selectedVolunteer) {
+  async function assign(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const volunteerId = formData.get("volunteerId");
+
+    if (typeof volunteerId !== "string" || !volunteerId) {
       setError("Choose a responder first");
       return;
     }
@@ -59,7 +69,7 @@ export function ActionPanel({
     const res = await fetch(`/api/incidents/${incidentId}/assign`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ volunteerId: selectedVolunteer }),
+      body: JSON.stringify({ volunteerId }),
     });
     setIsBusy(false);
     if (!res.ok) {
@@ -81,32 +91,47 @@ export function ActionPanel({
 
       <div className="mt-3 flex flex-wrap gap-2">
         {isOperatorOrAdmin && status === "REPORTED" && (
-          <Button disabled={isBusy} onClick={() => transition("UNDER_REVIEW")}>
+          <Button
+            disabled={isBusy || !isHydrated}
+            onClick={() => transition("UNDER_REVIEW")}
+          >
             Mark under review
           </Button>
         )}
 
         {isOperatorOrAdmin &&
           (status === "REPORTED" || status === "UNDER_REVIEW") && (
-            <Button disabled={isBusy} onClick={() => transition("VERIFIED")}>
+            <Button
+              disabled={isBusy || !isHydrated}
+              onClick={() => transition("VERIFIED")}
+            >
               Verify incident
             </Button>
           )}
 
         {isResponder && status === "ASSIGNED" && (
-          <Button disabled={isBusy} onClick={() => transition("RESPONDING")}>
+          <Button
+            disabled={isBusy || !isHydrated}
+            onClick={() => transition("RESPONDING")}
+          >
             Accept &amp; start response
           </Button>
         )}
 
         {isResponder && status === "RESPONDING" && (
-          <Button disabled={isBusy} onClick={() => transition("RESOLVED")}>
+          <Button
+            disabled={isBusy || !isHydrated}
+            onClick={() => transition("RESOLVED")}
+          >
             Mark resolved
           </Button>
         )}
 
         {isOperatorOrAdmin && status === "RESOLVED" && (
-          <Button disabled={isBusy} onClick={() => transition("CLOSED")}>
+          <Button
+            disabled={isBusy || !isHydrated}
+            onClick={() => transition("CLOSED")}
+          >
             Close incident
           </Button>
         )}
@@ -126,10 +151,15 @@ export function ActionPanel({
               page first.
             </p>
           ) : (
-            <div className="mt-2 flex gap-2">
+            <form className="mt-2 flex gap-2" onSubmit={assign}>
+              <label htmlFor="volunteerId" className="sr-only">
+                Responder
+              </label>
               <select
-                value={selectedVolunteer}
-                onChange={(e) => setSelectedVolunteer(e.target.value)}
+                id="volunteerId"
+                name="volunteerId"
+                defaultValue=""
+                disabled={isBusy || !isHydrated}
                 className="flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30 dark:border-slate-700 dark:bg-slate-900"
               >
                 <option value="">Select a responder...</option>
@@ -139,10 +169,10 @@ export function ActionPanel({
                   </option>
                 ))}
               </select>
-              <Button disabled={isBusy} onClick={assign}>
+              <Button type="submit" disabled={isBusy || !isHydrated}>
                 Assign
               </Button>
-            </div>
+            </form>
           )}
         </div>
       )}

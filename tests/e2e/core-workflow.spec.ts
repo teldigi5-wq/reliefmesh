@@ -25,7 +25,14 @@ test.beforeEach(({ page }) => {
     console.log("\n[BROWSER PAGE ERROR]", err.message, "\n", err.stack);
   });
   page.on("console", (msg) => {
-    if (msg.type() === "error") {
+    // Recharts 2 emits this React deprecation warning from its XAxis/YAxis
+    // internals in development mode. It is third-party noise rather than an
+    // application exception, and printing its full component stack on every
+    // dashboard visit hides useful diagnostics from CI logs.
+    const isKnownRechartsWarning = msg
+      .text()
+      .includes("Support for defaultProps will be removed");
+    if (msg.type() === "error" && !isKnownRechartsWarning) {
       console.log("\n[BROWSER CONSOLE ERROR]", msg.text());
     }
   });

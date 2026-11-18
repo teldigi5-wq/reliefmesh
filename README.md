@@ -86,6 +86,19 @@ npm run test          # Vitest unit tests (permissions logic)
 npm run build         # production build — catches issues dev mode won't
 ```
 
+Run the complete local build gate, including the optimized production-server
+smoke test:
+
+```bash
+npm ci --prefix mobile   # required once after cloning
+npm run verify:ci
+```
+
+Pushes and pull requests run the same gate in GitHub Actions, followed by the
+full Playwright incident lifecycle against a fresh PostgreSQL service. See
+[`docs/BUILD_WORKFLOW.md`](docs/BUILD_WORKFLOW.md) for the workflow, CI design,
+and final demo-release checklist.
+
 To exercise the simulated Guardian SOS endpoint (no physical device exists —
 this creates a real linked incident through the device API contract):
 
