@@ -8,8 +8,8 @@ remote. State clearly that the remote hardware is simulated.
 
 ## 0:30 — Citizen SOS
 
-1. Sign in as the citizen or open the Expo citizen app.
-2. Open SOS, select an emergency category, and acquire the phone GPS fix.
+1. Sign in as the citizen in the native Flutter app.
+2. Hold the SOS control, select an emergency category, and acquire the phone GPS fix.
 3. Submit once and show the confirmation/incident id.
 4. Open **My reports** and show the live status timeline.
 

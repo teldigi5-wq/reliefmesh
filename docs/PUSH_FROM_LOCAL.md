@@ -1,23 +1,23 @@
 # Push ReliefMesh from your local computer
 
-The source archive contains the complete web app, Expo mobile app, Prisma
+The source archive contains the complete web app, native Flutter mobile app, Prisma
 schema and migration, tests, documentation, production smoke test, and GitHub
 Actions workflow. It intentionally excludes Git history, dependencies, build
 output, test artifacts, and `.env` secrets.
 
 ## Before pushing
 
-Install Node.js 20 LTS or newer and Git. Extract the archive, open a terminal
+Install Node.js 20 LTS or newer, Flutter stable, and Git. Extract the archive, open a terminal
 inside the extracted `reliefmesh` directory, then verify the package:
 
 ```bash
 npm ci
-npm ci --prefix mobile
+cd mobile && flutter pub get && cd ..
 npm run verify:ci
 ```
 
-`verify:ci` runs web and mobile type checks, ESLint, 22 unit/security tests, a
-production Next.js build, and the production-server smoke test.
+`verify:ci` runs web type checks, Flutter analysis/tests, ESLint, unit/security
+tests, a production Next.js build, and the production-server smoke test.
 
 ## Option A: push as a new branch in the existing repository
 
@@ -83,10 +83,11 @@ Start the web application:
 npm run dev
 ```
 
-For the Expo application:
+For the Flutter application connected to the deployed API:
 
 ```bash
-npm --prefix mobile start
+cd mobile
+flutter run --dart-define=API_BASE_URL=https://reliefmesh-theta.vercel.app
 ```
 
 See `README.md`, `docs/BUILD_WORKFLOW.md`, and `docs/DEMO_SCRIPT.md` for the

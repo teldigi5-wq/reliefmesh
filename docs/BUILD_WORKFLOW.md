@@ -1,101 +1,93 @@
-# ReliefMesh build workflow
+# ReliefMesh build and release workflow
 
-This is the release path for a demonstrable ReliefMesh build. It keeps fast
-feedback local while reserving the real database lifecycle test for an
-isolated CI database.
+The repository now ships two real clients backed by one API and database:
+the Next.js web app and the native Flutter app. Expo is not part of the build.
 
-## Workflow
+## Pipeline
 
 ```text
 Change code
     ↓
 Local verification
-    ├─ TypeScript (web)
-    ├─ ESLint
-    ├─ Vitest unit/security tests
-    ├─ TypeScript (Expo mobile)
+    ├─ TypeScript + ESLint
+    ├─ Vitest security/unit tests
+    ├─ Flutter static analysis + tests
     ├─ Next.js production build
     └─ Production-server smoke test
     ↓
-Push or open a pull request
+Push / pull request
     ↓
 GitHub Actions quality job
+    ├─ Repeat every local gate
+    ├─ Build a release Android APK against the live API host
+    └─ Upload the APK as a workflow artifact
     ↓
-Fresh PostgreSQL 16 database
+PostgreSQL 16 lifecycle job
     ├─ Apply committed Prisma migrations
-    ├─ Seed isolated demo accounts
+    ├─ Seed an isolated CI database
     └─ Playwright: report → verify → assign → respond → resolve → close
     ↓
-Preview deployment and hands-on device check
-    ↓
-Promote to production
+Device acceptance check → signed store release
 ```
 
 ## Local commands
 
-Install both dependency trees once:
+Install dependencies once:
 
 ```bash
 npm ci
-npm ci --prefix mobile
+cd mobile
+flutter pub get
+cd ..
 ```
 
-Run the full build gate:
+Run the full gate:
 
 ```bash
 npm run verify:ci
 ```
 
-`verify:ci` runs the standard `verify` pipeline and then boots the optimized
-Next.js output on port `3100`. The smoke test checks the home, login and
-registration routes, the PWA manifest, and required security headers.
-
-Run the database-backed lifecycle locally when PostgreSQL is available:
+Build an installable Android app connected to the current deployment:
 
 ```bash
-cp .env.example .env
-npm run prisma:deploy
-npm run prisma:seed
-npx playwright install chromium
-PW_START_SERVER=1 npm run test:e2e
+npm run mobile:build:android
 ```
 
-The Playwright suite mutates seeded data. Use a disposable local or preview
-database, never the production database.
+The result is `mobile/build/app/outputs/flutter-apk/app-release.apk`.
 
-## GitHub Actions
+## API and Supabase configuration
 
-`.github/workflows/ci.yml` runs on pushes to `main` and `codex/**`, pull
-requests, and manual dispatches.
+The mobile app calls `https://reliefmesh-theta.vercel.app` by default. Change
+the public API host at build time without editing source:
 
-The workflow has two gates:
+```bash
+cd mobile
+flutter build apk --release \
+  --dart-define=API_BASE_URL=https://your-reliefmesh-host.example
+```
 
-1. **Type, test, build, and smoke** installs the locked web and mobile
-   dependencies, runs all static/unit checks, builds the optimized web app,
-   and validates the production server.
-2. **PostgreSQL incident lifecycle** creates a clean PostgreSQL 16 service,
-   applies the committed migration, seeds demo users, installs Chromium, and
-   executes the complete multi-role emergency workflow. Browser traces and
-   screenshots are uploaded for seven days when this job fails.
+For GitHub Actions, set the repository variable `MOBILE_API_BASE_URL`. Do not
+add database credentials or Supabase service-role keys to Flutter build
+arguments. They remain server-side as deployment secrets (`DATABASE_URL`,
+`AUTH_SECRET`, and Guardian secrets).
 
-CI uses test-only secrets declared inside the isolated job. Deployment
-credentials and production database URLs must remain in the hosting
-provider's encrypted environment settings.
+## GitHub artifact
 
-## Demo release gate
+Open the repository's **Actions** tab, select a successful **Build and
+verify** run, and download the `reliefmesh-android-<commit>` artifact. It
+contains the APK; there is no Expo/EAS dependency.
 
-Before the Thursday demonstration, require all of the following:
+## Release requirements
 
-- `npm run verify:ci` passes from a clean checkout.
-- Both GitHub Actions jobs are green on the exact commit being presented.
-- The preview deployment uses a migrated and seeded preview database.
-- Guardian simulation is exercised once against the preview deployment.
-- The Expo app is opened on the presentation device and location permission
-  is confirmed.
-- The citizen → operator → responder lifecycle is rehearsed using demo data.
-- A fallback screen recording and the seeded account list are available if
-  venue connectivity is unreliable.
+- Both GitHub Actions jobs pass on the exact release commit.
+- The deployed web API has its production database migration applied.
+- Login, registration, GPS permission, SOS creation and incident refresh are
+  checked on a physical Android device.
+- A private Android upload keystore is supplied through protected CI secrets
+  before Play Store distribution.
+- Production Supabase/database secrets remain only in the server deployment.
 
-The automated gates prove the source, production build, public routes,
-database schema, permissions, and main browser workflow. They do not replace
-the final phone GPS, network, and presentation-device checks.
+Automated tests prove source integrity, buildability, permissions and the main
+database lifecycle. Physical-device GPS and store signing remain deliberate
+release checks because CI cannot truthfully simulate the phone hardware or
+hold your private signing key.

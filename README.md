@@ -3,19 +3,19 @@
 Disaster-management and emergency-response coordination platform connecting
 citizens, operators, responders and organisations.
 
-Status: **Days 1–4 of the build schedule complete.** Auth/roles, the full
+Status: **Web and native Flutter clients implemented.** Auth/roles, the full
 incident lifecycle (report → verify → assign → respond → resolve → close),
 the interactive map, volunteer registration, resource allocation, Guardian
-device monitoring (simulated), in-app notifications, dashboard charts, rate
-limiting + audit logging, and a Playwright e2e suite are all in and working
-against a real database — see `docs/ROADMAP.md` for exactly what's done
-versus what's intentionally left (a mobile-screen pass, demo prep).
+device monitoring, in-app notifications, dashboard charts, rate limiting,
+audit logging, a native Flutter field app, and a Playwright e2e suite are all
+connected to the real API/database path.
 
 ## Stack
 
 - Next.js 14 (App Router) + TypeScript (strict)
 - Tailwind CSS
 - PostgreSQL + Prisma ORM
+- Flutter (Android/iOS) with encrypted session storage and GPS reporting
 - Custom auth: bcrypt password hashing + signed JWT session cookie (no
   third-party auth service — see `src/lib/auth/`)
 - Vitest (unit) + Playwright (e2e — `tests/e2e/core-workflow.spec.ts`)
@@ -86,18 +86,19 @@ npm run test          # Vitest unit tests (permissions logic)
 npm run build         # production build — catches issues dev mode won't
 ```
 
-Run the complete local build gate, including the optimized production-server
-smoke test:
+Run the complete local build gate, including Flutter checks and the optimized
+production-server smoke test:
 
 ```bash
-npm ci --prefix mobile   # required once after cloning
+cd mobile && flutter pub get && cd ..   # required once after cloning
 npm run verify:ci
 ```
 
-Pushes and pull requests run the same gate in GitHub Actions, followed by the
-full Playwright incident lifecycle against a fresh PostgreSQL service. See
+Pushes and pull requests run the same gate in GitHub Actions, build and upload
+an installable Android APK, then run the full Playwright incident lifecycle
+against a fresh PostgreSQL service. See
 [`docs/BUILD_WORKFLOW.md`](docs/BUILD_WORKFLOW.md) for the workflow, CI design,
-and final demo-release checklist.
+API configuration and release checklist.
 
 To exercise the simulated Guardian SOS endpoint (no physical device exists —
 this creates a real linked incident through the device API contract):
@@ -141,6 +142,7 @@ prisma/
 tests/            Vitest unit tests (tests/) + Playwright e2e (tests/e2e/)
 scripts/          One-off scripts (e.g. SOS simulator)
 docs/             Architecture, database, and Guardian integration notes
+mobile/           Native Flutter Android/iOS field client (no Expo)
 ```
 
 ## Roles

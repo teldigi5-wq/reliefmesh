@@ -8,11 +8,11 @@ Vercel deployment, and local verification on
 
 - [x] Next.js production build (`npm run build`)
 - [x] Web TypeScript, ESLint, and Vitest (22 tests)
-- [x] Expo citizen app TypeScript validation
-- [x] Reproducible root and mobile dependency lockfiles
+- [x] Native Flutter citizen app analysis and tests
+- [x] Reproducible npm and Flutter dependency lockfiles
 - [x] Password login/register and server-validated role sessions
 - [x] Citizen report creation with database persistence and GPS coordinates
-- [x] Expo citizen SOS, confirmation/detail, history, and 10-second status polling
+- [x] Flutter citizen SOS, confirmation/detail, live history, and status refresh
 - [x] Operator verification and responder assignment
 - [x] Responder assignment visibility, acceptance/start, status update, resolution
 - [x] Assignment state now follows incident state (`IN_PROGRESS` → `COMPLETED`)
@@ -28,7 +28,7 @@ Vercel deployment, and local verification on
 
 - [ ] Run the new Guardian simulator against a database-backed preview branch
 - [ ] Run Playwright lifecycle tests against an isolated seeded database
-- [ ] Check Expo app on an Android device or emulator
+- [ ] Install the workflow APK on an Android device or emulator
 - [ ] Verify phone location permission and accuracy on the presentation device
 - [ ] Verify Vercel preview environment variables, including
   `GUARDIAN_REPORTER_EMAIL`

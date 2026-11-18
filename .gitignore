@@ -36,3 +36,20 @@ prisma/migrations/dev.db
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Flutter
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/.packages
+mobile/build/
+mobile/ios/Flutter/ephemeral/
+mobile/ios/Pods/
+mobile/ios/.symlinks/
+mobile/android/.gradle/
+mobile/android/app/debug/
+mobile/android/app/profile/
+mobile/android/app/release/
+*.jks
+*.keystore
+key.properties
