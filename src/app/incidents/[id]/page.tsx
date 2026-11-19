@@ -74,6 +74,16 @@ export default async function IncidentDetailPage({
               <dd className="font-medium">
                 {incident.latitude.toFixed(4)}, {incident.longitude.toFixed(4)}
                 {incident.address ? ` — ${incident.address}` : ""}
+                {incident.title.startsWith("WhatsApp SOS") && (
+                  <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                    Last website update: {incident.updatedAt.toLocaleString()}.
+                    Last shared coordinates; not continuous GPS tracking.
+                  </div>
+                )}
+                <Link href={`/map?incident=${incident.id}`}
+                  className="mt-2 inline-block text-cyan-700 underline dark:text-cyan-300">
+                  View this incident's location on the map
+                </Link>
               </dd>
             </div>
             {incident.verifiedBy && (
