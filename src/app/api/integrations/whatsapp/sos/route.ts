@@ -110,17 +110,14 @@ export async function POST(req: NextRequest) {
 
     if (existing) {
       if (existing.status === "CLOSED" || existing.status === "RESOLVED")
-        return { id: existing.id, created: false, updated: false, websiteRecipients: 0 };
+        return { id: existing.id, created: false, updated: false, websiteRecipients: 0, websiteNotificationsCreated: 0 };
 
-      const changedLocation = existing.latitude !== latitude || existing.longitude !== longitude;
       await tx.incident.update({
         where: { id: existing.id }, data: { latitude, longitude },
       });
       incidentId = existing.id;
       updated = true;
-      // Fresh repeated SOS reconfirmations are represented by updatedAt; do
-      // not generate a notification for every bot retry or reconfirmation.
-      void changedLocation;
+      // Fresh repeated SOS reconfirmations are represented by updatedAt.
     } else {
       const incident = await tx.incident.create({
         data: {
@@ -164,13 +161,14 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    return { id: incidentId, created, updated, websiteRecipients: staff.length };
+    return { id: incidentId, created, updated, websiteRecipients: staff.length, websiteNotificationsCreated: needsNotification.length };
   });
 
   return NextResponse.json({
     accepted: true, caseId, incidentId: result.id,
     created: result.created, locationUpdated: result.updated,
-    websiteRecipients: result.websiteRecipients,
+    websiteEligibleRecipients: result.websiteRecipients,
+    websiteNotificationsCreated: result.websiteNotificationsCreated,
     dashboardPath: "/incidents/" + result.id,
     disclaimer: "Website notifications are in-app only. WhatsApp recipients require opt-in; no official responder dispatch is implied.",
   }, {
