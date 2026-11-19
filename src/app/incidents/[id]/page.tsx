@@ -82,7 +82,7 @@ export default async function IncidentDetailPage({
                 )}
                 <Link href={`/map?incident=${incident.id}`}
                   className="mt-2 inline-block text-cyan-700 underline dark:text-cyan-300">
-                  View this incident's location on the map
+                  View this incident location on the map
                 </Link>
               </dd>
             </div>
