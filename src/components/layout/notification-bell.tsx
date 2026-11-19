@@ -38,9 +38,18 @@ export function NotificationBell() {
   }, []);
 
   useEffect(() => {
-    void load();
-    const interval = setInterval(() => void load(), 30_000);
-    return () => clearInterval(interval);
+    // SOS alerts should appear quickly in the existing website inbox.
+    // Pause periodic requests for hidden tabs to reduce free-tier usage.
+    const poll = () => {
+      if (document.visibilityState === "visible") void load();
+    };
+    poll();
+    const interval = setInterval(poll, 5_000);
+    document.addEventListener("visibilitychange", poll);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", poll);
+    };
   }, [load]);
 
   useEffect(() => {
