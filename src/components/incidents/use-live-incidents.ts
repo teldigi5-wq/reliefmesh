@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { MapIncident } from "@/components/map/incident-map";
 
-export type LiveIncident = MapIncident & { createdAt?: string };
+export type LiveIncident = MapIncident & { createdAt?: string; updatedAt?: string };
 export type LiveConnection = "connecting" | "connected" | "offline";
 
 const POLL_INTERVAL_MS = 2_000;
@@ -33,6 +33,7 @@ function readIncidents(value: unknown): LiveIncident[] {
       latitude: i.latitude,
       longitude: i.longitude,
       createdAt: typeof i.createdAt === "string" ? i.createdAt : undefined,
+      updatedAt: typeof i.updatedAt === "string" ? i.updatedAt : undefined,
     };
   });
 }
