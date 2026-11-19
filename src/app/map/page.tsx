@@ -20,7 +20,7 @@ export default async function MapPage() {
     <OpsPageHeader icon={MapPinned} eyebrow="OPERATIONS / GEOSPATIAL" title="Incident map"
       description="Explore authorised incident reports by location. Marker size and colour reflect severity."
       action={<Link href="/incidents" className="ops-button ops-button-outline">View incident records <ArrowRight size={16}/></Link>} />
-    <div className="ops-section-heading"><div><span className="ops-eyebrow">LOCATION INTELLIGENCE</span><h2>Geographic overview</h2><p>Choose a map pin or incident listing to open the full record.</p></div><span className="ops-meta-chip"><Layers3 size={14} /> {mapIncidents.length} locations</span></div>
+    <div className="ops-section-heading"><div><span className="ops-eyebrow">LOCATION INTELLIGENCE</span><h2>Geographic overview</h2><p>Choose a map pin or incident listing to open the full record.</p></div><span className="ops-meta-chip"><Layers3 size={14} /> Live locations · 2s</span></div>
     <section className="ops-map-layout" aria-label="Incident locations"><MapWithList incidents={mapIncidents} /></section>
     <p className="ops-footnote">Map markers use the coordinates submitted with incident reports. Their presence does not confirm verification or emergency-response availability.</p>
    </div>
