@@ -86,7 +86,7 @@ export function IncidentMap({ incidents, focusIncidentId }: { incidents: MapInci
             <div className="text-sm">
               <p className="font-medium">{incident.title}</p>
               <p className="text-slate-600">
-                {incident.title.startsWith("WhatsApp SOS") ? "WhatsApp SOS · UNVERIFIED" : incident.category.replace(/_/g, " ")} · {incident.severity} ·{" "}
+                {incident.title.startsWith("WhatsApp SOS") ? `WhatsApp SOS · ${incident.category.replace(/_/g, " ")} · UNVERIFIED` : incident.category.replace(/_/g, " ")} · {incident.severity} ·{" "}
                 {incident.status.replace(/_/g, " ")}
               </p>
               <Link href={`/incidents/${incident.id}`} className="text-brand-600">

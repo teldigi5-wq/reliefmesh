@@ -14,6 +14,7 @@ const bodySchema = z.discriminatedUnion("operation", [
     caseId: caseIdSchema,
     latitude: z.number().finite().gte(-90).lte(90),
     longitude: z.number().finite().gte(-180).lte(180),
+    category: z.enum(["FLOOD", "LANDSLIDE", "FIRE", "MEDICAL_EMERGENCY", "ROAD_ACCIDENT", "MISSING_PERSON", "INFRASTRUCTURE_DAMAGE", "OTHER"]).optional(),
     sharedAt: z.number().int().positive(),
   }).strict(),
   z.object({
@@ -79,7 +80,7 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const { latitude, longitude } = parsed.data;
+  const { latitude, longitude, category } = parsed.data;
   const reporter = await prisma.user.upsert({
     where: { email },
     create: {
@@ -113,7 +114,7 @@ export async function POST(req: NextRequest) {
         return { id: existing.id, created: false, updated: false, websiteRecipients: 0, websiteNotificationsCreated: 0 };
 
       await tx.incident.update({
-        where: { id: existing.id }, data: { latitude, longitude },
+        where: { id: existing.id }, data: { latitude, longitude, ...(category ? { category } : {}) },
       });
       incidentId = existing.id;
       updated = true;
@@ -121,7 +122,7 @@ export async function POST(req: NextRequest) {
     } else {
       const incident = await tx.incident.create({
         data: {
-          title, description, category: "OTHER", severity: "HIGH",
+          title, description, category: category ?? "OTHER", severity: "HIGH",
           status: "REPORTED", latitude, longitude,
           reportedById: reporter.id,
         },
@@ -154,8 +155,8 @@ export async function POST(req: NextRequest) {
         data: needsNotification.map(u => ({
           userId: u.id,
           type: "EMERGENCY_UPDATE",
-          title: created ? `New WhatsApp SOS: ${caseId}` : `WhatsApp SOS updated: ${caseId}`,
-          message: "Unverified SOS report received. Open the case to review its shared location and coordinate assistance.",
+          title: created ? `New ${(category ?? existing?.category ?? "OTHER").replace(/_/g, " ")} SOS: ${caseId}` : `SOS update: ${caseId}`,
+          message: `Disaster: ${(category ?? existing?.category ?? "OTHER").replace(/_/g, " ")}. Shared location: ${latitude.toFixed(5)}, ${longitude.toFixed(5)}. Unverified report; open the incident to coordinate assistance.`,
           relatedIncidentId: incidentId,
         })),
       });
@@ -169,6 +170,7 @@ export async function POST(req: NextRequest) {
     created: result.created, locationUpdated: result.updated,
     websiteEligibleRecipients: result.websiteRecipients,
     websiteNotificationsCreated: result.websiteNotificationsCreated,
+    disasterCategory: category ?? "OTHER",
     dashboardPath: "/incidents/" + result.id,
     disclaimer: "Website notifications are in-app only. WhatsApp recipients require opt-in; no official responder dispatch is implied.",
   }, {
