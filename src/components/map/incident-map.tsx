@@ -1,6 +1,8 @@
 "use client";
 
-import { MapContainer, TileLayer, CircleMarker, Popup } from "react-leaflet";
+import { useEffect } from "react";
+import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaflet";
+import L from "leaflet";
 import Link from "next/link";
 import "leaflet/dist/leaflet.css";
 import type { Severity, IncidentStatus } from "@prisma/client";
@@ -29,6 +31,23 @@ const SEVERITY_RADIUS: Record<Severity, number> = {
   CRITICAL: 11,
 };
 
+function FitIncidentLocations({ incidents }: { incidents: MapIncident[] }) {
+  const map = useMap();
+  const signature = incidents.map(i => i.id + ":" + i.latitude + ":" + i.longitude).join("|");
+  useEffect(() => {
+    const valid = incidents.filter(i => Number.isFinite(i.latitude) && Number.isFinite(i.longitude));
+    const firstPin = valid[0];
+    if (firstPin && valid.length === 1) map.setView([firstPin.latitude, firstPin.longitude], 12);
+    if (valid.length > 1) {
+      const bounds = L.latLngBounds(valid.map(i => [i.latitude, i.longitude] as [number, number]));
+      map.fitBounds(bounds, { padding: [30, 30], maxZoom: 12 });
+    }
+  // Recenter only when the coordinates change, not on every data refresh.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, signature]);
+  return null;
+}
+
 export function IncidentMap({ incidents }: { incidents: MapIncident[] }) {
   const first = incidents[0];
   const center: [number, number] = first
@@ -46,7 +65,8 @@ export function IncidentMap({ incidents }: { incidents: MapIncident[] }) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {incidents.map((incident) => (
+      <FitIncidentLocations incidents={incidents} />
+      {incidents.filter(i => Number.isFinite(i.latitude) && Number.isFinite(i.longitude)).map((incident) => (
         <CircleMarker
           key={incident.id}
           center={[incident.latitude, incident.longitude]}
@@ -61,7 +81,7 @@ export function IncidentMap({ incidents }: { incidents: MapIncident[] }) {
             <div className="text-sm">
               <p className="font-medium">{incident.title}</p>
               <p className="text-slate-600">
-                {incident.category.replace(/_/g, " ")} · {incident.severity} ·{" "}
+                {incident.title.startsWith("WhatsApp SOS") ? "WhatsApp SOS · UNVERIFIED" : incident.category.replace(/_/g, " ")} · {incident.severity} ·{" "}
                 {incident.status.replace(/_/g, " ")}
               </p>
               <Link href={`/incidents/${incident.id}`} className="text-brand-600">
