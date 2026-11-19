@@ -23,6 +23,7 @@ export default async function IncidentsPage() {
     latitude: i.latitude,
     longitude: i.longitude,
     createdAt: i.createdAt.toISOString(),
+    updatedAt: i.updatedAt.toISOString(),
   }));
 
   return (
