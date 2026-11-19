@@ -31,11 +31,16 @@ const SEVERITY_RADIUS: Record<Severity, number> = {
   CRITICAL: 11,
 };
 
-function FitIncidentLocations({ incidents }: { incidents: MapIncident[] }) {
+function FitIncidentLocations({ incidents, focusIncidentId }: { incidents: MapIncident[]; focusIncidentId?: string }) {
   const map = useMap();
   const signature = incidents.map(i => i.id + ":" + i.latitude + ":" + i.longitude).join("|");
   useEffect(() => {
     const valid = incidents.filter(i => Number.isFinite(i.latitude) && Number.isFinite(i.longitude));
+    const selected = valid.find(i => i.id === focusIncidentId);
+    if (selected) {
+      map.setView([selected.latitude, selected.longitude], 15);
+      return;
+    }
     const firstPin = valid[0];
     if (firstPin && valid.length === 1) map.setView([firstPin.latitude, firstPin.longitude], 12);
     if (valid.length > 1) {
@@ -44,11 +49,11 @@ function FitIncidentLocations({ incidents }: { incidents: MapIncident[] }) {
     }
   // Recenter only when the coordinates change, not on every data refresh.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, signature]);
+  }, [map, signature, focusIncidentId]);
   return null;
 }
 
-export function IncidentMap({ incidents }: { incidents: MapIncident[] }) {
+export function IncidentMap({ incidents, focusIncidentId }: { incidents: MapIncident[]; focusIncidentId?: string }) {
   const first = incidents[0];
   const center: [number, number] = first
     ? [first.latitude, first.longitude]
@@ -65,7 +70,7 @@ export function IncidentMap({ incidents }: { incidents: MapIncident[] }) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <FitIncidentLocations incidents={incidents} />
+      <FitIncidentLocations incidents={incidents} focusIncidentId={focusIncidentId} />
       {incidents.filter(i => Number.isFinite(i.latitude) && Number.isFinite(i.longitude)).map((incident) => (
         <CircleMarker
           key={incident.id}
