@@ -95,34 +95,84 @@ export async function POST(req: NextRequest) {
     "Coordinates were shared voluntarily. This is not an official emergency dispatch.";
 
   // Transaction-scoped advisory lock prevents duplicate pins under retries.
+  // Alert the WEBSITE's active admins/operators, regardless of whether any
+  // WhatsApp OPERATOR account exists. This is in-app only: WhatsApp requires
+  // a separate verified, opted-in recipient mapping.
   const result = await prisma.$transaction(async (tx) => {
     await tx.$queryRaw`SELECT 1 AS locked FROM pg_advisory_xact_lock(hashtext(${title}))`;
     const existing = await tx.incident.findFirst({
       where: { reportedById: reporter.id, title },
     });
+
+    let incidentId: string;
+    let created = false;
+    let updated = false;
+
     if (existing) {
       if (existing.status === "CLOSED" || existing.status === "RESOLVED")
-        return { id: existing.id, created: false, updated: false };
+        return { id: existing.id, created: false, updated: false, websiteRecipients: 0 };
+
+      const changedLocation = existing.latitude !== latitude || existing.longitude !== longitude;
       await tx.incident.update({
         where: { id: existing.id }, data: { latitude, longitude },
       });
-      return { id: existing.id, created: false, updated: true };
+      incidentId = existing.id;
+      updated = true;
+      // Fresh repeated SOS reconfirmations are represented by updatedAt; do
+      // not generate a notification for every bot retry or reconfirmation.
+      void changedLocation;
+    } else {
+      const incident = await tx.incident.create({
+        data: {
+          title, description, category: "OTHER", severity: "HIGH",
+          status: "REPORTED", latitude, longitude,
+          reportedById: reporter.id,
+        },
+      });
+      incidentId = incident.id;
+      created = true;
     }
-    const incident = await tx.incident.create({
-      data: {
-        title, description, category: "OTHER", severity: "HIGH",
-        status: "REPORTED", latitude, longitude,
-        reportedById: reporter.id,
-      },
+
+    const staff = await tx.user.findMany({
+      where: { isActive: true, role: { in: ["ADMIN", "OPERATOR"] } },
+      select: { id: true },
     });
-    return { id: incident.id, created: true, updated: false };
+
+    // Dedupe by incident, role-recipient and time window inside the same
+    // serialised transaction. This protects notification inboxes when the
+    // bot retries a successful SOS webhook.
+    const cutoff = new Date(Date.now() - 2 * 60_000);
+    const recent = staff.length ? await tx.notification.findMany({
+      where: {
+        relatedIncidentId: incidentId, type: "EMERGENCY_UPDATE",
+        userId: { in: staff.map(u => u.id) },
+        createdAt: { gte: cutoff },
+      },
+      select: { userId: true },
+    }) : [];
+    const alreadyNotified = new Set(recent.map(n => n.userId));
+    const needsNotification = staff.filter(u => !alreadyNotified.has(u.id));
+    if (needsNotification.length) {
+      await tx.notification.createMany({
+        data: needsNotification.map(u => ({
+          userId: u.id,
+          type: "EMERGENCY_UPDATE",
+          title: created ? `New WhatsApp SOS: ${caseId}` : `WhatsApp SOS updated: ${caseId}`,
+          message: "Unverified SOS report received. Open the case to review its shared location and coordinate assistance.",
+          relatedIncidentId: incidentId,
+        })),
+      });
+    }
+
+    return { id: incidentId, created, updated, websiteRecipients: staff.length };
   });
 
   return NextResponse.json({
     accepted: true, caseId, incidentId: result.id,
     created: result.created, locationUpdated: result.updated,
+    websiteRecipients: result.websiteRecipients,
     dashboardPath: "/incidents/" + result.id,
-    disclaimer: "Unverified community report; no responder dispatch is implied",
+    disclaimer: "Website notifications are in-app only. WhatsApp recipients require opt-in; no official responder dispatch is implied.",
   }, {
     status: result.created ? 201 : 200,
     headers: { "Cache-Control": "no-store" },
