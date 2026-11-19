@@ -36,7 +36,8 @@ function FitIncidentLocations({ incidents }: { incidents: MapIncident[] }) {
   const signature = incidents.map(i => i.id + ":" + i.latitude + ":" + i.longitude).join("|");
   useEffect(() => {
     const valid = incidents.filter(i => Number.isFinite(i.latitude) && Number.isFinite(i.longitude));
-    if (valid.length === 1) map.setView([valid[0].latitude, valid[0].longitude], 12);
+    const firstPin = valid[0];
+    if (firstPin && valid.length === 1) map.setView([firstPin.latitude, firstPin.longitude], 12);
     if (valid.length > 1) {
       const bounds = L.latLngBounds(valid.map(i => [i.latitude, i.longitude] as [number, number]));
       map.fitBounds(bounds, { padding: [30, 30], maxZoom: 12 });
