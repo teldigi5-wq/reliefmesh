@@ -49,7 +49,7 @@ export function LiveIncidentRegister({
               <div>
                 <p className="ops-list-title">{incident.title}</p>
                 <p className="ops-list-caption">
-                  {incident.title.startsWith("WhatsApp SOS") ? "WHATSAPP · UNVERIFIED" : incident.category.replace(/_/g, " ")}
+                  {incident.title.startsWith("WhatsApp SOS") ? `WHATSAPP · ${incident.category.replace(/_/g, " ")} · UNVERIFIED` : incident.category.replace(/_/g, " ")}
                   {" · "}
                   {incident.createdAt ? new Date(incident.createdAt).toLocaleString() : "Time unavailable"}
                 </p>
