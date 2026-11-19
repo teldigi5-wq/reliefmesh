@@ -22,7 +22,7 @@ export function MapWithList({ incidents, focusIncidentId }: { incidents: MapInci
     {liveIncidents.map(i => (
      <Link key={i.id} href={"/incidents/" + i.id} className="ops-map-sidebar-item">
       <div className="ops-map-sidebar-icon"><MapPin size={16} /></div>
-      <div className="min-w-0 flex-1"><p className="ops-list-title">{i.title}</p><p className="ops-list-caption">{i.title.startsWith("WhatsApp SOS") ? "WhatsApp · UNVERIFIED" : i.category.replace(/_/g, " ")}</p><div className="mt-3 flex flex-wrap gap-2"><SeverityBadge severity={i.severity} /><StatusBadge status={i.status} /></div></div>
+      <div className="min-w-0 flex-1"><p className="ops-list-title">{i.title}</p><p className="ops-list-caption">{i.title.startsWith("WhatsApp SOS") ? `WhatsApp · ${i.category.replace(/_/g, " ")} · UNVERIFIED` : i.category.replace(/_/g, " ")}</p><div className="mt-3 flex flex-wrap gap-2"><SeverityBadge severity={i.severity} /><StatusBadge status={i.status} /></div></div>
       <ArrowUpRight size={16} className="ops-faint" />
      </Link>
     ))}
