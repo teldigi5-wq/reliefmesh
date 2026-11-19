@@ -53,6 +53,13 @@ export function LiveIncidentRegister({
                   {" · "}
                   {incident.createdAt ? new Date(incident.createdAt).toLocaleString() : "Time unavailable"}
                 </p>
+                {incident.title.startsWith("WhatsApp SOS") && (
+                  <p className="ops-list-caption mt-1">
+                    Last website update: {incident.updatedAt ? new Date(incident.updatedAt).toLocaleString() : "Not available"}
+                    {" · "}Last reported pin: {incident.latitude.toFixed(5)}, {incident.longitude.toFixed(5)}
+                    {" · "}Not live GPS tracking
+                  </p>
+                )}
               </div>
             </div>
             <div className="ops-list-status">
