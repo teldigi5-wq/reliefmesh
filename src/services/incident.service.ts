@@ -45,7 +45,7 @@ export const incidentService = {
       ]);
       const byId = new Map([...own, ...assigned].map((i) => [i.id, i]));
       return Array.from(byId.values()).sort(
-        (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+        (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()
       );
     }
 

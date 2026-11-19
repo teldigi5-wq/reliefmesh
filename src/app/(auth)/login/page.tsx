@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { ArrowRight, LockKeyhole, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,23 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const isSubmitting = phase !== "idle";
+
+  // A valid seven-day HttpOnly session should not force a second login.
+  // Only a verified, active server session redirects; network errors don't.
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetch("/api/auth/session", {
+      cache: "no-store",
+      credentials: "same-origin",
+      signal: controller.signal,
+    }).then(async response => {
+      if (!response.ok || controller.signal.aborted) return;
+      const result = await response.json().catch(() => null);
+      if (result?.authenticated === true && !controller.signal.aborted)
+        window.location.replace("/dashboard");
+    }).catch(() => {});
+    return () => controller.abort();
+  }, []);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();

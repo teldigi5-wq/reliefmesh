@@ -32,7 +32,7 @@ export const incidentRepository = {
   findMany(filters: { status?: IncidentStatus; reportedById?: string }) {
     return prisma.incident.findMany({
       where: filters,
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
       include: {
         assignments: { select: { volunteerId: true, status: true } },
       },
@@ -44,7 +44,7 @@ export const incidentRepository = {
   findAssignedToUser(userId: string) {
     return prisma.incident.findMany({
       where: { assignments: { some: { volunteer: { userId } } } },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ updatedAt: "desc" }, { createdAt: "desc" }],
       include: {
         assignments: { select: { volunteerId: true, status: true } },
       },

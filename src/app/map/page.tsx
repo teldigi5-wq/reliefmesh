@@ -7,7 +7,7 @@ import { AppNav } from "@/components/layout/app-nav";
 import { OpsPageHeader } from "@/components/layout/ops-page-header";
 import { MapWithList } from "@/components/map/map-with-list";
 
-export default async function MapPage() {
+export default async function MapPage({ searchParams }: { searchParams?: { incident?: string } }) {
  const session = await getSession();
  if (!session) redirect("/login");
  const incidents = await incidentService.listIncidents({ id: session.userId, role: session.role });
@@ -21,7 +21,7 @@ export default async function MapPage() {
       description="Explore authorised incident reports by location. Marker size and colour reflect severity."
       action={<Link href="/incidents" className="ops-button ops-button-outline">View incident records <ArrowRight size={16}/></Link>} />
     <div className="ops-section-heading"><div><span className="ops-eyebrow">LOCATION INTELLIGENCE</span><h2>Geographic overview</h2><p>Choose a map pin or incident listing to open the full record.</p></div><span className="ops-meta-chip"><Layers3 size={14} /> Live locations · 2s</span></div>
-    <section className="ops-map-layout" aria-label="Incident locations"><MapWithList incidents={mapIncidents} /></section>
+    <section className="ops-map-layout" aria-label="Incident locations"><MapWithList incidents={mapIncidents} focusIncidentId={searchParams?.incident} /></section>
     <p className="ops-footnote">Map markers use the coordinates submitted with incident reports. Their presence does not confirm verification or emergency-response availability.</p>
    </div>
   </main>
